@@ -1,28 +1,34 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: .NET
+name: Build .NET Framework Project
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - main
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      # Step 1: Check out the code from your repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Setup MSBuild
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+
+      # Step 3: Setup NuGet
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+
+      # Step 4: Restore NuGet packages
+      - name: Restore NuGet packages
+        run: nuget restore ClashRoyale.sin
+
+      # Step 5: Build the solution using MSBuild
+      - name: Build solution
+        run: msbuild ClashRoyale.sin /p:Configuration=Release
