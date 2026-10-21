@@ -30,7 +30,12 @@ namespace ClashRoyale
                 return;
             }
 
+            // Ensure GameDb is initialized first
             GameDb.Initialize();
+
+            // Now you can safely call GetPlayersSeed()
+            //int playerSeed = GameDb.GetPlayersSeed();
+           // Console.WriteLine(playerSeed);
 
             Devices.Initialize();
             Players.Initialize();

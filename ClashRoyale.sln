@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29911.84
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashRoyale.Server", "ClashRoyale.Server\ClashRoyale.Server.csproj", "{D37FC105-EF32-4B9E-B347-1436D72693EA}"
 EndProject
@@ -16,6 +16,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashRoyale.Client.Windows", "ClashRoyale.Client.Windows\ClashRoyale.Client.Windows.csproj", "{BF4C7DC4-8095-4C7E-B3ED-C87C74FD10C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClashRoyale.CSV", "ClashRoyale.CSV\ClashRoyale.CSV.csproj", "{A3A24EE1-20BC-4D41-B0E9-6BC54E43046C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexByteConverter", "HexByteConverter\HexByteConverter.csproj", "{2146E6E7-5600-480A-AB25-9B1CF56A7BB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "javascripttoc#", "javascripttoc#\javascripttoc#.csproj", "{56C1BB39-D714-412C-9A57-0E3D8AB3E891}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Downloader", "Downloader\Downloader.csproj", "{2262546A-3C76-4C04-B14E-17107EDAD602}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +87,30 @@ Global
 		{A3A24EE1-20BC-4D41-B0E9-6BC54E43046C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A3A24EE1-20BC-4D41-B0E9-6BC54E43046C}.Release|x86.ActiveCfg = Release|x86
 		{A3A24EE1-20BC-4D41-B0E9-6BC54E43046C}.Release|x86.Build.0 = Release|x86
+		{2146E6E7-5600-480A-AB25-9B1CF56A7BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2146E6E7-5600-480A-AB25-9B1CF56A7BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2146E6E7-5600-480A-AB25-9B1CF56A7BB6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2146E6E7-5600-480A-AB25-9B1CF56A7BB6}.Debug|x86.Build.0 = Debug|Any CPU
+		{2146E6E7-5600-480A-AB25-9B1CF56A7BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2146E6E7-5600-480A-AB25-9B1CF56A7BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2146E6E7-5600-480A-AB25-9B1CF56A7BB6}.Release|x86.ActiveCfg = Release|Any CPU
+		{2146E6E7-5600-480A-AB25-9B1CF56A7BB6}.Release|x86.Build.0 = Release|Any CPU
+		{56C1BB39-D714-412C-9A57-0E3D8AB3E891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56C1BB39-D714-412C-9A57-0E3D8AB3E891}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56C1BB39-D714-412C-9A57-0E3D8AB3E891}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{56C1BB39-D714-412C-9A57-0E3D8AB3E891}.Debug|x86.Build.0 = Debug|Any CPU
+		{56C1BB39-D714-412C-9A57-0E3D8AB3E891}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56C1BB39-D714-412C-9A57-0E3D8AB3E891}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56C1BB39-D714-412C-9A57-0E3D8AB3E891}.Release|x86.ActiveCfg = Release|Any CPU
+		{56C1BB39-D714-412C-9A57-0E3D8AB3E891}.Release|x86.Build.0 = Release|Any CPU
+		{2262546A-3C76-4C04-B14E-17107EDAD602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2262546A-3C76-4C04-B14E-17107EDAD602}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2262546A-3C76-4C04-B14E-17107EDAD602}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2262546A-3C76-4C04-B14E-17107EDAD602}.Debug|x86.Build.0 = Debug|Any CPU
+		{2262546A-3C76-4C04-B14E-17107EDAD602}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2262546A-3C76-4C04-B14E-17107EDAD602}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2262546A-3C76-4C04-B14E-17107EDAD602}.Release|x86.ActiveCfg = Release|Any CPU
+		{2262546A-3C76-4C04-B14E-17107EDAD602}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

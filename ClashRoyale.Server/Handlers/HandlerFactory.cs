@@ -16,6 +16,7 @@
     using ClashRoyale.Handlers.Client.RoyalTv;
     using ClashRoyale.Handlers.Client.Scoring;
     using ClashRoyale.Handlers.Client.Sector;
+    using ClashRoyale.Handlers.Client.Sector;
     using ClashRoyale.Handlers.Server.Account;
     using ClashRoyale.Handlers.Server.Home;
 
@@ -30,6 +31,7 @@
     using ClashRoyale.Messages.Client.Matchmaking;
     using ClashRoyale.Messages.Client.RoyalTv;
     using ClashRoyale.Messages.Client.Scoring;
+    using ClashRoyale.Messages.Client.Sector;
     using ClashRoyale.Messages.Server.Account;
     using ClashRoyale.Messages.Server.Home;
 
@@ -92,6 +94,7 @@
 
             HandlerFactory.MessageHandlers.Add(new CancelMatchmakeMessage().Type,               CancelMatchmakeHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new StartTrainingBattleMessage().Type,           StartTrainingBattleHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new RequestSectorStateMessage().Type,            RequestSectorStateHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new SectorCommandMessage().Type,                 SectorCommandHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new SendBattleEventMessage().Type,               SendBattleEventHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new AskForTvContentMessage().Type,               AskForTvContentHandler.Handle);

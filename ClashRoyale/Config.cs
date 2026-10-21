@@ -11,7 +11,7 @@
         public const bool IsKunlunServer    = true;
 
         public const int ClientMajorVersion = 3;
-        public const int ClientMinorVersion = 0;
+        public const int ClientMinorVersion = 5;
         public const int ClientBuildVersion = 830;
 
         public const int ServerMajorVersion = 3;
@@ -20,7 +20,7 @@
 
         public const int BufferSize         = 2048 * 1;
         public const int ServerId           = 0;
-        public const int MaxPlayers         = 10;
+        public const int MaxPlayers         = 100;
         public const int MaxChatEntries     = 100;
 
         public static string ClientVersion

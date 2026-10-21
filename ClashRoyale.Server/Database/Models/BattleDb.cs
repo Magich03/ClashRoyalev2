@@ -4,10 +4,6 @@
 
     using ClashRoyale.Logic.Battle;
 
-    using MongoDB.Bson;
-    using MongoDB.Bson.Serialization.Attributes;
-    using MongoDB.Driver;
-
     using Newtonsoft.Json;
 
     public class BattleDb
@@ -15,7 +11,6 @@
         /// <summary>
         /// The settings for the <see cref="JsonConvert" /> class.
         /// </summary>
-        [BsonIgnore]
         private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
             TypeNameHandling            = TypeNameHandling.None,            MissingMemberHandling   = MissingMemberHandling.Ignore,
@@ -23,12 +18,9 @@
             ReferenceLoopHandling       = ReferenceLoopHandling.Ignore,     Formatting              = Formatting.None
         };
 
-        [BsonId]                    public BsonObjectId _id;
-
-        [BsonElement("highId")]     public int HighId;
-        [BsonElement("lowId")]      public int LowId;
-
-        [BsonElement("profile")]    public BsonDocument Profile;
+        public int HighId;
+        public int LowId;
+        public BattleLog Profile;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BattleDb"/> class.
@@ -43,12 +35,12 @@
         /// </summary>
         /// <param name="HighId">The high identifier.</param>
         /// <param name="LowId">The low identifier.</param>
-        /// <param name="Profile">The profile.</param>
+        /// <param name="Json">The JSON string.</param>
         public BattleDb(int HighId, int LowId, string Json)
         {
             this.HighId     = HighId;
             this.LowId      = LowId;
-            this.Profile    = BsonDocument.Parse(Json);
+            this.Profile    = JsonConvert.DeserializeObject<BattleLog>(Json, BattleDb.JsonSettings);
         }
 
         /// <summary>
@@ -59,7 +51,7 @@
         {
             this.HighId     = BattleLog.HighId;
             this.LowId      = BattleLog.LowId;
-            this.Profile    = BsonDocument.Parse(JsonConvert.SerializeObject(BattleLog, BattleDb.JsonSettings));
+            this.Profile    = BattleLog;
         }
 
         /// <summary>
@@ -72,107 +64,93 @@
         }
 
         /// <summary>
-        /// Creates the battle log in the database.
+        /// Saves the battle log in the database.
         /// </summary>
         public static async Task<BattleDb> Save(BattleLog BattleLog)
         {
-            var UpdatedEntity = await GameDb.Battles.FindOneAndUpdateAsync(BattleDb =>
-
-                BattleDb.HighId == BattleLog.HighId &&
-                BattleDb.LowId  == BattleLog.LowId,
-                
-                Builders<BattleDb>.Update.Set(BattleDb => BattleDb.Profile, BsonDocument.Parse(JsonConvert.SerializeObject(BattleLog, BattleDb.JsonSettings)))
-            );
-
-            if (UpdatedEntity != null)
+            try
             {
-                if (UpdatedEntity.HighId == BattleLog.HighId && UpdatedEntity.LowId == BattleLog.LowId)
+                var battleDb = new BattleDb(BattleLog);
+                var result = await GameDb.Battles.FindOneAndUpdateAsync(BattleLog.HighId, BattleLog.LowId, battleDb);
+
+                if (result != null && result.HighId == BattleLog.HighId && result.LowId == BattleLog.LowId)
                 {
-                    return UpdatedEntity;
+                    return result;
                 }
                 else
                 {
-                    Logging.Error(typeof(PlayerDb), "UpdatedEntity.Ids != this.Ids at Save().");
+                    Logging.Error(typeof(BattleDb), "Failed to save battle.");
                 }
             }
-            else
+            catch (System.Exception ex)
             {
-                Logging.Error(typeof(PlayerDb), "UpdatedEntity == null at Save().");
+                Logging.Error(typeof(BattleDb), $"Error at Save(): {ex.Message}");
             }
 
             return null;
         }
 
         /// <summary>
-        /// Loads this instance from the database.
+        /// Loads the battle from the database.
         /// </summary>
         public static async Task<BattleDb> Load(int HighId, int LowId)
         {
             if (LowId > 0)
             {
-                var Entities = await GameDb.Battles.FindAsync(BattleDb => BattleDb.HighId == HighId && BattleDb.LowId == LowId);
-
-                if (Entities != null)
+                try
                 {
-                    var Entity = Entities.FirstOrDefault();
+                    var entity = await GameDb.Battles.FindAsync(HighId, LowId);
 
-                    if (Entity != null)
+                    if (entity != null)
                     {
-                        return Entity;
+                        return entity;
                     }
                     else
                     {
-                        Logging.Error(typeof(PlayerDb), "Entity == null at Load().");
+                        Logging.Warning(typeof(BattleDb), $"Battle not found: {HighId}_{LowId}");
                     }
                 }
-                else
+                catch (System.Exception ex)
                 {
-                    Logging.Error(typeof(PlayerDb), "Entities == null at Load().");
+                    Logging.Error(typeof(BattleDb), $"Error at Load(): {ex.Message}");
                 }
             }
             else
             {
-                Logging.Error(typeof(PlayerDb), "this.LowId < 0 at Load().");
+                Logging.Error(typeof(BattleDb), "LowId < 0 at Load().");
             }
 
             return null;
         }
 
         /// <summary>
-        /// Deletes this instance from the database.
+        /// Deletes the battle from the database.
         /// </summary>
         public static async Task<bool> Delete(int HighId, int LowId)
         {
             if (LowId > 0)
             {
-                var Result = await GameDb.Battles.DeleteOneAsync(BattleDb => BattleDb.HighId == HighId && BattleDb.LowId == LowId);
-
-                if (Result.IsAcknowledged)
+                try
                 {
-                    if (Result.DeletedCount > 0)
+                    var result = await GameDb.Battles.DeleteOneAsync(HighId, LowId);
+
+                    if (result)
                     {
-                        if (Result.DeletedCount == 1)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            Logging.Error(typeof(PlayerDb), "Result.DeletedCount > 1 at Delete().");
-                        }
+                        return true;
                     }
                     else
                     {
-                        Logging.Warning(typeof(PlayerDb), "Result.DeletedCount == 0 at Delete().");
+                        Logging.Warning(typeof(BattleDb), $"Battle not found for deletion: {HighId}_{LowId}");
                     }
                 }
-                else
+                catch (System.Exception ex)
                 {
-                    Logging.Error(typeof(PlayerDb), "Result.IsAcknowledged != true at Delete().");
+                    Logging.Error(typeof(BattleDb), $"Error at Delete(): {ex.Message}");
                 }
             }
             else
             {
-                Logging.Error(typeof(PlayerDb), "LowId <= 0 at Delete(HighId, LowId).");
+                Logging.Error(typeof(BattleDb), "LowId <= 0 at Delete().");
             }
 
             return false;
@@ -185,12 +163,8 @@
         {
             if (this.Profile != null)
             {
-                BattleLog = JsonConvert.DeserializeObject<BattleLog>(this.Profile.ToJson(), BattleDb.JsonSettings);
-
-                if (BattleLog != null)
-                {
-                    return true;
-                }
+                BattleLog = this.Profile;
+                return true;
             }
             else
             {

@@ -14,7 +14,6 @@ namespace ClashRoyale.Logic.Home
     using ClashRoyale.Logic.Player;
     using ClashRoyale.Logic.Shop.Items;
     using ClashRoyale.Logic.Time;
-
     using Newtonsoft.Json;
 
     using Math = ClashRoyale.Maths.Math;
@@ -24,76 +23,76 @@ namespace ClashRoyale.Logic.Home
     {
         public GameMode GameMode;
 
-        [JsonProperty("highId")]                    public int HighId;
-        [JsonProperty("lowId")]                     public int LowId;
-       
+        [JsonProperty("highId")] public int HighId;
+        [JsonProperty("lowId")] public int LowId;
+
         // SHOP
 
-        [JsonProperty("shopSeed")]                  public int ShopSeed;
-        [JsonProperty("shopDay")]                   public int ShopDay;
-        [JsonProperty("shopDaySeen")]               public int ShopDaySeen;
-        [JsonProperty("dayOfYear")]                 public int DayOfYear;
+        [JsonProperty("shopSeed")] public int ShopSeed;
+        [JsonProperty("shopDay")] public int ShopDay;
+        [JsonProperty("shopDaySeen")] public int ShopDaySeen;
+        [JsonProperty("dayOfYear")] public int DayOfYear;
 
-        [JsonProperty("shopTimer")]                 public Timer ShopTimer;
+        [JsonProperty("shopTimer")] public Timer ShopTimer;
 
-        [JsonProperty("shopItems")]                 public List<ShopItem> ShopItems;
-        [JsonProperty("shopChests")]                public List<ChestEvent> ShopChests;
+        [JsonProperty("shopItems")] public List<ShopItem> ShopItems;
+        [JsonProperty("shopChests")] public List<ChestEvent> ShopChests;
 
         // CHEST
 
-        [JsonProperty("runningChestId")]            public int RunningChestId;
+        [JsonProperty("runningChestId")] public int RunningChestId;
 
-        [JsonProperty("freeChest")]                 public Chest FreeChest;
-        [JsonProperty("starChest")]                 public Chest StarChest;
-        [JsonProperty("shopChest")]                 public Chest ShopChest;
-        [JsonProperty("clanCrownChest")]            public Chest ClanCrownChest;
-        [JsonProperty("purchasedChest")]            public Chest PurchasedChest;
+        [JsonProperty("freeChest")] public Chest FreeChest;
+        [JsonProperty("starChest")] public Chest StarChest;
+        [JsonProperty("shopChest")] public Chest ShopChest;
+        [JsonProperty("clanCrownChest")] public Chest ClanCrownChest;
+        [JsonProperty("purchasedChest")] public Chest PurchasedChest;
 
-        [JsonProperty("chests")]                    public List<Chest> Chests;
+        [JsonProperty("chests")] public List<Chest> Chests;
 
-        [JsonProperty("starChestCooldown")]         public bool StarChestCooldown;
+        [JsonProperty("starChestCooldown")] public bool StarChestCooldown;
 
-        [JsonProperty("chestSlotCnt")]              public int ChestSlotCount;
-        [JsonProperty("freeChestCnt")]              public int FreeChestCount;
-        [JsonProperty("starChestCounter")]          public int StarChestCounter;
-        [JsonProperty("crownChestIdx")]             public int CrownChestIdx;
-        [JsonProperty("freeChestIdx")]              public int FreeChestIdx;
+        [JsonProperty("chestSlotCnt")] public int ChestSlotCount;
+        [JsonProperty("freeChestCnt")] public int FreeChestCount;
+        [JsonProperty("starChestCounter")] public int StarChestCounter;
+        [JsonProperty("crownChestIdx")] public int CrownChestIdx;
+        [JsonProperty("freeChestIdx")] public int FreeChestIdx;
 
-        [JsonProperty("freeChestTimer")]            public Timer FreeChestTimer;
-        [JsonProperty("starChestTimer")]            public Timer StarChestTimer;
+        [JsonProperty("freeChestTimer")] public Timer FreeChestTimer;
+        [JsonProperty("starChestTimer")] public Timer StarChestTimer;
 
         // SEEN
 
-        [JsonProperty("pageOpenedBits")]            public int PageOpened;
-        [JsonProperty("lastLevelUpPopup")]          public int LastLevelUpPopup;
+        [JsonProperty("pageOpenedBits")] public int PageOpened;
+        [JsonProperty("lastLevelUpPopup")] public int LastLevelUpPopup;
 
-        [JsonProperty("lastArena")]                 public CsvData LastArena;
+        [JsonProperty("lastArena")] public CsvData LastArena;
 
-        [JsonProperty("newArenasSeen")]             public List<CsvData> NewArenasSeen;
-        [JsonProperty("replaysSeen")]               public List<int> ReplaysSeen;
+        [JsonProperty("newArenasSeen")] public List<CsvData> NewArenasSeen;
+        [JsonProperty("replaysSeen")] public List<int> ReplaysSeen;
 
         // PACKS
 
-        [JsonProperty("boughtPacks")]               public List<CsvData> BoughtPacks;
+        [JsonProperty("boughtPacks")] public List<CsvData> BoughtPacks;
 
         // SPELL
 
         [JsonConverter(typeof(SavedDecksConverter))]
-        [JsonProperty("savedDecks")]                public int[][] SavedDecks;
+        [JsonProperty("savedDecks")] public int[][] SavedDecks;
 
-        [JsonProperty("selectedDeck")]              public int SelectedDeck;
-        
+        [JsonProperty("selectedDeck")] public int SelectedDeck;
 
-        [JsonProperty("decks")]                     public SpellDeck SpellDeck;
-        [JsonProperty("collection")]                public SpellCollection SpellCollection;
+
+        [JsonProperty("decks")] public SpellDeck SpellDeck;
+        [JsonProperty("collection")] public SpellCollection SpellCollection;
 
         // OTHER TIMER
 
-        [JsonProperty("donationCooldownTimer")]     public Timer DonationCapacityCooldownTimer;
-        [JsonProperty("requestCooldownTimer")]      public Timer RequestCooldownTimer;
-        [JsonProperty("shareTimer")]                public Timer ShareTimer;
-        [JsonProperty("sendMail")]                  public Timer SendMailTimer;
-        [JsonProperty("elderKick")]                 public Timer ElderKickTimer;
+        [JsonProperty("donationCooldownTimer")] public Timer DonationCapacityCooldownTimer;
+        [JsonProperty("requestCooldownTimer")] public Timer RequestCooldownTimer;
+        [JsonProperty("shareTimer")] public Timer ShareTimer;
+        [JsonProperty("sendMail")] public Timer SendMailTimer;
+        [JsonProperty("elderKick")] public Timer ElderKickTimer;
 
         // TV
 
@@ -119,7 +118,7 @@ namespace ClashRoyale.Logic.Home
         {
             get
             {
-                return (long) this.HighId << 32 | (uint) this.LowId;
+                return (long)this.HighId << 32 | (uint)this.LowId;
             }
         }
 
@@ -176,7 +175,7 @@ namespace ClashRoyale.Logic.Home
         {
             get
             {
-                return Math.Max((int) DateTime.UtcNow.Subtract(this.LastTick).TotalSeconds, 0);
+                return Math.Max((int)DateTime.UtcNow.Subtract(this.LastTick).TotalSeconds, 0);
             }
         }
 
@@ -235,52 +234,52 @@ namespace ClashRoyale.Logic.Home
         {
             // SHOP
 
-            this.ShopItems                      = new List<ShopItem>(8);
-            this.ShopChests                     = new List<ChestEvent>(3);
+            this.ShopItems = new List<ShopItem>(8);
+            this.ShopChests = new List<ChestEvent>(3);
 
-            this.ShopTimer                      = new Timer();
+            this.ShopTimer = new Timer();
             this.ShopTimer.StartTimer(86400);
 
-            this.ShopDay                        = DateTime.UtcNow.Day;
-            this.ShopDaySeen                    = DateTime.UtcNow.Day;
-            this.ShopSeed                       = 346;
+            this.ShopDay = DateTime.UtcNow.Day;
+            this.ShopDaySeen = DateTime.UtcNow.Day;
+            this.ShopSeed = 346;
 
             // CHEST
 
-            this.FreeChestTimer                 = new Timer();
-            this.StarChestTimer                 = new Timer();
+            this.FreeChestTimer = new Timer();
+            this.StarChestTimer = new Timer();
 
-            this.Chests                         = new List<Chest>(8);
-            
+            this.Chests = new List<Chest>(8);
+
             // SEEN
 
-            this.LastLevelUpPopup               = 1;
-            this.ReplaysSeen                    = new List<int>(15);
-            this.NewArenasSeen                  = new List<CsvData>(1); // 54000010
+            this.LastLevelUpPopup = 1;
+            this.ReplaysSeen = new List<int>(15);
+            this.NewArenasSeen = new List<CsvData>(1); // 54000010
 
             // PACKS
 
-            this.BoughtPacks                    = new List<CsvData>(0);
+            this.BoughtPacks = new List<CsvData>(0);
 
             // SPELL
 
-            this.SpellDeck                      = new SpellDeck();
-            this.SpellCollection                = new SpellCollection();
+            this.SpellDeck = new SpellDeck();
+            this.SpellCollection = new SpellCollection();
 
-            this.SavedDecks                     = new int[5][];
+            this.SavedDecks = new int[5][];
 
             for (int i = 0; i < 5; i++)
             {
-                this.SavedDecks[i]              = new int[8];
+                this.SavedDecks[i] = new int[8];
             }
 
             // OTHER TIMER
 
-            this.DonationCapacityCooldownTimer  = new Timer();
-            this.RequestCooldownTimer           = new Timer();
-            this.ShareTimer                     = new Timer();
-            this.SendMailTimer                  = new Timer();
-            this.ElderKickTimer                 = new Timer();
+            this.DonationCapacityCooldownTimer = new Timer();
+            this.RequestCooldownTimer = new Timer();
+            this.ShareTimer = new Timer();
+            this.SendMailTimer = new Timer();
+            this.ElderKickTimer = new Timer();
 
             // TV
 
@@ -299,7 +298,7 @@ namespace ClashRoyale.Logic.Home
         public Home(int HighId, int LowId) : this()
         {
             this.HighId = HighId;
-            this.LowId  = LowId;
+            this.LowId = LowId;
         }
 
         /// <summary>
@@ -351,7 +350,7 @@ namespace ClashRoyale.Logic.Home
             {
                 Logging.Info(this.GetType(), "CreateFreeChest() - _FreeChest should be null");
             }
-            
+
             this.FreeChest = new Chest(this.GameMode.Player.Arena.FreeChestData);
             ++this.RunningChestId;
         }
@@ -916,263 +915,662 @@ namespace ClashRoyale.Logic.Home
         /// </summary>
         public void Encode(ByteStream Stream)
         {
-            Stream.WriteLong(this.HomeId);
+            //Stream.AddRange("00-00".HexaToBytes());
+            Stream.WriteInt(HighId);
+            Stream.WriteInt(LowId);
+            Stream.WriteVInt(14);//Unk (3)
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);//Tick 1 (1727700)
+            Stream.WriteVInt(0);//Tick 2 (1727700)
+            Stream.WriteVInt((int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
 
-            Stream.WriteVInt(this.RunningChestId);
-            Stream.WriteVInt(this.FreeChestCount);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(5);//this.device.player.decks.length
+            /* this.device.player.decks.forEach(deck => {
+                 Stream.WriteVInt(deck.length);
+                 deck.forEach(card => {
+                     Stream.WriteVInt(card);
+                 });
+             });*/
 
-            this.FreeChestTimer.Encode(Stream);
+            Stream.WriteByte(0xFF);
+            //let currentDeck = this.device.player.decks[this.device.player.selectedDeck];
+            //currentDeck.forEach(cardSCID => {
+            // let card = utils.findObjectByKey(this.device.player.cards, "ID", cardUtils.SCIDtoInstanceID(cardSCID));
 
-            Stream.WriteVInt(this.DonationCapacityLimit);
+            Stream.WriteVInt(1);
+            Stream.WriteVInt(5);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(30);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(0);
+            //});
 
-            Stream.WriteVInt(this.SavedDecks.Length);
+            Stream.WriteVInt(29 - 8);/// player cards lenght
 
-            for (int I = 0; I < this.SavedDecks.Length; I++)
+            // this.device.player.cards.forEach(card => {
+            // if (!currentDeck.includes(cardUtils.instanceIDtoSCID(card.ID)))
             {
-                Stream.WriteVInt(this.SavedDecks[I].Length);
-
-                for (int J = 0; J < this.SavedDecks[I].Length; J++)
-                {
-                    Stream.WriteVInt(this.SavedDecks[I][J]);
-                }
-            }
-
-            this.SpellDeck.Encode(Stream);
-            this.SpellCollection.Encode(Stream);
-
-            Stream.WriteVInt(this.SelectedDeck);
-
-            this.SpellDeck.Encode(Stream); // Last Deck ?
-
-            Stream.AddRange("94-11-34-7F-93-9B-FE-A2-0B-01-00-0C-83-09-00-00-00-19-44-65-6D-6F-20-41-63-63-6F-75-6E-74-20-32-76-32-20-46-72-69-65-6E-64-6C-79-05-A8-C0-D3-94-0B-A8-86-C7-A4-0B-A8-C0-D3-94-0B-00-00-00-00-00-00-00-00-00-00-00-19-44-65-6D-6F-20-41-63-63-6F-75-6E-74-20-32-76-32-20-46-72-69-65-6E-64-6C-79-00-00-00-4D-7B-22-54-61-72-67-65-74-5F-41-63-63-6F-75-6E-74-54-79-70-65-22-3A-22-44-65-6D-6F-41-63-63-6F-75-6E-74-22-2C-22-48-69-64-65-54-69-6D-65-72-22-3A-74-72-75-65-2C-22-47-61-6D-65-4D-6F-64-65-22-3A-22-54-65-61-6D-56-73-54-65-61-6D-22-7D-00-84-09-00-00-00-1F-44-65-6D-6F-20-41-63-63-6F-75-6E-74-20-32-76-32-20-44-72-61-66-74-20-46-72-69-65-6E-64-6C-79-05-A8-C0-D3-94-0B-A8-86-C7-A4-0B-A8-C0-D3-94-0B-00-00-00-00-00-00-00-00-00-00-00-1F-44-65-6D-6F-20-41-63-63-6F-75-6E-74-20-32-76-32-20-44-72-61-66-74-20-46-72-69-65-6E-64-6C-79-00-00-00-5B-7B-22-47-61-6D-65-4D-6F-64-65-22-3A-22-54-65-61-6D-56-73-54-65-61-6D-44-72-61-66-74-43-68-61-6C-6C-65-6E-67-65-22-2C-22-48-69-64-65-54-69-6D-65-72-22-3A-74-72-75-65-2C-22-54-61-72-67-65-74-5F-41-63-63-6F-75-6E-74-54-79-70-65-22-3A-22-44-65-6D-6F-41-63-63-6F-75-6E-74-22-7D-00-85-09-00-00-00-1F-44-65-6D-6F-20-41-63-63-6F-75-6E-74-20-31-76-31-20-44-72-61-66-74-20-46-72-69-65-6E-64-6C-79-05-A8-C0-D3-94-0B-A8-86-C7-A4-0B-A8-C0-D3-94-0B-00-00-00-00-00-00-00-00-00-00-00-1F-44-65-6D-6F-20-41-63-63-6F-75-6E-74-20-31-76-31-20-44-72-61-66-74-20-46-72-69-65-6E-64-6C-79-00-00-00-4C-7B-22-48-69-64-65-54-69-6D-65-72-22-3A-74-72-75-65-2C-22-54-61-72-67-65-74-5F-41-63-63-6F-75-6E-74-54-79-70-65-22-3A-22-44-65-6D-6F-41-63-63-6F-75-6E-74-22-2C-22-47-61-6D-65-4D-6F-64-65-22-3A-22-44-72-61-66-74-4D-6F-64-65-22-7D-00-95-11-00-00-00-0A-32-76-32-20-42-75-74-74-6F-6E-08-B0-93-D4-99-0B-B0-E1-DD-B7-0B-B0-A9-8A-99-0B-00-00-00-00-00-00-00-00-00-00-00-0A-32-76-32-20-42-75-74-74-6F-6E-00-00-00-75-7B-22-48-69-64-65-54-69-6D-65-72-22-3A-74-72-75-65-2C-22-48-69-64-65-50-6F-70-75-70-54-69-6D-65-72-22-3A-74-72-75-65-2C-22-45-78-74-72-61-47-61-6D-65-4D-6F-64-65-43-68-61-6E-63-65-22-3A-30-2C-22-47-61-6D-65-4D-6F-64-65-22-3A-22-54-65-61-6D-56-73-54-65-61-6D-4C-61-64-64-65-72-22-2C-22-45-78-74-72-61-47-61-6D-65-4D-6F-64-65-22-3A-22-4E-6F-6E-65-22-7D-00-A3-13-00-00-00-1C-44-6F-75-62-6C-65-20-45-6C-69-78-69-72-20-46-72-69-65-6E-64-6C-79-20-4D-61-74-63-68-05-80-B0-88-A2-0B-80-AA-CF-A4-0B-80-B0-88-A2-0B-00-00-00-00-00-00-00-00-00-00-00-1C-44-6F-75-62-6C-65-20-45-6C-69-78-69-72-20-46-72-69-65-6E-64-6C-79-20-4D-61-74-63-68-00-00-01-17-7B-22-54-69-74-6C-65-22-3A-22-44-6F-75-62-6C-65-20-C3-A9-6C-69-78-69-72-20-61-6D-69-63-61-6C-22-2C-22-53-75-62-74-69-74-6C-65-22-3A-22-4A-6F-75-65-7A-20-61-76-65-63-20-76-6F-74-72-65-20-63-6C-61-6E-C2-A0-21-22-2C-22-47-61-6D-65-4D-6F-64-65-22-3A-22-44-6F-75-62-6C-65-45-6C-69-78-69-72-5F-46-72-69-65-6E-64-6C-79-22-2C-22-48-69-64-65-54-69-6D-65-72-22-3A-66-61-6C-73-65-2C-22-42-61-63-6B-67-72-6F-75-6E-64-22-3A-7B-22-50-61-74-68-22-3A-22-2F-61-63-61-31-37-64-61-35-2D-34-32-38-35-2D-34-63-65-30-2D-39-35-31-30-2D-38-62-30-63-65-37-36-39-62-64-62-36-5F-66-72-69-65-6E-64-5F-32-65-6C-69-78-69-72-2E-70-6E-67-22-2C-22-43-68-65-63-6B-73-75-6D-22-3A-22-64-64-35-31-64-37-34-63-34-32-66-33-32-32-36-38-61-66-34-34-37-30-38-65-65-64-32-33-34-32-32-32-22-2C-22-46-69-6C-65-22-3A-22-66-72-69-65-6E-64-5F-32-65-6C-69-78-69-72-2E-70-6E-67-22-7D-7D-00-A4-13-00-00-00-16-53-75-64-64-65-6E-20-44-65-61-74-68-20-43-68-61-6C-6C-65-6E-67-65-02-80-D4-C7-A2-0B-80-EC-F1-A2-0B-80-8E-BD-A2-0B-00-00-00-00-00-00-00-00-00-00-00-16-53-75-64-64-65-6E-20-44-65-61-74-68-20-43-68-61-6C-6C-65-6E-67-65-00-00-06-8E-7B-22-47-61-6D-65-4D-6F-64-65-22-3A-22-4F-76-65-72-74-69-6D-65-5F-54-6F-75-72-6E-61-6D-65-6E-74-22-2C-22-54-69-74-6C-65-22-3A-22-44-C3-A9-66-69-20-64-65-20-6C-61-20-6D-6F-72-74-20-73-75-62-69-74-65-22-2C-22-46-72-65-65-50-61-73-73-22-3A-31-2C-22-4A-6F-69-6E-43-6F-73-74-22-3A-31-30-30-2C-22-4D-61-78-4C-6F-73-73-65-73-22-3A-33-2C-22-52-65-77-61-72-64-73-22-3A-5B-7B-22-47-6F-6C-64-22-3A-37-30-30-2C-22-43-61-72-64-73-22-3A-31-30-7D-2C-7B-22-47-6F-6C-64-22-3A-39-35-30-2C-22-43-61-72-64-73-22-3A-31-35-7D-2C-7B-22-47-6F-6C-64-22-3A-31-32-35-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-31-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-32-35-7D-2C-7B-22-47-6F-6C-64-22-3A-31-36-30-30-2C-22-43-61-72-64-73-22-3A-34-33-7D-2C-7B-22-47-6F-6C-64-22-3A-32-30-30-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-32-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-36-35-7D-2C-7B-22-47-6F-6C-64-22-3A-32-35-30-30-2C-22-43-61-72-64-73-22-3A-39-33-7D-2C-7B-22-47-6F-6C-64-22-3A-33-31-30-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-34-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-31-32-35-7D-2C-7B-22-47-6F-6C-64-22-3A-33-38-30-30-2C-22-43-61-72-64-73-22-3A-31-36-35-7D-2C-7B-22-47-6F-6C-64-22-3A-34-36-35-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-38-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-32-31-30-7D-2C-7B-22-47-6F-6C-64-22-3A-35-37-35-30-2C-22-43-61-72-64-73-22-3A-32-36-35-7D-2C-7B-22-47-6F-6C-64-22-3A-37-31-30-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-31-36-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-33-33-35-7D-2C-7B-22-47-6F-6C-64-22-3A-38-37-35-30-2C-22-43-61-72-64-73-22-3A-34-33-30-7D-2C-7B-22-47-6F-6C-64-22-3A-31-31-30-30-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-49-73-48-69-67-68-6C-69-67-68-74-65-64-22-3A-74-72-75-65-2C-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-33-32-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-35-35-30-7D-5D-2C-22-49-63-6F-6E-45-78-70-6F-72-74-4E-61-6D-65-22-3A-22-69-63-6F-6E-5F-74-6F-75-72-6E-61-6D-65-6E-74-5F-73-75-64-64-65-6E-64-65-61-74-68-5F-67-72-61-6E-64-22-2C-22-57-69-6E-49-63-6F-6E-45-78-70-6F-72-74-4E-61-6D-65-22-3A-22-74-6F-75-72-6E-61-6D-65-6E-74-5F-6F-70-65-6E-5F-77-69-6E-73-5F-62-61-64-67-65-5F-67-6F-6C-64-22-2C-22-41-72-65-6E-61-22-3A-22-41-6C-6C-22-2C-22-53-75-62-74-69-74-6C-65-22-3A-22-4C-65-20-6D-6F-64-65-20-6D-6F-72-74-20-73-75-62-69-74-65-20-64-C3-A8-73-20-6C-61-20-70-72-65-6D-69-C3-A8-72-65-20-73-65-63-6F-6E-64-65-C2-A0-21-22-2C-22-45-6E-64-4E-6F-74-69-66-69-63-61-74-69-6F-6E-22-3A-22-4C-65-20-64-C3-A9-66-69-20-64-65-20-6C-61-20-6D-6F-72-74-20-73-75-62-69-74-65-20-73-65-20-74-65-72-6D-69-6E-65-20-64-61-6E-73-20-32-68-C2-A0-21-22-2C-22-53-74-61-72-74-4E-6F-74-69-66-69-63-61-74-69-6F-6E-22-3A-22-4C-65-20-64-C3-A9-66-69-20-64-65-20-6C-61-20-6D-6F-72-74-20-73-75-62-69-74-65-20-61-20-63-6F-6D-6D-65-6E-63-C3-A9-C2-A0-21-20-4A-6F-75-65-7A-20-70-6F-75-72-20-67-61-67-6E-65-72-20-64-65-73-20-72-C3-A9-63-6F-6D-70-65-6E-73-65-73-C2-A0-21-22-2C-22-55-6E-6C-6F-63-6B-65-64-46-6F-72-58-50-22-3A-22-45-78-70-65-72-69-65-6E-63-65-64-22-2C-22-44-65-73-63-72-69-70-74-69-6F-6E-22-3A-22-4C-65-20-70-72-65-6D-69-65-72-20-C3-A0-20-64-C3-A9-74-72-75-69-72-65-20-75-6E-65-20-74-6F-75-72-20-61-20-67-61-67-6E-C3-A9-C2-A0-21-20-4F-62-74-65-6E-65-7A-20-64-65-73-20-72-C3-A9-63-6F-6D-70-65-6E-73-65-73-20-75-6E-69-71-75-65-73-20-65-6E-20-70-72-6F-67-72-65-73-73-61-6E-74-20-65-74-20-72-65-6D-70-6F-72-74-65-7A-20-6C-65-20-64-C3-A9-66-69-20-61-76-65-63-20-31-32-C2-A0-76-69-63-74-6F-69-72-65-73-2E-20-33-C2-A0-64-C3-A9-66-61-69-74-65-73-20-65-74-20-63-27-65-73-74-20-66-69-6E-69-C2-A0-21-22-2C-22-4A-6F-69-6E-43-6F-73-74-52-65-73-6F-75-72-63-65-22-3A-22-47-65-6D-73-22-2C-22-42-61-63-6B-67-72-6F-75-6E-64-22-3A-7B-22-50-61-74-68-22-3A-22-2F-66-61-63-31-30-65-34-38-2D-65-63-34-39-2D-34-33-32-63-2D-38-38-63-39-2D-37-65-39-32-34-65-63-39-36-34-35-37-5F-73-75-64-64-65-6E-64-65-61-74-68-5F-63-68-61-6C-6C-65-6E-67-65-5F-30-31-2E-70-6E-67-22-2C-22-43-68-65-63-6B-73-75-6D-22-3A-22-65-66-33-66-32-34-33-66-31-30-66-36-30-30-33-39-34-33-35-31-64-62-39-31-37-62-35-35-34-33-31-37-22-2C-22-46-69-6C-65-22-3A-22-73-75-64-64-65-6E-64-65-61-74-68-5F-63-68-61-6C-6C-65-6E-67-65-5F-30-31-2E-70-6E-67-22-7D-2C-22-42-61-63-6B-67-72-6F-75-6E-64-5F-43-6F-6D-70-6C-65-74-65-22-3A-7B-22-50-61-74-68-22-3A-22-2F-34-34-31-62-62-38-31-32-2D-31-66-33-63-2D-34-38-63-64-2D-61-61-64-37-2D-38-35-39-61-35-30-36-65-66-38-30-64-5F-73-75-64-64-65-6E-64-65-61-74-68-5F-63-68-61-6C-6C-65-6E-67-65-5F-30-31-2E-70-6E-67-22-2C-22-43-68-65-63-6B-73-75-6D-22-3A-22-65-66-33-66-32-34-33-66-31-30-66-36-30-30-33-39-34-33-35-31-64-62-39-31-37-62-35-35-34-33-31-37-22-2C-22-46-69-6C-65-22-3A-22-73-75-64-64-65-6E-64-65-61-74-68-5F-63-68-61-6C-6C-65-6E-67-65-5F-30-31-2E-70-6E-67-22-7D-7D-00-A5-13-00-00-00-16-53-75-64-64-65-6E-20-44-65-61-74-68-20-46-72-69-65-6E-64-6C-79-20-05-80-D4-C7-A2-0B-80-EC-F1-A2-0B-80-D4-C7-A2-0B-00-00-00-00-00-00-00-00-00-00-00-16-53-75-64-64-65-6E-20-44-65-61-74-68-20-46-72-69-65-6E-64-6C-79-20-00-00-01-0D-7B-22-54-69-74-6C-65-22-3A-22-4D-6F-72-74-20-73-75-62-69-74-65-20-61-6D-69-63-61-6C-65-22-2C-22-47-61-6D-65-4D-6F-64-65-22-3A-22-4F-76-65-72-74-69-6D-65-5F-46-72-69-65-6E-64-6C-79-22-2C-22-53-75-62-74-69-74-6C-65-22-3A-22-4A-6F-75-65-7A-20-61-76-65-63-20-76-6F-74-72-65-20-63-6C-61-6E-C2-A0-21-22-2C-22-42-61-63-6B-67-72-6F-75-6E-64-22-3A-7B-22-50-61-74-68-22-3A-22-2F-38-33-37-34-62-39-30-62-2D-33-39-30-30-2D-34-65-66-32-2D-62-32-38-63-2D-66-37-63-66-33-31-65-64-61-61-34-30-5F-66-72-69-65-6E-64-5F-73-75-64-64-65-6E-64-65-61-74-68-5F-30-31-2E-70-6E-67-22-2C-22-43-68-65-63-6B-73-75-6D-22-3A-22-61-34-61-62-36-36-30-36-63-64-31-39-63-32-66-35-39-31-64-35-61-30-37-62-37-66-36-38-61-66-38-61-22-2C-22-46-69-6C-65-22-3A-22-66-72-69-65-6E-64-5F-73-75-64-64-65-6E-64-65-61-74-68-5F-30-31-2E-70-6E-67-22-7D-7D-00-A6-13-00-00-00-12-53-75-64-64-65-6E-20-44-65-61-74-68-20-51-75-65-73-74-07-80-D4-C7-A2-0B-80-EC-F1-A2-0B-80-D4-C7-A2-0B-00-00-00-00-00-00-00-00-00-00-00-12-53-75-64-64-65-6E-20-44-65-61-74-68-20-51-75-65-73-74-00-00-01-09-7B-22-54-69-74-6C-65-22-3A-22-51-75-C3-AA-74-65-20-64-75-20-64-C3-A9-66-69-20-64-65-20-6C-61-20-6D-6F-72-74-20-73-75-62-69-74-65-22-2C-22-49-6E-66-6F-22-3A-22-47-61-67-6E-65-7A-20-36-C2-A0-63-6F-75-72-6F-6E-6E-65-73-20-64-61-6E-73-20-6C-65-20-64-C3-A9-66-69-20-64-65-20-6C-61-20-6D-6F-72-74-20-73-75-62-69-74-65-22-2C-22-43-6F-75-6E-74-22-3A-36-2C-22-50-6F-69-6E-74-73-22-3A-32-30-2C-22-43-68-72-6F-6E-6F-73-51-75-65-73-74-52-65-77-61-72-64-73-22-3A-5B-7B-22-54-79-70-65-22-3A-22-47-65-6D-73-22-2C-22-43-6F-75-6E-74-22-3A-32-30-7D-5D-2C-22-51-75-65-73-74-54-79-70-65-22-3A-22-57-69-6E-22-2C-22-41-74-74-61-63-6B-22-3A-7B-22-54-79-70-65-22-3A-22-44-65-73-74-72-6F-79-22-7D-2C-22-57-69-6E-22-3A-7B-22-54-79-70-65-22-3A-22-43-72-6F-77-6E-73-22-2C-22-45-76-65-6E-74-73-22-3A-5B-31-32-35-32-5D-7D-7D-00-A7-13-00-00-00-0D-44-65-63-20-31-31-20-50-4F-50-20-55-50-0F-80-EC-F1-A2-0B-80-D6-BB-A3-0B-80-EC-F1-A2-0B-00-00-00-00-00-00-00-00-00-00-00-0D-44-65-63-20-31-31-20-50-4F-50-20-55-50-00-00-01-EC-7B-22-53-68-6F-77-54-69-6D-65-72-22-3A-66-61-6C-73-65-2C-22-53-75-62-74-69-74-6C-65-22-3A-22-55-6E-65-20-6D-69-73-65-20-C3-A0-20-6A-6F-75-72-20-C3-A9-6C-65-63-74-72-69-73-61-6E-74-65-22-2C-22-4D-61-69-6E-54-65-78-74-22-3A-22-54-6F-75-74-20-6E-6F-75-76-65-61-75-C2-A0-3A-20-75-6E-65-20-61-72-C3-A8-6E-65-2C-20-64-65-75-78-20-63-61-72-74-65-73-20-65-74-20-74-72-6F-69-73-20-63-6F-66-66-72-65-73-C2-A0-21-20-41-63-63-C3-A9-64-65-7A-20-C3-A0-20-6C-61-20-76-61-6C-6C-C3-A9-65-20-C3-A9-6C-65-63-74-72-69-71-75-65-20-61-76-65-63-20-33-34-30-30-C2-A0-74-72-6F-70-68-C3-A9-65-73-2E-20-44-C3-A9-62-6C-6F-71-75-65-7A-20-6C-65-73-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-65-74-20-6C-65-20-63-68-61-73-73-65-75-72-20-6D-61-69-6E-74-65-6E-61-6E-74-C2-A0-21-22-2C-22-42-61-63-6B-67-72-6F-75-6E-64-22-3A-7B-22-50-61-74-68-22-3A-22-2F-35-36-30-33-30-37-37-65-2D-61-64-36-64-2D-34-37-36-34-2D-38-61-65-31-2D-38-38-36-64-39-33-33-35-31-35-32-36-5F-64-65-63-65-6D-62-65-72-5F-70-6F-70-75-70-2E-70-6E-67-22-2C-22-43-68-65-63-6B-73-75-6D-22-3A-22-32-61-62-32-61-66-37-31-33-35-39-37-39-37-39-62-35-30-61-32-34-31-63-39-61-64-35-38-32-34-37-31-22-2C-22-46-69-6C-65-22-3A-22-64-65-63-65-6D-62-65-72-5F-70-6F-70-75-70-2E-70-6E-67-22-7D-2C-22-54-69-74-6C-65-22-3A-22-4E-6F-75-76-65-6C-6C-65-20-6D-69-73-65-20-C3-A0-20-6A-6F-75-72-22-2C-22-42-75-74-74-6F-6E-54-65-78-74-22-3A-22-47-C3-A9-6E-69-61-6C-C2-A0-21-22-2C-22-53-68-6F-77-4F-6E-45-61-63-68-53-74-61-72-74-75-70-22-3A-66-61-6C-73-65-7D-00-A8-13-00-00-00-21-5A-61-70-70-69-65-73-20-76-73-20-48-75-6E-74-65-72-20-44-72-61-66-74-20-43-68-61-6C-6C-65-6E-67-65-02-80-EC-F1-A2-0B-80-84-9C-A3-0B-80-EC-F1-A2-0B-00-00-00-00-00-00-00-00-00-00-00-21-5A-61-70-70-69-65-73-20-76-73-20-48-75-6E-74-65-72-20-44-72-61-66-74-20-43-68-61-6C-6C-65-6E-67-65-00-00-07-5A-7B-22-43-61-73-75-61-6C-22-3A-66-61-6C-73-65-2C-22-47-61-6D-65-4D-6F-64-65-22-3A-22-44-72-61-66-74-4D-6F-64-65-22-2C-22-46-72-65-65-50-61-73-73-22-3A-31-2C-22-4A-6F-69-6E-43-6F-73-74-22-3A-31-30-30-2C-22-4A-6F-69-6E-43-6F-73-74-52-65-73-6F-75-72-63-65-22-3A-22-47-65-6D-73-22-2C-22-4D-61-78-4C-6F-73-73-65-73-22-3A-33-2C-22-52-65-77-61-72-64-73-22-3A-5B-7B-22-47-6F-6C-64-22-3A-37-30-30-2C-22-43-61-72-64-73-22-3A-31-30-7D-2C-7B-22-47-6F-6C-64-22-3A-39-35-30-2C-22-43-61-72-64-73-22-3A-31-35-7D-2C-7B-22-47-6F-6C-64-22-3A-31-32-35-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-31-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-32-35-7D-2C-7B-22-47-6F-6C-64-22-3A-31-36-30-30-2C-22-43-61-72-64-73-22-3A-34-33-7D-2C-7B-22-47-6F-6C-64-22-3A-32-30-30-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-33-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-36-35-7D-2C-7B-22-47-6F-6C-64-22-3A-32-35-30-30-2C-22-43-61-72-64-73-22-3A-39-33-7D-2C-7B-22-47-6F-6C-64-22-3A-33-31-30-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-35-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-31-32-35-7D-2C-7B-22-47-6F-6C-64-22-3A-33-38-30-30-2C-22-43-61-72-64-73-22-3A-31-36-35-7D-2C-7B-22-47-6F-6C-64-22-3A-34-36-35-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-53-70-65-6C-6C-22-2C-22-41-6D-6F-75-6E-74-22-3A-31-30-2C-22-53-70-65-6C-6C-22-3A-22-4D-69-6E-69-53-70-61-72-6B-79-73-22-7D-2C-22-43-61-72-64-73-22-3A-32-31-30-7D-2C-7B-22-47-6F-6C-64-22-3A-35-37-35-30-2C-22-43-61-72-64-73-22-3A-32-36-35-7D-2C-7B-22-47-6F-6C-64-22-3A-37-31-30-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-41-6D-6F-75-6E-74-22-3A-31-30-30-30-30-7D-2C-22-43-61-72-64-73-22-3A-33-33-35-7D-2C-7B-22-47-6F-6C-64-22-3A-38-37-35-30-2C-22-43-61-72-64-73-22-3A-34-33-30-7D-2C-7B-22-47-6F-6C-64-22-3A-31-31-30-30-30-2C-22-4D-69-6C-65-73-74-6F-6E-65-22-3A-7B-22-49-73-48-69-67-68-6C-69-67-68-74-65-64-22-3A-74-72-75-65-2C-22-54-79-70-65-22-3A-22-53-70-65-6C-6C-22-2C-22-41-6D-6F-75-6E-74-22-3A-35-2C-22-53-70-65-6C-6C-22-3A-22-48-75-6E-74-65-72-22-7D-2C-22-43-61-72-64-73-22-3A-35-35-30-7D-5D-2C-22-57-69-6E-49-63-6F-6E-45-78-70-6F-72-74-4E-61-6D-65-22-3A-22-74-6F-75-72-6E-61-6D-65-6E-74-5F-6F-70-65-6E-5F-77-69-6E-73-5F-62-61-64-67-65-5F-64-72-61-66-74-22-2C-22-53-75-62-74-69-74-6C-65-22-3A-22-4A-6F-75-65-7A-20-65-74-20-64-C3-A9-62-6C-6F-71-75-65-7A-20-64-65-75-78-20-6E-6F-75-76-65-6C-6C-65-73-20-63-61-72-74-65-73-22-2C-22-53-75-62-74-69-74-6C-65-5F-53-68-6F-72-74-22-3A-22-44-C3-A9-62-6C-6F-71-75-65-7A-20-64-65-75-78-20-6E-6F-75-76-65-6C-6C-65-73-20-63-61-72-74-65-73-22-2C-22-44-65-73-63-72-69-70-74-69-6F-6E-22-3A-22-50-72-C3-A9-70-61-72-65-7A-20-76-6F-74-72-65-20-64-65-63-6B-20-65-74-20-6A-6F-75-65-7A-20-61-76-65-63-20-64-65-75-78-20-6E-6F-75-76-65-6C-6C-65-73-20-63-61-72-74-65-73-C2-A0-21-20-50-61-72-74-69-63-69-70-65-7A-20-61-75-20-64-C3-A9-66-69-20-70-6F-75-72-20-64-C3-A9-62-6C-6F-71-75-65-72-20-63-65-73-20-64-65-75-78-20-6E-6F-75-76-65-6C-6C-65-73-20-63-61-72-74-65-73-2E-20-33-20-70-65-72-74-65-73-20-65-74-20-74-6F-75-74-20-73-27-61-72-72-C3-AA-74-65-2E-22-2C-22-55-6E-6C-6F-63-6B-65-64-46-6F-72-58-50-22-3A-22-45-78-70-65-72-69-65-6E-63-65-64-22-2C-22-44-72-61-66-74-44-65-63-6B-22-3A-22-44-72-61-66-74-5F-76-31-5F-64-65-63-5F-63-61-72-64-5F-72-65-6C-65-61-73-65-22-2C-22-54-69-74-6C-65-22-3A-22-44-C3-A9-66-69-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-22-2C-22-49-63-6F-6E-45-78-70-6F-72-74-4E-61-6D-65-22-3A-22-69-63-6F-6E-5F-74-6F-75-72-6E-61-6D-65-6E-74-5F-64-72-61-66-74-5F-67-72-61-6E-64-22-2C-22-41-72-65-6E-61-22-3A-22-41-72-65-6E-61-5F-45-6C-65-63-74-72-69-63-22-2C-22-45-6E-64-4E-6F-74-69-66-69-63-61-74-69-6F-6E-22-3A-22-4C-65-20-64-C3-A9-66-69-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-20-65-73-74-20-70-72-65-73-71-75-65-20-66-69-6E-69-C2-A0-21-20-44-C3-A9-62-6C-6F-71-75-65-7A-20-64-65-75-78-20-6E-6F-75-76-65-6C-6C-65-73-20-63-61-72-74-65-73-2E-22-2C-22-53-74-61-72-74-4E-6F-74-69-66-69-63-61-74-69-6F-6E-22-3A-22-4C-65-20-64-C3-A9-66-69-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-20-64-C3-A9-62-75-74-65-C2-A0-21-20-4A-6F-75-65-7A-20-65-74-20-64-C3-A9-62-6C-6F-71-75-65-7A-20-64-65-75-78-20-6E-6F-75-76-65-6C-6C-65-73-20-63-61-72-74-65-73-2E-22-2C-22-42-61-63-6B-67-72-6F-75-6E-64-22-3A-7B-22-50-61-74-68-22-3A-22-2F-66-65-32-31-38-34-64-39-2D-65-39-62-31-2D-34-37-65-39-2D-38-30-39-64-2D-65-39-66-66-65-63-35-39-65-63-30-61-5F-7A-61-70-70-69-65-73-5F-68-75-6E-74-65-72-5F-63-68-61-6C-6C-65-6E-67-65-5F-30-31-2E-70-6E-67-22-2C-22-43-68-65-63-6B-73-75-6D-22-3A-22-38-37-31-65-36-65-36-63-61-37-39-63-37-33-34-32-33-34-30-39-62-34-31-35-63-65-65-31-33-33-32-62-22-2C-22-46-69-6C-65-22-3A-22-7A-61-70-70-69-65-73-5F-68-75-6E-74-65-72-5F-63-68-61-6C-6C-65-6E-67-65-5F-30-31-2E-70-6E-67-22-7D-2C-22-42-61-63-6B-67-72-6F-75-6E-64-5F-43-6F-6D-70-6C-65-74-65-22-3A-7B-22-50-61-74-68-22-3A-22-2F-65-64-31-32-64-34-62-30-2D-62-65-33-64-2D-34-66-36-32-2D-61-64-62-37-2D-33-36-64-38-64-65-62-39-33-36-38-37-5F-7A-61-70-70-69-65-73-5F-68-75-6E-74-65-72-5F-63-68-61-6C-6C-65-6E-67-65-5F-30-31-2E-70-6E-67-22-2C-22-43-68-65-63-6B-73-75-6D-22-3A-22-38-37-31-65-36-65-36-63-61-37-39-63-37-33-34-32-33-34-30-39-62-34-31-35-63-65-65-31-33-33-32-62-22-2C-22-46-69-6C-65-22-3A-22-7A-61-70-70-69-65-73-5F-68-75-6E-74-65-72-5F-63-68-61-6C-6C-65-6E-67-65-5F-30-31-2E-70-6E-67-22-7D-7D-00-A9-13-00-00-00-17-5A-61-70-70-69-65-73-20-76-73-20-48-75-6E-74-65-72-20-51-75-65-73-74-07-80-EC-F1-A2-0B-80-84-9C-A3-0B-80-EC-F1-A2-0B-00-00-00-00-00-00-00-00-00-00-00-17-5A-61-70-70-69-65-73-20-76-73-20-48-75-6E-74-65-72-20-51-75-65-73-74-00-00-01-18-7B-22-54-69-74-6C-65-22-3A-22-51-75-C3-AA-74-65-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-22-2C-22-49-6E-66-6F-22-3A-22-47-61-67-6E-65-7A-20-36-C2-A0-63-6F-75-72-6F-6E-6E-65-73-20-64-61-6E-73-20-6C-65-20-64-C3-A9-66-69-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-22-2C-22-43-6F-75-6E-74-22-3A-36-2C-22-50-6F-69-6E-74-73-22-3A-32-30-2C-22-43-68-72-6F-6E-6F-73-51-75-65-73-74-52-65-77-61-72-64-73-22-3A-5B-7B-22-54-79-70-65-22-3A-22-47-6F-6C-64-22-2C-22-43-6F-75-6E-74-22-3A-31-30-30-30-7D-5D-2C-22-51-75-65-73-74-54-79-70-65-22-3A-22-57-69-6E-22-2C-22-57-69-6E-22-3A-7B-22-54-79-70-65-22-3A-22-43-72-6F-77-6E-73-22-2C-22-45-76-65-6E-74-73-22-3A-5B-31-32-35-36-5D-7D-2C-22-54-61-72-67-65-74-5F-4D-69-6E-58-50-4C-65-76-65-6C-22-3A-38-7D-00-AA-13-00-00-00-27-5A-61-70-70-69-65-73-20-76-73-20-48-75-6E-74-65-72-20-45-76-65-6E-74-20-49-63-6F-6E-20-61-6E-64-20-48-65-61-64-65-72-0D-80-EC-F1-A2-0B-80-84-9C-A3-0B-80-EC-F1-A2-0B-00-00-00-00-00-00-00-00-00-00-00-27-5A-61-70-70-69-65-73-20-76-73-20-48-75-6E-74-65-72-20-45-76-65-6E-74-20-49-63-6F-6E-20-61-6E-64-20-48-65-61-64-65-72-00-00-01-05-7B-22-49-6D-61-67-65-22-3A-7B-22-50-61-74-68-22-3A-22-2F-30-64-64-37-37-30-37-32-2D-65-30-63-39-2D-34-64-30-37-2D-62-38-33-38-2D-30-30-63-38-30-30-65-64-32-32-64-38-5F-7A-61-70-70-69-65-73-5F-68-75-6E-74-65-72-5F-68-65-61-64-65-72-2E-70-6E-67-22-2C-22-43-68-65-63-6B-73-75-6D-22-3A-22-39-61-30-34-36-66-64-31-33-34-66-37-66-33-33-37-35-39-64-35-61-36-30-31-66-39-39-35-36-30-39-39-22-2C-22-46-69-6C-65-22-3A-22-7A-61-70-70-69-65-73-5F-68-75-6E-74-65-72-5F-68-65-61-64-65-72-2E-70-6E-67-22-7D-2C-22-54-69-74-6C-65-47-6C-6F-77-22-3A-74-72-75-65-2C-22-49-63-6F-6E-22-3A-22-69-63-6F-6E-5F-74-6F-75-72-6E-61-6D-65-6E-74-5F-64-72-61-66-74-5F-67-72-61-6E-64-22-2C-22-54-69-74-6C-65-22-3A-22-C3-89-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-22-7D-00-00-00-00-00-09-00-80-80-B4-A1-0B-00-A7-13-00-00-00-0C-83-09-00-84-09-00-85-09-00-95-11-01-A3-13-01-A4-13-01-A5-13-01-A6-13-01-A7-13-01-A8-13-01-A9-13-01-AA-13-01-09-95-11-02-00-A3-13-02-00-A4-13-03-00-A5-13-03-00-A6-13-03-00-A7-13-02-00-A8-13-02-00-A9-13-02-00-AA-13-02-00-02-00-00-00-64-7B-22-49-44-22-3A-22-43-41-52-44-5F-52-45-4C-45-41-53-45-5F-56-32-22-2C-22-50-61-72-61-6D-73-22-3A-7B-22-43-61-72-64-73-22-3A-5B-7B-22-53-68-6F-77-41-73-53-6F-6F-6E-22-3A-66-61-6C-73-65-2C-22-53-70-65-6C-6C-22-3A-22-47-68-6F-73-74-22-2C-22-44-61-74-65-22-3A-22-32-30-31-38-30-31-30-34-22-7D-5D-7D-7D-04-00-00-00-92-7B-22-49-44-22-3A-22-43-4C-41-4E-5F-43-48-45-53-54-22-2C-22-50-61-72-61-6D-73-22-3A-7B-22-53-74-61-72-74-54-69-6D-65-22-3A-22-32-30-31-37-30-33-31-37-54-30-37-30-30-30-30-2E-30-30-30-5A-22-2C-22-41-63-74-69-76-65-44-75-72-61-74-69-6F-6E-22-3A-22-50-33-64-54-30-68-22-2C-22-49-6E-61-63-74-69-76-65-44-75-72-61-74-69-6F-6E-22-3A-22-50-34-64-54-30-68-22-2C-22-43-68-65-73-74-54-79-70-65-22-3A-5B-22-43-6C-61-6E-43-72-6F-77-6E-73-22-5D-7D-7D-00".HexaToBytes());
-
-            Stream.WriteVInt(this.ChestSlotCount);
-
-            for (int I = 0; I < this.ChestSlotCount; I++)
-            {
-                if (this.Chests.Count > I)
-                {
-                    if (this.Chests[I] != null)
-                    {
-                        Stream.WriteBoolean(true);
-                        this.Chests[I].Encode(Stream);
-
-                        continue;
-                    }
-                }
-
-                Stream.WriteBoolean(false);
-            }
-
-            this.FreeChestTimer.Encode(Stream);
-            this.DonationCapacityCooldownTimer.Encode(Stream);
-
-            Stream.WriteBoolean(this.FreeChest != null);
-
-            if (this.FreeChest != null)
-            {
-                this.FreeChest.Encode(Stream);
-            }
-
-            Stream.WriteBoolean(this.PurchasedChest != null);
-
-            if (this.PurchasedChest != null)
-            {
-                this.PurchasedChest.Encode(Stream);
-            }
-
-            Stream.EncodeData(null); // ShopData
-            Stream.WriteBoolean(false);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0); // v3 + 636
-
-            if ( /* v3 + 636 > 0 */ false)
-            {
+                Stream.WriteVInt(1);//card.ID
+                Stream.WriteVInt(5);//card.level
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(30);//card.xpPoints
                 Stream.WriteVInt(0);
                 Stream.WriteVInt(0);
-            }
-
-            Stream.WriteVInt(0);
-
-            Stream.AddRange("90-C1-C0-01-84-F7-D2-01-92-F9-9C-9E-0B".HexaToBytes()); // Timer
-            Stream.AddRange("90-C1-C0-01-84-F7-D2-01-92-F9-9C-9E-0B".HexaToBytes()); // Timer
-
-            Stream.WriteBoolean(this.StarChest != null);
-
-            if (this.StarChest != null)
-            {
-                this.StarChest.Encode(Stream);
-            }
-
-            /* ----- */
-
-            this.RequestCooldownTimer.Encode(Stream);
-
-            // 2817 -> Name Pop Up -> 0000101100000001
-            // 2819 -> Name Pop Up -> 0000101100000011
-
-            Stream.WriteVInt(3);
-
-            for (int J = 0; J < 7; J++)
-            {
                 Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                // }
+                // });
+
+                Stream.WriteVInt(1);// selected deck    this.device.player.selectedDeck
+                Stream.WriteVInt(0);
+
+                Stream.WriteByte(127);
+                Stream.WriteByte(127);
+                Stream.WriteByte(127);
+                Stream.WriteVInt((int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(6);
+
+
+                Stream.WriteVInt(1109);
+                Stream.WriteString("2v2 Button");
+                Stream.WriteVInt(8);
+                Stream.WriteVInt(1503298800);
+                Stream.WriteVInt(1534834800);
+                Stream.WriteVInt(1502694000);
+                Stream.WriteInt(0);
+                Stream.WriteInt(0);
+                Stream.WriteString("2v2 Button");
+                Stream.WriteString("{\"HideTimer\":true,\"HidePopupTimer\":true,\"ExtraGameModeChance\":0,\"GameMode\":\"TeamVsTeamLadder\",\"ExtraGameMode\":\"None\"}");
+
+                Stream.WriteByte(0);
+
+                Stream.WriteVInt(1305);
+                Stream.WriteString("1v1 Draft Friendly ");
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(1517472000);
+                Stream.WriteVInt(1522569600);
+                Stream.WriteVInt(1517472000);
+                Stream.WriteInt(0);
+                Stream.WriteInt(0);
+                Stream.WriteString("1v1 Draft Friendly ");
+                Stream.WriteString("{\"Title\":\"Amichevole strategica 1v1\",\"Subtitle\":\"Gioca coi membri del clan!\",\"GameMode\":\"DraftMode\",\"Background\":{\"Path\":\"/62ce7186-d295-4100-9b4e-58d86d3a854c_friendly_draft.png\",\"Checksum\":\"71c0065635a551b109400a766cbdabfc\",\"File\":\"friendly_draft.png\"},\"DraftDeck\":\"Draft_v1\"}");
+                Stream.WriteByte(0);
+
+                Stream.WriteVInt(1343);
+                Stream.WriteString("Clash Royale League Challenge Header");//to start again
+                Stream.WriteVInt(13);
+                Stream.WriteVInt(1521014400);
+                Stream.WriteVInt(1521446400);
+                Stream.WriteVInt(1521014400);
+                Stream.WriteInt(0);
+                Stream.WriteInt(0);
+                Stream.WriteString("Clash Royale League Challenge Header");
+                Stream.WriteString("{\"Image\":{\"Path\":\"/5231460d-4307-4a3e-b989-8bbf2e6f8db7_cr_league_challenge_header.png\",\"Checksum\":\"45440c7c948e9175f69030bde7d2c630\",\"File\":\"cr_league_challenge_header.png\"},\"TitleGlow\":true,\"Icon\":\"icon_tournament_special_grand\",\"Title\":\"Clash Royale League\"}");
+                Stream.WriteByte(0);
+
+                Stream.WriteVInt(1344);
+                Stream.WriteString("Clash Royale League Challenge");
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(1521014400);
+                Stream.WriteVInt(1521446400);
+                Stream.WriteVInt(1520841600);
+                Stream.WriteInt(0);
+                Stream.WriteInt(0);
+                Stream.WriteString("Clash Royale League Challenge");
+                Stream.WriteString("{\"GameMode\":\"Challenge\",\"Title\":\"Sfida Clash Royale League\",\"FreePass\":3,\"JoinCost\":10,\"JoinCostResource\":\"Gems\",\"MaxLosses\":3,\"Rewards\":[{\"Gold\":20,\"Cards\":2},{\"Gold\":30,\"Cards\":3},{\"Gold\":50,\"Milestone\":{\"Type\":\"Gold\",\"Amount\":500},\"Cards\":5},{\"Gold\":80,\"Cards\":8},{\"Gold\":120,\"Milestone\":{\"Type\":\"RandomSpell\",\"Amount\":15,\"RandomSpell\":\"Rare\"},\"Cards\":12},{\"Gold\":170,\"Cards\":17},{\"Gold\":230,\"Milestone\":{\"Type\":\"Gold\",\"Amount\":1500},\"Cards\":23},{\"Gold\":300,\"Cards\":30},{\"Gold\":380,\"Milestone\":{\"Chest\":\"Giant_<max_arena>\",\"Type\":\"Chest\"},\"Cards\":38},{\"Gold\":470,\"Cards\":47},{\"Gold\":570,\"Milestone\":{\"Type\":\"Gold\",\"Amount\":5000},\"Cards\":57},{\"Gold\":680,\"Cards\":68},{\"Gold\":800,\"Milestone\":{\"Chest\":\"Magic_<max_arena>\",\"Type\":\"Chest\"},\"Cards\":80},{\"Gold\":930,\"Cards\":93},{\"Gold\":1070,\"Milestone\":{\"Type\":\"Gold\",\"Amount\":10000},\"Cards\":107},{\"Gold\":1220,\"Cards\":122},{\"Gold\":1400,\"Milestone\":{\"Type\":\"RandomSpell\",\"Amount\":10,\"RandomSpell\":\"Epic\"},\"Cards\":140},{\"Gold\":1650,\"Cards\":165},{\"Gold\":2000,\"Milestone\":{\"Chest\":\"Legendary\",\"Type\":\"Chest\"},\"Cards\":200},{\"Gold\":2450,\"Cards\":245},{\"Gold\":3000,\"Milestone\":{\"IsHighlighted\":true,\"Type\":\"Gold\",\"Amount\":200000},\"Cards\":300}],\"IconExportName\":\"icon_tournament_special_grand\",\"WinIconExportName\":\"tournament_open_wins_badge_gold\",\"Subtitle\":\"Ecco come funziona\",\"Description\":\"Arriva la Clash Royale League: la tua occasione per diventare un giocatore professionista! Raggiungi 20 vittorie per proseguire nella competizione. Troverai altre informazioni nella tua posta in arrivo in gioco!\",\"Background\":{\"Path\":\"/da8810e1-e57c-4d9e-a854-9dd41b38fd81_cr_league_challenge.png\",\"Checksum\":\"a1d8b04a8e911ed1e21b0aba5cb25b85\",\"File\":\"cr_league_challenge.png\"},\"Background_Complete\":{\"Path\":\"/da8810e1-e57c-4d9e-a854-9dd41b38fd81_cr_league_challenge.png\",\"Checksum\":\"3e1910cc44d36e1bacbb2b26ec3b51cf\",\"File\":\"cr_league_challenge.png\"},\"UnlockedForXP\":\"Experienced\",\"EndNotification\":\"La sfida Clash Royale League termina tra 2 ore!\"}");
+                Stream.WriteByte(0);
+
+                Stream.WriteVInt(1345);
+                Stream.WriteString("Boosts");
+                Stream.WriteVInt(10);
+                Stream.WriteVInt(1521187200);
+                Stream.WriteVInt(1521446400);
+                Stream.WriteVInt(1521187200);
+                Stream.WriteInt(0);
+                Stream.WriteInt(0);
+                Stream.WriteString("Boosts");
+                Stream.WriteString("{\"Title\":\"Potenziamenti!\",\"Boosts\":[{\"Type\":\"VictoryGold\",\"durationInHours\":168,\"Cost\":300},{\"Type\":\"CrownChestCards\",\"durationInHours\":168,\"Cost\":300},{\"Type\":\"ChestSpeedUp\",\"durationInHours\":168,\"Cost\":300}]}");
+                Stream.WriteByte(0);
+
+                Stream.WriteVInt(1346);
+                Stream.WriteString("Barbarian Barrel Draft Challenge ");
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(1521792000);
+                Stream.WriteVInt(1522051200);
+                Stream.WriteVInt(1521705600);
+                Stream.WriteInt(0);
+                Stream.WriteInt(0);
+                Stream.WriteString("Barbarian Barrel Draft Challenge ");
+                Stream.WriteString("{\"Casual\":false,\"GameMode\":\"CardReleaseDraft\",\"Title\":\"Sfida strategica barile barbarico\",\"FreePass\":1,\"JoinCost\":100,\"JoinCostResource\":\"Gems\",\"MaxLosses\":3,\"Rewards\":[{\"Gold\":700,\"Cards\":10},{\"Gold\":950,\"Cards\":15},{\"Gold\":1250,\"Milestone\":{\"Type\":\"Gold\",\"Amount\":1000},\"Cards\":25},{\"Gold\":1600,\"Cards\":43},{\"Gold\":2000,\"Milestone\":{\"Type\":\"RandomSpell\",\"Amount\":20,\"RandomSpell\":\"Rare\"},\"Cards\":65},{\"Gold\":2500,\"Cards\":93},{\"Gold\":3100,\"Milestone\":{\"Type\":\"Gold\",\"Amount\":3000},\"Cards\":125},{\"Gold\":3800,\"Cards\":165},{\"Gold\":4650,\"Milestone\":{\"Chest\":\"Giant_<max_arena>\",\"Type\":\"Chest\"},\"Cards\":210},{\"Gold\":5750,\"Cards\":265},{\"Gold\":7100,\"Milestone\":{\"Type\":\"Gold\",\"Amount\":9000},\"Cards\":335},{\"Gold\":8750,\"Cards\":430},{\"Gold\":11000,\"Milestone\":{\"IsHighlighted\":true,\"Type\":\"Spell\",\"Amount\":10,\"Spell\":\"BarbLog\"},\"Cards\":550}],\"CardTheme\":\"BarbLog\",\"IconExportName\":\"icon_tournament_card_release_grand\",\"WinIconExportName\":\"tournament_open_wins_badge_gold\",\"Arena\":\"All\",\"Description\":\"Scegli 4 carte e ricevine 4 dall'avversario: uno dei due potrA schierare il barile barbarico! Sblocca la nuova carta con 12 vittorie, ma occhio: con 3 sconfitte sei fuori!\",\"EndNotification\":\"La sfida strategica barile barbarico termina tra due ore! Prova a sbloccare la nuova carta!\",\"StartNotification\":\"La sfida strategica barile barbarico A¨ iniziata! Sblocca subito una nuova carta!\",\"UnlockedForXP\":\"Experienced\",\"DraftDeck\":\"Draft_v1\",\"DraftDeckCardThemeSetOverride\":\"Draft_AllRandom\",\"Subtitle\":\"Ecco come funziona\",\"Subtitle_Short\":\"Sblocca una nuova carta!\",\"Background\":{\"Path\":\"/_barbarian_barrel_challenge.png\",\"Checksum\":\"62bc57e2a6827d434c0ce8a604c3f586\",\"File\":\"barbarian_barrel_challenge.png\"},\"Background_Complete\":{\"Path\":\"/_barbarian_barrel_challenge.png\",\"Checksum\":\"25c6e25d7f322acef312ab50b009b68c\",\"File\":\"barbarian_barrel_challenge.png\"}}");
+
+                Stream.WriteByte(0);
+
+                Stream.AddRange(new byte[] { 0, 0, 0, 0, 0, 0 });
+                Stream.WriteByte(127);
+                Stream.WriteByte(127);
+                Stream.WriteByte(127);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(6); //Events count again
+
+                Stream.WriteVInt(1109);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(1305);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(1343);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(1344);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(1345);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(1346);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(6);//Events count again, what's wrong with you Supercell :p
+
+                Stream.WriteVInt(1109);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(1305);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(1343);
+                Stream.WriteVInt(3);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(1344);
+                Stream.WriteVInt(3);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(1345);
+                Stream.WriteVInt(3);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(1346);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(1);
+
+                Stream.WriteString("{'ID':'SHOP_CYCLE_MANAGEMENT', 'Params':{ 'LegendaryChestCycleDuration':14}}");
+                Stream.WriteVInt(1);
+                Stream.WriteString("{'ID':'CARD_RELEASE_V2', 'Params':{ 'Cards':[{'ShowAsSoon':false,'Spell':'Ghost', 'Date':'20180104'},{'ShowAsSoon':false,'Spell':'EliteArcher', 'Date':'20180302'},{'ShowAsSoon':false,'Spell':'BarbLog', 'Date':'20180406'}]}}");
+                Stream.WriteVInt(4);
+                Stream.WriteString("{'ID':'CLAN_CHEST', 'Params':{ 'StartTime':'20170317T070000.000Z','ActiveDuration':'P3dT0h', 'InactiveDuration':'P4dT0h', 'ChestType':['ClanCrowns']}}");
+                Stream.WriteVInt(1);
+                Stream.WriteString("{'ID':'PERMANENT_GAME_MODES', 'Params':{ 'FixedDeckOrderOptionEnabled':true}}");
+
+
+                Stream.WriteVInt(4); //Chest Slots Count
+
+                /* if (this.device.player.chests && this.device.player.chests.length > 0 && this.device.player.chests.length <= 4)
+                 {
+                     Stream.WriteVInt(1);
+                     this.device.player.chests.forEach(chest => {
+                         Stream.WriteVInt(19);
+                         Stream.WriteVInt(chest.chestID);
+
+                         Stream.WriteVInt(10); //Is opened??? 0 no 2 yep 4???? 6 opened but locked 8 new with anim 10 new with animation and opened 12 new with animation and closed 14 new with animation and opened but locked 16 unlocking
+                         Stream.WriteVInt(this.device.player.chests.indexOf(chest) * 2 + 4); //Chest Index
+                         Stream.WriteVInt(6);
+
+                         Stream.WriteVInt(this.device.player.chests.indexOf(chest));
+                         Stream.WriteVInt(0);
+                         Stream.WriteVInt(0);
+                         if (this.device.player.chests)
+                         {
+                             Stream.WriteVInt(this.device.player.chests.indexOf(chest) === (this.device.player.chests.length - 1) ? 0 : 8);
+                         }
+                     });
+                 }*/
+                // else
+                //{
+                Stream.WriteVInt(0);
+                //}
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt((int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+
+                Stream.WriteVInt(1);//Count???
+                Stream.WriteVInt(19);
+                Stream.WriteVInt(7);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);//Maybe end...
+
+                Stream.AddRange(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+                Stream.WriteVInt(10);//Crown Chest Crowns Count
+                Stream.WriteVInt(0);//Has been opened (bool)
+
+                Stream.WriteVInt(0);//2x(2xTick + Timestamp)
+                Stream.WriteVInt(0);
+                Stream.WriteVInt((int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt((int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+
+                Stream.WriteVInt(2817);
+                Stream.AddRange(new byte[] { 0, 0, 0, 0, 0, 0, 0 });
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(1);//PLayer Level
+                Stream.WriteVInt(54);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(447);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt((int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(1);
+
+                Stream.AddRange(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
+                Stream.WriteVInt(10);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+
+
+                Stream.AddRange("F8-07".HexaToBytes());
+                //currentDeck.forEach(cardSCID => {
+                // let card = utils.findObjectByKey(this.device.player.cards, "ID", cardUtils.SCIDtoInstanceID(cardSCID));
+
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(30);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                // });
+
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(62);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(62);
+
+                Stream.AddRange(new byte[] { 0, 0, 0, 0, 0, 0 });
+
+                Stream.WriteVInt(1);
+                Stream.WriteVInt((int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(1);
+
+                Stream.AddRange(new byte[] { 0, 0, 0, 0, 0, 0, 0 });
+
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+
+                //-- Quests --//
+                Stream.AddRange("00-00-00-0F-54-49-44-5F-44-41-49-4C-59-5F-47-49-46-54-53-00-00-00-00-03-00-00-00-00-00-11-51-75-65-73-74-5F-46-72-65-65-47-69-66-74-73-31-30-00-00-00-14-54-49-44-5F-46-52-45-45-5F-43-48-45-53-54-5F-51-55-45-53-54-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-15-71-75-65-73-74-5F-69-74-65-6D-5F-66-72-65-65-5F-63-68-65-73-74-05-03-13-07-01-13-07-01-05-01-90-01-03-00-00-00-03-00-04-04-00-00-02-01-00-00-00-00-15-54-49-44-5F-4C-41-44-44-45-52-5F-51-55-45-53-54-5F-50-4C-41-59-00-00-00-00-0A-01-00-00-00-00-1A-50-6C-61-79-5F-51-75-65-73-74-5F-50-6C-61-79-5F-4C-61-64-64-65-72-5F-50-76-50-00-00-00-1A-54-49-44-5F-4C-41-44-44-45-52-5F-51-55-45-53-54-5F-50-4C-41-59-5F-49-4E-46-4F-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-0E-71-75-65-73-74-5F-69-74-65-6D-5F-70-76-70-14-01-0E-00-0A-00-00-01-01-00-00-00-32-01-00-00-BF-06-02-01-00-03-01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00".HexaToBytes());
+
+                //-- Shop Begins --//
+                Stream.WriteVInt(14);
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(3);
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(3);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(3);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(8);
+                Stream.WriteByte(127);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(3);
+                Stream.WriteVInt(3);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(447);
+                Stream.WriteVInt(0);//Cost
+                Stream.WriteVInt(5);//SCID Res Type - Resources
+                Stream.WriteVInt(1);//SCID Res ID - Gold
+                Stream.WriteVInt(19);//SCID Res Type - Chests
+                Stream.WriteVInt(114);//SCID Res ID - Chest ID
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(447);
+                Stream.WriteVInt(50);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(3000);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(447);
+                Stream.WriteVInt(100);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(28);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(3000);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                //-- Shop Ends --//
+
+                //-- Shop Chests Begins --//
+                Stream.WriteVInt(3); //Chests Count
+
+                // #1
+                Stream.WriteVInt(19);
+                Stream.WriteVInt(306);
+                Stream.WriteVInt(88);
+                Stream.WriteVInt(0);
+                Stream.WriteString("Lightning");
+                Stream.WriteVInt(447);
+                Stream.WriteVInt(0);//Chest index
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+
+                // #2
+                Stream.WriteVInt(19);
+                Stream.WriteVInt(318);
+                Stream.WriteVInt(88);
+                Stream.WriteVInt(1);
+                Stream.WriteString("Fortune");
+                Stream.WriteVInt(447);
+                Stream.WriteVInt(1);//Chest index
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+
+                // #3
+                Stream.WriteVInt(19);
+                Stream.WriteVInt(330);
+                Stream.WriteVInt(88);
+                Stream.WriteVInt(3);
+                Stream.WriteString("Kings");
+                Stream.WriteVInt(447);
+                Stream.WriteVInt(2);//Chest index
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+                Stream.WriteVInt(0);
+                Stream.WriteByte(127);
+                //-- Shop Chests Ends --//
+
+                Stream.AddRange(new byte[] { 0, 0, 0, 0, 0, 0, 0 });
+                Stream.WriteByte(127);
+                Stream.WriteVInt(1109);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(HighId);
+                Stream.WriteVInt(LowId);
+                Stream.WriteVInt(HighId);
+                Stream.WriteVInt(LowId);
+                Stream.WriteVInt(HighId);
+                Stream.WriteVInt(LowId);
+                Stream.WriteString("HuzaBird");// Player Name
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(2);
+                Stream.WriteVInt(3800);//Trophies
+                Stream.AddRange(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
+                Stream.WriteVInt(41);
+                Stream.AddRange(new byte[] { 0, 0, 0, 0, 0 });
+
+                Stream.WriteVInt(8); //Resources Prefix???
+                Stream.WriteVInt(14); //Resources Count
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(1);//SCID Resource ID (Gold)
+                Stream.WriteVInt(999999999);///PLAYER GOLD
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(5);//SCID Resource ID (Gold)
+                Stream.WriteVInt(999999999);///PLAYER GOLD
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(29);//SCID Resource ID (GameMode)
+                Stream.WriteVInt(72000006);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(13);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(33);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(34);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(14);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(5);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(38);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(3);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(2);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(37);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(2);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(6);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(16);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(4);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(5);//SCID Resource Type (Resources)
+                Stream.WriteVInt(28);//SCID Resource ID (Unknown)
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(6);
+                Stream.WriteVInt(60);
+
+                Stream.WriteVInt(7);
+                Stream.WriteVInt(9);
+                Stream.WriteVInt(60);
+
+                Stream.WriteVInt(8);
+                Stream.WriteVInt(9);
+                Stream.WriteVInt(60);
+
+                Stream.WriteVInt(9);
+                Stream.WriteVInt(9);
+                Stream.WriteVInt(60);
+
+                Stream.WriteVInt(4);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(60);
+
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(60);
+
+                Stream.WriteVInt(6);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(6);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(11);
+                Stream.WriteVInt(41);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(8);
+                Stream.WriteVInt(9);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(27);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(7);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(6);
+                Stream.WriteVInt(30);
+                Stream.WriteVInt(5);
+
+                Stream.WriteVInt(9);
+                Stream.WriteVInt(26000003);
+
+                Stream.WriteVInt(9);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(3);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(13);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(28);
+                Stream.WriteVInt(1);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(28);
+                Stream.WriteVInt(0);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(12);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(18);
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(26);
+                Stream.WriteVInt(14);
+
+
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(999999999);//Diamonds
+                Stream.WriteVInt(999999999);//Free Diamonds
+
+                Stream.WriteVInt(30);//XPlevel
+                Stream.WriteVInt(1);//Level
+                Stream.WriteVInt(0);//Unk
+
+                Stream.WriteVInt(1);//ChangeNameCount
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(5);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt(1);
+                Stream.WriteVInt(0);
+                Stream.WriteVInt((int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+                Stream.WriteVInt((int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+                Stream.WriteVInt(0);//Tick
             }
-
-            Stream.WriteVInt(this.PageOpened);
-            Stream.WriteVInt(this.LastLevelUpPopup);
-            Stream.EncodeData(this.LastArena);
-
-            Stream.WriteVInt(this.ShopDay);
-            Stream.WriteVInt(this.ShopSeed); // 9A-05
-            Stream.WriteVInt(this.ShopDaySeen);
-
-            this.ShopTimer.Encode(Stream);
-
-            Stream.WriteBoolean(this.ShopChest != null);
-
-            if (this.ShopChest != null)
-            {
-                this.ShopChest.Encode(Stream);
-            }
-
-            this.ShareTimer.Encode(Stream);
-            this.SendMailTimer.Encode(Stream);
-            this.ElderKickTimer.Encode(Stream);
-
-            Stream.WriteVInt(this.FreeChestIdx);
-            Stream.WriteVInt(this.CrownChestIdx);
-            Stream.WriteVInt(0); // 0x01
-            Stream.WriteVInt(0); // tvMajor
-            Stream.WriteVInt(0); // tvBuild
-            Stream.WriteVInt(0); // tvContent
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-
-            Stream.WriteVInt(this.ReplaysSeen.Count);
-
-            foreach (int ReplayId in this.ReplaysSeen)
-            {
-                Stream.WriteVInt(ReplayId);
-            }
-
-            Stream.EncodeSpellList(new List<SpellData>(0)); // Spell Request
-
-            Stream.WriteBoolean(false);
-
-            Stream.WriteVInt(10);
-
-            Stream.WriteVInt(0); // Array Count
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-
-            Stream.WriteBoolean(false);
-            Stream.WriteBoolean(false);
-            Stream.WriteBoolean(false);
-
-            this.SpellDeck.Encode(Stream);
-
-            /* ------------------------ */
-
-            Stream.WriteBoolean(false);
-
-            if (false)
-            {
-                Stream.WriteBoolean(true);
-
-                // sub_2CB81A()
-                {
-                    // ?
-                }
-            }
-
-            Stream.WriteBoolean(false);
-
-            if (false)
-            {
-                Stream.WriteBoolean(true);
-
-                // sub_2CBB8E()
-                {
-                    // ?
-                }
-            }
-
-            /* ------------------------ */
-
-            Stream.WriteVInt(0); // Spell Array
-
-            for (int i = 0; i < 0; i++)
-            {
-                Stream.WriteVInt(0); // Spell Type
-                Stream.WriteVInt(0); // Spell Id
-            }
-
-            Stream.WriteVInt(0); // Spell Array
-
-            for (int i = 0; i < 0; i++)
-            {
-                Stream.WriteVInt(0); // Spell Type
-                Stream.WriteVInt(0); // Spell Id
-            }
-
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-
-            Stream.WriteVInt(this.BoughtPacks.Count);
-
-            foreach (CsvData Pack in this.BoughtPacks)
-            {
-                Stream.WriteVInt(Pack.GlobalId);
-            }
-
-            // Stream.AddRange("01-00-01-90-81-A1-FE-0B-00-15-01".HexaToBytes());
-            
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-
-            Stream.WriteVInt(0); // 0x01
-
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-
-            Stream.WriteVInt(this.NewArenasSeen.Count);
-
-            foreach (ArenaData Arena in this.NewArenasSeen)
-            {
-                Stream.WriteVInt(Arena.GlobalId);
-            }
-
-            Stream.AddRange("02-00-9E-8B-26-00-5A-21-00-57-5A-24-F4-D7-B4-B8-9B-0C-00-00-00-00-00-00-00-00-00-01-04-04-01-00-00-00-00-19-54-49-44-5F-43-41-53-54-5F-51-55-45-53-54-5F-4D-49-4E-5F-45-4C-49-58-49-52-00-00-00-00-1E-00-00-00-00-00-13-43-61-73-74-5F-51-75-65-73-74-5F-48-69-67-68-43-6F-73-74-00-00-00-1E-54-49-44-5F-43-41-53-54-5F-51-55-45-53-54-5F-4D-49-4E-5F-45-4C-49-58-49-52-5F-49-4E-46-4F-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-0E-71-75-65-73-74-5F-69-74-65-6D-5F-70-76-70-14-01-0E-01-09-00-00-00-06-00-01-01-00-06-02-00-00-00-00-15-54-49-44-5F-52-45-51-55-45-53-54-5F-51-55-45-53-54-5F-41-4E-59-00-00-00-00-03-02-00-00-00-00-0B-52-65-71-75-65-73-74-5F-41-6E-79-00-00-00-1A-54-49-44-5F-52-45-51-55-45-53-54-5F-51-55-45-53-54-5F-41-4E-59-5F-49-4E-46-4F-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-0E-71-75-65-73-74-5F-69-74-65-6D-5F-70-76-70-14-01-0E-00-26-01-00-00-00-00-01-03-00-00-00-00-14-54-49-44-5F-46-52-45-45-5F-43-48-45-53-54-5F-51-55-45-53-54-00-00-00-00-03-02-00-00-00-00-10-51-75-65-73-74-5F-46-72-65-65-43-68-65-73-74-73-00-00-00-14-54-49-44-5F-46-52-45-45-5F-43-48-45-53-54-5F-51-55-45-53-54-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-15-71-75-65-73-74-5F-69-74-65-6D-5F-66-72-65-65-5F-63-68-65-73-74-05-03-13-07-01-13-07-01-13-07-01-03-01-01-00-03-00-04-04-01-00-00-7F-00-04-04-00-00-00-00-19-54-49-44-5F-43-41-53-54-5F-51-55-45-53-54-5F-4D-41-58-5F-45-4C-49-58-49-52-00-00-00-00-32-00-00-00-00-00-12-43-61-73-74-5F-51-75-65-73-74-5F-4C-6F-77-43-6F-73-74-00-00-00-1E-54-49-44-5F-43-41-53-54-5F-51-55-45-53-54-5F-4D-41-58-5F-45-4C-49-58-49-52-5F-49-4E-46-4F-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-0E-71-75-65-73-74-5F-69-74-65-6D-5F-70-76-70-14-01-05-01-8A-05-00-00-00-00-02-01-01-00-01-02-A9-13-01-00-00-00-26-51-75-C3-AA-74-65-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-00-00-00-1C-69-63-6F-6E-5F-71-75-65-73-74-5F-74-79-70-65-5F-73-70-65-63-69-61-6C-65-76-65-6E-74-06-00-00-00-00-00-00-00-00-00-41-47-61-67-6E-65-7A-20-36-C2-A0-63-6F-75-72-6F-6E-6E-65-73-20-64-61-6E-73-20-6C-65-20-64-C3-A9-66-69-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-16-71-75-65-73-74-5F-69-74-65-6D-5F-73-70-65-63-69-61-6C-5F-70-76-70-14-01-05-01-A8-0F-02-00-00-00-01-A8-13-19-32-01-00-00-9A-05-05-01-00-07-01-00-00-00-00-01-00-00-00-00-00-00-00-00-00-00-0C-04-00-02-01-04-02-02-01-04-04-04-00-04-00-02-03-05-04-05".HexaToBytes());
-            
-            Stream.AddRange("00-04-03-02-02  00  7F-7F-00-00  B6-01".HexaToBytes());
-
-            Stream.WriteVInt(this.ShopItems.Count);
-
-            foreach (ShopItem ShopItem in this.ShopItems)
-            {
-                ShopItem.Encode(Stream);
-            }
-
-            Stream.WriteVInt(this.ShopChests.Count);
-
-            foreach (ChestEvent ChestEvent in this.ShopChests)
-            {
-                ChestEvent.Encode(Stream);
-            }
-
-            Stream.AddRange("00-03-00-01-02-00-00-00-00-00-7F-95-11-00-00".HexaToBytes());
         }
     }
 }

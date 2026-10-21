@@ -126,6 +126,11 @@
             MessageFactory.Messages.Add(29567, typeof(AvatarStreamMessage));
             MessageFactory.Messages.Add(29733, typeof(AvatarRankingListMessage));
 
+            // Battle Training Messages
+            MessageFactory.Messages.Add(12903, typeof(RequestSectorStateMessage));
+            MessageFactory.Messages.Add(12904, typeof(SectorCommandMessage));
+            MessageFactory.Messages.Add(12951, typeof(SendBattleEventMessage));
+
             /* Factory.Messages.Add(10113, typeof(SetDeviceTokenMessage));
             Factory.Messages.Add(10119, typeof(ReportUserMessage));
             Factory.Messages.Add(10212, typeof(ChangeAvatarNameMessage));

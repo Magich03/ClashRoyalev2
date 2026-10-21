@@ -1,8 +1,8 @@
 ﻿namespace ClashRoyale.Network
 {
     using System;
+    using System.Diagnostics;
     using System.Net;
-
     using ClashRoyale.Crypto;
     using ClashRoyale.Crypto.Encrypters;
     using ClashRoyale.Crypto.Inits;
@@ -38,15 +38,18 @@
         public IPEndPoint UdpEndPoint;
 
         /// <summary>
+        /// Logs raw packet data for debugging.
+        /// </summary>
+        private void LogPacket(string direction, short type, byte[] data)
+        {
+            string packetData = BitConverter.ToString(data).Replace("-", " ");
+            Debug.WriteLine($"[DEBUG] {direction} Packet: Type={type}, Length={data.Length}, Data={packetData}");
+        }
+
+        /// <summary>
         /// Gets the time since last keep alive in ms.
         /// </summary>
-        public long TimeSinceLastKeepAliveMs
-        {
-            get
-            {
-                return (long) DateTime.UtcNow.Subtract(this.LastKeepAlive).TotalMilliseconds;
-            }
-        }
+        public long TimeSinceLastKeepAliveMs => (long)DateTime.UtcNow.Subtract(this.LastKeepAlive).TotalMilliseconds;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkManager"/> class.
@@ -54,11 +57,10 @@
         /// <param name="Device">The device.</param>
         public NetworkManager(Device Device)
         {
-            this.Device         = Device;
-
-            this.Session        = DateTime.UtcNow;
-            this.LastMessage    = DateTime.UtcNow;
-            this.LastKeepAlive  = DateTime.UtcNow;
+            this.Device = Device;
+            this.Session = DateTime.UtcNow;
+            this.LastMessage = DateTime.UtcNow;
+            this.LastKeepAlive = DateTime.UtcNow;
         }
 
         /// <summary>
@@ -66,15 +68,16 @@
         /// </summary>
         public void ReceiveMessage(short Type, short Version, byte[] Packet)
         {
+            LogPacket("Received", Type, Packet);
+
             if (this.ReceiveEncrypter == null)
             {
                 if (this.PepperInit.State == 0)
                 {
                     if (Type == 10101)
                     {
-                        this.SendEncrypter      = new Rc4Encrypter("fhsd6f86f67rt8fw78fw789we78r9789wer6re", "nonce");
-                        this.ReceiveEncrypter   = new Rc4Encrypter("fhsd6f86f67rt8fw78fw789we78r9789wer6re", "nonce");
-
+                        this.SendEncrypter = new Rc4Encrypter("fhsd6f86f67rt8fw78fw789we78r9789wer6re", "nonce");
+                        this.ReceiveEncrypter = new Rc4Encrypter("fhsd6f86f67rt8fw78fw789we78r9789wer6re", "nonce");
                         Packet = this.ReceiveEncrypter.Decrypt(Packet);
                     }
                     else if (Type == 10100)
@@ -86,16 +89,13 @@
                         Packet = null;
                     }
                 }
+                else if (this.PepperInit.State == 2)
+                {
+                    Packet = Type == 10101 ? PepperCrypto.HandlePepperLogin(ref this.PepperInit, Packet) : null;
+                }
                 else
                 {
-                    if (this.PepperInit.State == 2)
-                    {
-                        Packet = Type == 10101 ? PepperCrypto.HandlePepperLogin(ref this.PepperInit, Packet) : null;
-                    }
-                    else
-                    {
-                        Packet = null;
-                    }
+                    Packet = null;
                 }
             }
             else
@@ -105,19 +105,6 @@
 
             if (Packet != null)
             {
-                if (this.Device.State != State.Logged)
-                {
-                    if (Type != 10100 && Type != 10101)
-                    {
-                        if (++this.InvalidMessageStateCnt >= 5)
-                        {
-                            NetworkTcp.Disconnect(this.Device.Token.AsyncEvent);
-                        }
-
-                        return;
-                    }
-                }
-
                 using (ByteStream Stream = new ByteStream(Packet))
                 {
                     Message Message = MessageFactory.CreateMessage(Type, Stream);
@@ -134,24 +121,17 @@
                             }
                             catch (Exception Exception)
                             {
-                                Logging.Error(this.GetType(), "ReceiveMessage() - An error has been throwed when the message type " + Message.Type + " has been processed. " + Exception);
+                                Logging.Error(this.GetType(), $"ReceiveMessage() - Error processing message {Message.Type}: {Exception}");
                             }
 
-                            HandlerFactory.MessageHandle(this.Device, Message); // TODO : Probably call Task.Wait().
+                            HandlerFactory.MessageHandle(this.Device, Message);
                         }
-                    }
-                    else
-                    {
-                        Logging.Info(this.GetType(), BitConverter.ToString(Stream.ReadBytes(Stream.BytesLeft)));
                     }
                 }
             }
             else
             {
-                if (this.Device.State == State.Logged)
-                {
-                    Logging.Error(this.GetType(), "Packet == null at ReceiveMessage().");
-                }
+                Logging.Error(this.GetType(), "Packet == null at ReceiveMessage().");
             }
         }
 
@@ -168,81 +148,70 @@
                 if (Message.IsServerToClientMessage)
                 {
                     Message.Encode();
-
                     byte[] Bytes = Message.Stream.ToArray();
 
-                    if (this.SendEncrypter == null)
+                    if (this.SendEncrypter == null && this.PepperInit.State > 0)
                     {
-                        if (this.PepperInit.State > 0)
+                        if (this.PepperInit.State == 1)
                         {
-                            if (this.PepperInit.State == 1)
-                            {
-                                Bytes = PepperCrypto.SendPepperAuthentificationResponse(ref this.PepperInit, Bytes);
-                            }
-                            else
-                            {
-                                if (this.PepperInit.State == 3)
-                                {
-                                    Bytes = PepperCrypto.SendPepperLoginResponse(ref this.PepperInit, out this.SendEncrypter, out this.ReceiveEncrypter, Bytes);
-                                }
-                            }
+                            Bytes = PepperCrypto.SendPepperAuthentificationResponse(ref this.PepperInit, Bytes);
+                        }
+                        else if (this.PepperInit.State == 3)
+                        {
+                            Bytes = PepperCrypto.SendPepperLoginResponse(ref this.PepperInit, out this.SendEncrypter, out this.ReceiveEncrypter, Bytes);
                         }
                     }
                     else
                     {
-                        Bytes = this.SendEncrypter.Encrypt(Bytes);
+                        Bytes = this.SendEncrypter?.Encrypt(Bytes) ?? Bytes;
                     }
 
-                    Message.Stream.SetByteArray(Bytes);
-
+                    LogPacket("Sent", Message.Type, Bytes);
                     NetworkTcp.Send(this.WriteHeader(Message), this.Device.Token);
-                    HandlerFactory.MessageHandle(this.Device, Message); // TODO : Probably call Task.Wait().
                 }
                 else
                 {
-                    Logging.Error(this.GetType(), "Message.IsServerToClientMessage != true at SendMessage(Message " + Message.Type + ").");
+                    Logging.Error(this.GetType(), $"Message.IsServerToClientMessage != true at SendMessage(Message {Message.Type}).");
                 }
             }
         }
 
         /// <summary>
-        /// Writes the header of message.
+        /// Writes the header of a message.
         /// </summary>
         public byte[] WriteHeader(Message Message)
         {
-            byte[] Stream       = Message.GetBytes();
-            byte[] Packet       = new byte[7 + Stream.Length];
+            byte[] Stream = Message.GetBytes();
+            byte[] Packet = new byte[7 + Stream.Length];
 
-            int MessageLength   = Stream.Length;
-            int MessageType     = Message.Type;
-            int MessageVersion  = Message.Version;
+            int MessageLength = Stream.Length;
+            int MessageType = Message.Type;
+            int MessageVersion = Message.Version;
 
             if (MessageLength > 0xFFFFFF)
             {
-                throw new LogicException(this.GetType(), "Message is too big. length: " + MessageLength);
+                throw new LogicException(this.GetType(), "Message is too big. Length: " + MessageLength);
             }
 
             Array.Copy(Stream, 0, Packet, 7, MessageLength);
 
-            Packet[1] = (byte) (MessageType);
-            Packet[0] = (byte) (MessageType >> 8);
+            Packet[1] = (byte)(MessageType);
+            Packet[0] = (byte)(MessageType >> 8);
 
-            Packet[4] = (byte) (MessageLength);
-            Packet[3] = (byte) (MessageLength >> 8);
-            Packet[2] = (byte) (MessageLength >> 16);
+            Packet[4] = (byte)(MessageLength);
+            Packet[3] = (byte)(MessageLength >> 8);
+            Packet[2] = (byte)(MessageLength >> 16);
 
-            Packet[6] = (byte) (MessageVersion);
-            Packet[5] = (byte) (MessageVersion >> 8);
+            Packet[6] = (byte)(MessageVersion);
+            Packet[5] = (byte)(MessageVersion >> 8);
 
             return Packet;
         }
 
-        /// <summary>
-        /// Called when a keep alive message has been received.
-        /// </summary>
-        public void KeepAliveMessageReceived()
+        internal void KeepAliveMessageReceived()
         {
             this.LastKeepAlive = DateTime.UtcNow;
+            Logging.Info(this.GetType(), "Keep-alive message received. Timestamp updated.");
         }
     }
 }
