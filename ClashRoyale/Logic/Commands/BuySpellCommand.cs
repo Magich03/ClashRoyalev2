@@ -4,6 +4,9 @@
     using ClashRoyale.Logic.Home;
     using ClashRoyale.Logic.Mode;
     using ClashRoyale.Logic.Player;
+    using ClashRoyale.Logic.Home.Spells;
+    using ClashRoyale.Logic.Shop.Items;
+    using System.Linq;
 
     public class BuySpellCommand : Command
     {
@@ -66,7 +69,43 @@
 
                 if (Player != null)
                 {
-                    // TODO : Implement BuySpellCommand()::Execute(GameMode).
+                    SpellShopItem Item = Home.ShopItems.OfType<SpellShopItem>().FirstOrDefault(I => I.ShopIndex == this.SpellIndex);
+
+                    if (Item == null)
+                    {
+                        return 3;
+                    }
+
+                    if (Item.Bought)
+                    {
+                        return 4;
+                    }
+
+                    if (Player.Gold < Item.Cost)
+                    {
+                        return 5;
+                    }
+
+                    Player.UseGold(Item.Cost);
+
+                    Spell Existing = Home.GetSpellByData(Item.SpellData);
+
+                    if (Existing == null)
+                    {
+                        Existing = new Spell(Item.SpellData);
+                        Existing.SetShowNewIcon(true);
+                        Existing.AddMaterial(Item.Amount);
+                        Home.AddSpell(Existing);
+                    }
+                    else
+                    {
+                        Existing.AddMaterial(Item.Amount);
+                    }
+
+                    Item.Bought = true;
+                    Home.ShopBought.Add(Item.ShopIndex);
+
+                    return 0;
                 }
 
                 return 2;

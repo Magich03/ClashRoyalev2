@@ -24,7 +24,7 @@
         {
             get
             {
-                return 210;
+                return 393; // LogicClaimRewardCommand in client 3.830 (210 in older clients)
             }
         }
 

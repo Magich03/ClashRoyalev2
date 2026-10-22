@@ -148,9 +148,9 @@
                 if (Message.IsServerToClientMessage)
                 {
                     Message.Encode();
-                    byte[] Bytes = Message.Stream.ToArray();
+                    byte[] Bytes = Message.Stream.ToArray(0, Message.Stream.Offset);
 
-                    if (this.SendEncrypter == null && this.PepperInit.State > 0)
+                    if (this.SendEncrypter == null)
                     {
                         if (this.PepperInit.State == 1)
                         {
@@ -163,11 +163,14 @@
                     }
                     else
                     {
-                        Bytes = this.SendEncrypter?.Encrypt(Bytes) ?? Bytes;
+                        Bytes = this.SendEncrypter.Encrypt(Bytes);
                     }
+
+                    Message.Stream.SetByteArray(Bytes);
 
                     LogPacket("Sent", Message.Type, Bytes);
                     NetworkTcp.Send(this.WriteHeader(Message), this.Device.Token);
+                    HandlerFactory.MessageHandle(this.Device, Message);
                 }
                 else
                 {

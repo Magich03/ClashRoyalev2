@@ -12,6 +12,7 @@
     using ClashRoyale.Logic.Inbox;
     using ClashRoyale.Logic.Mode;
     using ClashRoyale.Logic.Player;
+    using ClashRoyale.Logic.Shop;
     using ClashRoyale.Maths;
     using ClashRoyale.Messages;
     using ClashRoyale.Messages.Client.Account;
@@ -157,6 +158,9 @@
             Device.Defines.AndroidId    = Message.AndroidId;
             Device.Defines.OsVersion    = Message.OsVersion;
             Device.Defines.Android      = Message.IsAndroid;
+
+            Player.Home.ClaimPendingPurchasedChest();
+            ShopGenerator.Refresh(Player.Home, Player);
 
             Device.NetworkManager.SendMessage(new LoginOkMessage(Player));
             Device.NetworkManager.SendMessage(new OwnHomeDataMessage(Player, Player.Home, TimeUtil.Timestamp));

@@ -156,11 +156,6 @@
             return false;
         }
 
-        private static class Exception
-        {
-            public string Message { get; set; }
-        }
-
         /// <summary>
         /// Deserializes the specified entity.
         /// </summary>

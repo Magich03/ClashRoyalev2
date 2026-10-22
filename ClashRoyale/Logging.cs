@@ -15,7 +15,13 @@
         [Conditional("DEBUG")]
         public static void Info(Type Type, string Message)
         {
-            Debug.WriteLine("[ INFO  ] " + Type.Name.Pad() + " : " + Message);
+            Logging.Write("[ INFO  ] " + Type.Name.Pad() + " : " + Message);
+        }
+
+        private static void Write(string Line)
+        {
+            Debug.WriteLine(Line);
+            Console.WriteLine(Line);
         }
 
         /// <summary>
@@ -25,7 +31,7 @@
         /// <param name="Message">The message.</param>
         public static void Warning(Type Type, string Message)
         {
-            Debug.WriteLine("[WARNING] " + Type.Name.Pad() + " : " + Message);
+            Logging.Write("[WARNING] " + Type.Name.Pad() + " : " + Message);
 
             /* if (Sentry.Initialized)
             {
@@ -48,7 +54,7 @@
         /// <param name="Message">The message.</param>
         public static void Error(Type Type, string Message)
         {
-            Debug.WriteLine("[ ERROR ] " + Type.Name.Pad() + " : " + Message);
+            Logging.Write("[ ERROR ] " + Type.Name.Pad() + " : " + Message);
 
             if (Sentry.Initialized)
             {
@@ -71,7 +77,7 @@
         /// <param name="Message">The message.</param>
         public static void Fatal(Type Type, string Message)
         {
-            Debug.WriteLine("[ FATAL ] " + Type.Name.Pad() + " : " + Message);
+            Logging.Write("[ FATAL ] " + Type.Name.Pad() + " : " + Message);
 
             if (Sentry.Initialized)
             {

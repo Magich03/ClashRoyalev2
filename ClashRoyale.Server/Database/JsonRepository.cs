@@ -4,6 +4,7 @@ namespace ClashRoyale.Database
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
 
@@ -13,6 +14,14 @@ namespace ClashRoyale.Database
     /// <typeparam name="T">The type of entity to store.</typeparam>
     public class JsonRepository<T> where T : class
     {
+        private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            NullValueHandling = NullValueHandling.Ignore,
+            MissingMemberHandling = MissingMemberHandling.Ignore
+        };
+
+        private readonly SemaphoreSlim _writeLock = new SemaphoreSlim(1, 1);
         private readonly string _folderPath;
         private readonly string _collectionName;
 
@@ -43,18 +52,32 @@ namespace ClashRoyale.Database
         {
             try
             {
-                var highId = GetPropertyValue(entity, "HighId");
-                var lowId = GetPropertyValue(entity, "LowId");
+                var filePath = GetFilePath(GetId(entity, "HighId"), GetId(entity, "LowId"));
+                var json = JsonConvert.SerializeObject(entity, Formatting.Indented, JsonSettings);
 
-                var filePath = GetFilePath((int)highId, (int)lowId);
-                var json = JsonConvert.SerializeObject(entity, Formatting.Indented);
-
-                await File.WriteAllTextAsync(filePath, json);
+                await WriteFileAsync(filePath, json);
             }
             catch (Exception ex)
             {
                 Logging.Error(typeof(JsonRepository<T>), $"Error in InsertOneAsync: {ex.Message}");
                 throw;
+            }
+        }
+
+        // Writes to a temp file then swaps it in, so a crash or concurrent read never sees a half-written file.
+        private async Task WriteFileAsync(string filePath, string json)
+        {
+            await _writeLock.WaitAsync();
+
+            try
+            {
+                var tempPath = filePath + ".tmp";
+                await File.WriteAllTextAsync(tempPath, json);
+                File.Move(tempPath, filePath, true);
+            }
+            finally
+            {
+                _writeLock.Release();
             }
         }
 
@@ -73,7 +96,7 @@ namespace ClashRoyale.Database
                 }
 
                 var json = await File.ReadAllTextAsync(filePath);
-                return JsonConvert.DeserializeObject<T>(json);
+                return JsonConvert.DeserializeObject<T>(json, JsonSettings);
             }
             catch (Exception ex)
             {
@@ -90,9 +113,9 @@ namespace ClashRoyale.Database
             try
             {
                 var filePath = GetFilePath(highId, lowId);
-                var json = JsonConvert.SerializeObject(updatedEntity, Formatting.Indented);
+                var json = JsonConvert.SerializeObject(updatedEntity, Formatting.Indented, JsonSettings);
 
-                await File.WriteAllTextAsync(filePath, json);
+                await WriteFileAsync(filePath, json);
                 return updatedEntity;
             }
             catch (Exception ex)
@@ -186,7 +209,7 @@ namespace ClashRoyale.Database
                     try
                     {
                         var json = await File.ReadAllTextAsync(file);
-                        var entity = JsonConvert.DeserializeObject<T>(json);
+                        var entity = JsonConvert.DeserializeObject<T>(json, JsonSettings);
                         if (entity != null)
                         {
                             entities.Add(entity);
@@ -210,10 +233,16 @@ namespace ClashRoyale.Database
         /// <summary>
         /// Helper method to get property value using reflection.
         /// </summary>
-        private static object GetPropertyValue(T entity, string propertyName)
+        private static int GetId(T entity, string memberName)
         {
-            var property = typeof(T).GetProperty(propertyName);
-            return property?.GetValue(entity);
+            object value = typeof(T).GetField(memberName)?.GetValue(entity) ?? typeof(T).GetProperty(memberName)?.GetValue(entity);
+
+            if (value == null)
+            {
+                throw new InvalidOperationException(typeof(T).Name + " has no " + memberName + " field or property.");
+            }
+
+            return Convert.ToInt32(value);
         }
     }
 }

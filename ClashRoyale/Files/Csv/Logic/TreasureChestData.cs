@@ -289,6 +289,12 @@ namespace ClashRoyale.Files.Csv.Logic
             }
             else
             {
+                // Same rule as base chests: no chance for a rarity with no unlocked cards in this arena (e.g. Legendary in Arena 1).
+                if (this.ArenaData != null && this.ArenaData.GetUnlockedSpellCountForRarity(Data) < 1)
+                {
+                    return 0;
+                }
+
                 switch (Data.Name)
                 {
                     case "Legendary":
@@ -308,7 +314,8 @@ namespace ClashRoyale.Files.Csv.Logic
                     }
                     default:
                     {
-                        Chance = 1;
+                        // Commons take the remainder; other rarities (e.g. unused "Hero") never drop from chests.
+                        Chance = 0;
                         break;
                     }
                 }

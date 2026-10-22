@@ -50,7 +50,7 @@ namespace ClashRoyale.Files.Csv.Logic
             {
                 ArenaData Previous = null;
 
-                CsvFiles.Get(this.Instance).Datas.ForEach(Data =>
+                this.CsvTable.Datas.ForEach(Data =>
                 {
                     ArenaData ArenaData = (ArenaData) Data;
 

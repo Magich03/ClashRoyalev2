@@ -145,6 +145,16 @@
                 }
             }
 
+            // Shop chests with rerolls (Lightning) are interactive rewards in client 3.830: the client shows the strikes.
+            if (Chest.ShopChest != null && Chest.ShopChest.NumRerolls > 0)
+            {
+                return new InteractiveReward(Reward)
+                {
+                    RerollSeed = XorShift.Next(1, int.MaxValue),
+                    Rerolls    = Chest.ShopChest.NumRerolls
+                };
+            }
+
             return Reward;
         }
 

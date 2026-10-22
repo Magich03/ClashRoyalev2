@@ -32,6 +32,14 @@
             }
         }
 
+        /// <summary>
+        /// The patched client always encrypts with <see cref="ModdedPublicKey"/>, so any key version maps to secret key 14.
+        /// </summary>
+        public static byte[] GetSecretKey(int KeyVersion)
+        {
+            return PepperFactory.SecretKeys.TryGetValue(KeyVersion, out byte[] Key) ? Key : PepperFactory.SecretKeys[14];
+        }
+
         public static readonly Dictionary<int, byte[]> SecretKeys = new Dictionary<int, byte[]>
         {
             {

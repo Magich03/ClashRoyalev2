@@ -128,9 +128,14 @@
         {
             if (AsyncEvent.AcceptSocket.Connected)
             {
-                string IpAddress = ((IPEndPoint) AsyncEvent.AcceptSocket.RemoteEndPoint).Address.ToString();
+                IPAddress RemoteAddress = ((IPEndPoint) AsyncEvent.AcceptSocket.RemoteEndPoint).Address;
 
-                if (IpAddress.StartsWith("192.168."))
+                if (!NetworkTcp.IsLocalNetwork(RemoteAddress))
+                {
+                    Logging.Warning(typeof(NetworkTcp), "Rejected connection from " + RemoteAddress + ".");
+                    AsyncEvent.AcceptSocket.Close();
+                }
+                else
                 {
                     SocketAsyncEventArgs ReadEvent = NetworkTcp.ReadPool.Dequeue();
 
@@ -154,6 +159,23 @@
             }
 
             NetworkTcp.StartAccept(AsyncEvent);
+        }
+
+        private static bool IsLocalNetwork(IPAddress Address)
+        {
+            if (IPAddress.IsLoopback(Address))
+            {
+                return true;
+            }
+
+            if (Address.IsIPv4MappedToIPv6)
+            {
+                Address = Address.MapToIPv4();
+            }
+
+            byte[] B = Address.GetAddressBytes();
+
+            return B.Length == 4 && (B[0] == 10 || (B[0] == 172 && B[1] >= 16 && B[1] <= 31) || (B[0] == 192 && B[1] == 168));
         }
 
         /// <summary>

@@ -79,5 +79,6 @@ namespace ClashRoyale.Enums
         EventTargetingDefinitions       = 85,
         ShopCycle           = 86,
         SkinSets            = 87,
+        ShopChests          = 90,
     }
 }

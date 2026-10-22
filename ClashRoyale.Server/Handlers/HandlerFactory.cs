@@ -31,7 +31,6 @@
     using ClashRoyale.Messages.Client.Matchmaking;
     using ClashRoyale.Messages.Client.RoyalTv;
     using ClashRoyale.Messages.Client.Scoring;
-    using ClashRoyale.Messages.Client.Sector;
     using ClashRoyale.Messages.Server.Account;
     using ClashRoyale.Messages.Server.Home;
 
@@ -94,7 +93,6 @@
 
             HandlerFactory.MessageHandlers.Add(new CancelMatchmakeMessage().Type,               CancelMatchmakeHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new StartTrainingBattleMessage().Type,           StartTrainingBattleHandler.Handle);
-            HandlerFactory.MessageHandlers.Add(new RequestSectorStateMessage().Type,            RequestSectorStateHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new SectorCommandMessage().Type,                 SectorCommandHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new SendBattleEventMessage().Type,               SendBattleEventHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new AskForTvContentMessage().Type,               AskForTvContentHandler.Handle);
@@ -140,18 +138,15 @@
                     }
                     catch (Exception Exception)
                     {
-                        Logging.Error(typeof(MessageHandler), "Operation has been aborted because of a " + Exception.GetType().Name + ", while processing " + Message.GetType().Name + ".");
+                        Logging.Error(typeof(MessageHandler), "Operation has been aborted while processing " + Message.GetType().Name + ": " + Exception);
                     }
 
                     if (Cancellation.IsCancellationRequested == false)
                     {
-                        /* if (Device.GameMode != null)
+                        if (!Message.IsServerToClientMessage && Device.GameMode?.Player != null)
                         {
-                            if (Device.GameMode.Player != null)
-                            {
-                                await Players.Save(Device.GameMode.Player);
-                            }
-                        } */
+                            await Players.Save(Device.GameMode.Player);
+                        }
 
                         return true;
                     }

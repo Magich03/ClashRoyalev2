@@ -1,8 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <RollForward>Major</RollForward>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -33,14 +35,5 @@
     <ProjectReference Include="..\ClashRoyale\ClashRoyale.csproj" />
     <ProjectReference Include="..\ClashRoyale.Patcher\ClashRoyale.Patcher.csproj" />
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="Build">
-    <ItemGroup>
-      <DllFiles Include="$(TargetDir)*.dll" />
-    </ItemGroup>
-    <Move SourceFiles="@(DllFiles)" DestinationFolder="$(TargetDir)Library" />
-    <Delete Files="$(TargetDir)*.xml" />
-    <Delete Files="$(TargetDir)*.pdb" />
-  </Target>
 
 </Project>

@@ -143,7 +143,8 @@
             }
 
             
-            if (Type < 300)
+            // Server commands use ids 200-499 in client 3.830 (e.g. ClaimReward 393); client commands start at 500.
+            if (Type < 500)
             {
                 if (Type >= 200)
                 {
@@ -161,6 +162,10 @@
                             return new AddChestCommand();
                         case 215:
                             return new TransactionsRevokedCommand(); */
+                        case 349:
+                            return new AddChestCommand();
+                        case 393:
+                            return new ClaimRewardCommand();
                         case 275:
                             return new DiamondsRemovedCommand();
                         case 278:
@@ -181,6 +186,10 @@
                     return new UnknownCommand();
                 case 505:
                     return new SwapSpellsCommand();
+                case 506:
+                    return new ChestUseRerollCommand();
+                case 520:
+                    return new DraftChestChooseCommand();
                 case 511:
                     return new BuyResourcePackCommand();
                 case 512:

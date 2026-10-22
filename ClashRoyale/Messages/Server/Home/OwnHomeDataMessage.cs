@@ -78,14 +78,12 @@ namespace ClashRoyale.Messages.Server.Home
         /// </summary>
         public override void Encode()
         {
-             this.Home.Encode(this.Stream);
-            //Stream.AddRange("".HexaToBytes());
-        
-            //this.Player.Encode(this.Stream);
+            this.Home.Encode(this.Stream);
+            this.Player.Encode(this.Stream);
             
-           //this.Stream.WriteVInt(-1956785812); // SEED
-           //this.Stream.WriteVInt(this.Timestamp);
-            //this.Stream.WriteVInt(626930);
+            this.Stream.WriteVInt(-1956785812); // SEED
+            this.Stream.WriteVInt(this.Timestamp);
+            this.Stream.WriteVInt(626930);
         }
     }
 }

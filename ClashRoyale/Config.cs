@@ -8,7 +8,7 @@
 
         public const bool IsMaxedServer     = false;
         public const bool IsDevelopment     = false;
-        public const bool IsKunlunServer    = true;
+        public const bool IsKunlunServer    = false;
 
         public const int ClientMajorVersion = 3;
         public const int ClientMinorVersion = 5;

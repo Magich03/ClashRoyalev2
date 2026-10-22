@@ -3,7 +3,6 @@ namespace ClashRoyale.Messages.Server.Account
     using ClashRoyale.Enums;
     using ClashRoyale.Extensions;
     using ClashRoyale.Logic.Player;
-    using System;
 
     public class LoginOkMessage : Message
     {
@@ -36,7 +35,7 @@ namespace ClashRoyale.Messages.Server.Account
         /// </summary>
         public LoginOkMessage()
         {
-            this.Version = 1;
+            this.Version        = 1;
         }
 
         /// <summary>
@@ -45,7 +44,7 @@ namespace ClashRoyale.Messages.Server.Account
         /// <param name="Stream">The stream.</param>
         public LoginOkMessage(ByteStream Stream) : base(Stream)
         {
-            this.Version = 1;
+            this.Version        = 1;
         }
 
         /// <summary>
@@ -54,8 +53,8 @@ namespace ClashRoyale.Messages.Server.Account
         /// <param name="Player">The player.</param>
         public LoginOkMessage(Player Player)
         {
-            this.Version = 1;
-            this.Player = Player;
+            this.Version        = 1;
+            this.Player         = Player;
         }
 
         /// <summary>
@@ -63,13 +62,13 @@ namespace ClashRoyale.Messages.Server.Account
         /// </summary>
         public override void Decode()
         {
-            this.Player.HighId = this.Stream.ReadInt();
-            this.Player.LowId = this.Stream.ReadInt();
+            this.Player.HighId  = this.Stream.ReadInt();
+            this.Player.LowId   = this.Stream.ReadInt();
 
-            this.Player.HighId = this.Stream.ReadInt();
-            this.Player.LowId = this.Stream.ReadInt();
+            this.Player.HighId  = this.Stream.ReadInt();
+            this.Player.LowId   = this.Stream.ReadInt();
 
-            this.Player.Token = this.Stream.ReadString();
+            this.Player.Token   = this.Stream.ReadString();
 
             this.Stream.ReadString();
             this.Stream.ReadString();
@@ -116,64 +115,57 @@ namespace ClashRoyale.Messages.Server.Account
         /// </summary>
         public override void Encode()
         {
-            // Write Player IDs
-            this.Stream.WriteInt(this.Player.HighId);
-            this.Stream.WriteInt(this.Player.LowId);
-            this.Stream.WriteInt(this.Player.HighId);
-            this.Stream.WriteInt(this.Player.LowId);
+            this.Stream.WriteLong(this.Player.PlayerId);
+            this.Stream.WriteLong(this.Player.PlayerId);
 
-            // Write Player Token
             this.Stream.WriteString(this.Player.Token);
 
-            // Write Placeholder Strings
-            this.Stream.WriteString(""); // Facebook ID placeholder
-            this.Stream.WriteString(""); // Gamecenter ID placeholder
+            this.Stream.WriteString(null); // Facebook
+            this.Stream.WriteString(null); // Gamecenter
 
-            // Write Server Version Information
-            this.Stream.WriteVInt(Config.ClientMajorVersion);
-            this.Stream.WriteVInt(Config.ClientMinorVersion);
-            this.Stream.WriteVInt(Config.ClientMinorVersion);
-            this.Stream.WriteVInt(Config.ClientBuildVersion);
+            this.Stream.WriteVInt(Config.ServerMajorVersion);
+            this.Stream.WriteVInt(Config.ServerBuildVersion);
+            this.Stream.WriteVInt(Config.ServerBuildVersion);
+            this.Stream.WriteVInt(Config.ServerMinorVersion);
 
-            // Write Server Type
             this.Stream.WriteString(Config.Environment);
 
-            // Write Session Details
-            this.Stream.WriteVInt(0); // Session count
-            this.Stream.WriteVInt(0); // Play time in seconds
-            this.Stream.WriteVInt(0); // Days since started playing
+            // B6-17  96-9A-41  8B-0B
 
-            // Write Facebook ID and Dates
-            this.Stream.WriteString("1475268786112433"); // Facebook ID
-            this.Stream.WriteString(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()); // Server time
-            this.Stream.WriteString(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()); // Account created date
+            this.Stream.WriteVInt(0); // Session Count
+            this.Stream.WriteVInt(0); // PlayTime Seconds.
+            this.Stream.WriteVInt(0); // Days Since Started Playing.
 
-            // Write Optional Byte
-            this.Stream.WriteByte(0);
+            this.Stream.WriteString("815255971920210"); // Facebook App Id
+            this.Stream.WriteString("1507593815116");
+            this.Stream.WriteString("1507593409000");
 
-            // Write Empty Placeholder Strings
-            this.Stream.WriteString(""); // Placeholder 1
-            this.Stream.WriteString(""); // Placeholder 2
-            this.Stream.WriteString(""); // Placeholder 3
+            this.Stream.WriteVInt(0);
 
-            // Write Location Details
-            this.Stream.WriteString("IT"); // State
-            this.Stream.WriteString("CR City"); // City
-            this.Stream.WriteString("20"); // Country code
+            this.Stream.WriteString("103419370274411296720");
+            this.Stream.WriteString(null);
+            this.Stream.WriteString(null);
 
-            // Write Additional Details
-            this.Stream.WriteVInt(1); // Additional count
-            this.Stream.WriteVInt(455500); // Additional value 1
-            this.Stream.WriteVInt(115500); // Additional value 2
+            this.Stream.WriteString("FR"); // Country - Pays
+            this.Stream.WriteString("Melun"); // City - Ville
+            this.Stream.WriteString("A8"); // State - Region
 
-            // Write Asset URLs
-            this.Stream.WriteVInt(2); // Asset URL count
-            this.Stream.WriteString(""); // Asset URL 1
-            this.Stream.WriteString("https://99faf1e355c749a9a049-2a63f4436c967aa7d355061bd0d924a1.ssl.cf1.rackcdn.com"); // Asset URL 2
+            this.Stream.WriteVInt(2);
+            {
+                this.Stream.AddRange("91-A1-3B".HexaToBytes());
+                this.Stream.AddRange("A8-9E-03".HexaToBytes());
+            }
 
-            // Write Event Asset URLs
-            this.Stream.WriteVInt(1); // Event asset URL count
-            this.Stream.WriteString(""); // Event asset URL
+            this.Stream.WriteVInt(2);
+            {
+                this.Stream.WriteString("https://game-assets.clashroyaleapp.com");
+                this.Stream.WriteString("https://99faf1e355c749a9a049-2a63f4436c967aa7d355061bd0d924a1.ssl.cf1.rackcdn.com");
+            }
+
+            this.Stream.WriteVInt(1);
+            {
+                this.Stream.WriteString("https://event-assets.clashroyale.com");
+            }
         }
     }
 }

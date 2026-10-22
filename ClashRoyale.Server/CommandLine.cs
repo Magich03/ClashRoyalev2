@@ -26,6 +26,12 @@
 
                 string Input = Console.ReadLine();
 
+                if (Input == null)
+                {
+                    // No console attached (stdin closed): keep the server running without a command prompt.
+                    System.Threading.Thread.Sleep(System.Threading.Timeout.Infinite);
+                }
+
                 if (!string.IsNullOrEmpty(Input))
                 {
                     string[] Args = Input.Trim().Split(' ');

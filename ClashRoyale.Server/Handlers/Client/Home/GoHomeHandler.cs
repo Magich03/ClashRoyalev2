@@ -8,6 +8,7 @@
     using ClashRoyale.Extensions.Utils;
     using ClashRoyale.Logic;
     using ClashRoyale.Logic.Collections;
+    using ClashRoyale.Logic.Shop;
     using ClashRoyale.Messages;
     using ClashRoyale.Messages.Client.Home;
     using ClashRoyale.Messages.Server.Home;
@@ -35,6 +36,7 @@
 
                 if (Player != null)
                 {
+                    ShopGenerator.Refresh(Player.Home, Player);
                     Device.NetworkManager.SendMessage(new OwnHomeDataMessage(Player, Player.Home, TimeUtil.Timestamp));
                 }
                 else

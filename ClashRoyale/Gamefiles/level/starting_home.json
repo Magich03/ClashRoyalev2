@@ -73,10 +73,5 @@
    "gambleCounters": [
    ],
    "chest_slots": 4,
-   "free_chest_t": {
-      "ticks": 288000,
-      "remaining": 0,
-      "timestamp": -1
-   },
    "star_chest_cooldown": true
 }

@@ -27,6 +27,11 @@
         private TreasureChestData ChestData;
 
         /// <summary>
+        /// The shop offer this chest was bought from (not persisted); decides the reward type, e.g. Lightning rerolls.
+        /// </summary>
+        public ShopChestData ShopChest;
+
+        /// <summary>
         /// Gets if we can start unlocking.
         /// </summary>
         public bool CanStartUnlocking
