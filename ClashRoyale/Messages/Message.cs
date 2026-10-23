@@ -120,5 +120,8 @@
                 return BitConverter.ToString(this.Stream.ToArray(this.Stream.Offset, this.Stream.BytesLeft));
             }
         }
+
+        public short _Identifier { get; set; }
+        public byte[] ToBytes { get; set; }
     }
 }

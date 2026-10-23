@@ -493,8 +493,9 @@
         /// </summary>
         public long ReadLong()
         {
-            return (long) (this.Read() << 56 | this.Read() << 48 | this.Read() << 40 | this.Read() << 32 |
-                           this.Read() << 24 | this.Read() << 16 | this.Read() << 8 | this.Read());
+            // Two big-endian ints (LogicLong high, low); shifting the int bytes past 31 bits used to corrupt the value.
+            long High = this.ReadInt();
+            return High << 32 | (uint) this.ReadInt();
         }
 
         /// <summary>

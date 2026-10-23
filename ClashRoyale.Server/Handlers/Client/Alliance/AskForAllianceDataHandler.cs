@@ -34,12 +34,12 @@
 
             if (Clan != null)
             {
-                Device.NetworkManager.SendMessage(new AllianceDataMessage(new AllianceFullEntry()
+                if (Clan.Members.ContainsKey(Device.GameMode.Player.PlayerId))
                 {
-                    Header      = Clan.HeaderEntry,
-                    Members     = Clan.Members.Values.ToArray(),
-                    Description = Clan.Description
-                }));
+                    Clan.UpdateMember(Device.GameMode.Player);
+                }
+
+                Device.NetworkManager.SendMessage(new AllianceDataMessage(Clan.GetFullEntry()));
             }
             else
             {

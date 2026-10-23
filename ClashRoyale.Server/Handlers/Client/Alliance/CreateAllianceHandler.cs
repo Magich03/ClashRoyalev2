@@ -64,9 +64,9 @@
             }
             else
             {
-                if (CreateAllianceMessage.AccessType > 2)
+                if (CreateAllianceMessage.AccessType > 3)
                 {
-                    throw new LogicException(typeof(CreateAllianceHandler), "AccessType > 2 at Handle(Device, Message, CancellationToken).");
+                    throw new LogicException(typeof(CreateAllianceHandler), "AccessType > 3 at Handle(Device, Message, CancellationToken).");
                 }
             }
 
@@ -77,7 +77,7 @@
                     Name    = CreateAllianceMessage.Name,
                     Badge   = CreateAllianceMessage.BadgeData,
                     Region  = CreateAllianceMessage.RegionData,
-                    Type    = CreateAllianceMessage.Type,
+                    Type    = CreateAllianceMessage.AccessType,
 
                     RequiredScore = CreateAllianceMessage.RequiredScore,
                 },
@@ -90,18 +90,7 @@
 
                 if (Clan != null)
                 {
-                    AllianceFullEntry FullEntry = new AllianceFullEntry(Clan.HeaderEntry, Clan.Members.Values.ToArray(), Clan.Description);
-
-                    Device.GameMode.CommandManager.WaitJoinAllianceTurn = true;
-                    Device.GameMode.CommandManager.AddAvailableServerCommand(new JoinAllianceCommand(Clan.HighId, Clan.LowId, Clan.HeaderEntry.Name, Clan.HeaderEntry.Badge, true));
-
-                    Device.NetworkManager.SendMessage(new AllianceDataMessage(FullEntry));
-                    Device.NetworkManager.SendMessage(new AllianceStreamMessage(Clan.Messages.ToArray()));
-
-                    if (await Clan.Members.TryAddOnlineMember(Device.GameMode.Player))
-                    {
-                        // TODO.
-                    }
+                    await ClanHelper.CompleteJoin(Device, Clan, true);
                 }
                 else
                 {

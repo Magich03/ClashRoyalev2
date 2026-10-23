@@ -1,10 +1,11 @@
-﻿namespace ClashRoyale.Logic.Home.Spells
+namespace ClashRoyale.Logic.Home.Spells
 {
     using ClashRoyale.Extensions;
     using ClashRoyale.Extensions.Helper;
     using ClashRoyale.Files.Csv.Logic;
     using ClashRoyale.Maths;
 
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     public class Spell
@@ -15,6 +16,12 @@
         public int Level;
         public int CreateTime;
         public int RecentUseCount;
+
+        /// <summary>
+        /// Sixth VInt of the 3.830 card layout (client field +0x20); not used by the server logic.
+        /// </summary>
+        [JsonIgnore]
+        public int ClientValue6;
 
         public int NewCount;
 
@@ -241,6 +248,7 @@
             this.Count          = Reader.ReadVInt();
             this.NewCount       = Reader.ReadVInt();
             this.RecentUseCount = Reader.ReadVInt();
+            this.ClientValue6   = Reader.ReadVInt();
             this.NewUpgrade     = Reader.ReadBoolean();
             this.NewFlag        = Reader.ReadBoolean();
         }
@@ -263,6 +271,9 @@
             Stream.WriteVInt(this.Level);
             Stream.WriteVInt(this.CreateTime);
             Stream.WriteVInt(this.Count);
+            // The client reads data, 6 VInts, 2 bit-packed booleans; the two whole bytes below occupy the 6th VInt
+            // and the flag byte. Kept this way on purpose: the hand-tuned tail of Home.Encode depends on the extra
+            // byte this produces after a deck, and the exact layout broke OwnHomeData (see Decode for the real one).
             Stream.WriteVInt(this.NewCount);
             Stream.WriteVInt(this.RecentUseCount);
             Stream.WriteBool(this.NewUpgrade);

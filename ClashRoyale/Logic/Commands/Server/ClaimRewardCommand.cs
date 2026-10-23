@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Commands.Server
+namespace ClashRoyale.Logic.Commands.Server
 {
     using ClashRoyale.Extensions;
     using ClashRoyale.Files.Csv.Logic;
@@ -24,7 +24,7 @@
         {
             get
             {
-                return 210;
+                return 393; // LogicClaimRewardCommand in client 3.830 (210 in older clients)
             }
         }
 
@@ -103,6 +103,19 @@
 
             switch (this.ChestType)
             {
+                case 6:
+                {
+                    if (Home.ChallengeReward == null || !Home.ChallengeReward.IsClaimed || Home.Challenge == null || Home.Challenge.RewardClaimed) return 3;
+                    TreasureChestData = Home.ChallengeReward.Data;
+                    break;
+                }
+                case 1:
+                {
+                    var chest = Home.Chests.Find(c => c != null && c.Id == this.LocationId);
+                    if (chest == null || !chest.IsUnlocked || !chest.IsClaimed) return 3;
+                    TreasureChestData = chest.Data;
+                    break;
+                }
                 case 2:
                 {
                     if (GameMode.Home.FreeChest != null)
@@ -119,16 +132,14 @@
                 }
                 case 3:
                 {
-                    if (GameMode.Home.StarChest != null)
-                    {
-                        TreasureChestData = GameMode.Home.StarChest.Data;
-
-                        if (TreasureChestData == null)
-                        {
-                            goto End;
-                        }
-                    }
-
+                    if (Home.StarChest == null || !Home.StarChest.IsClaimed || Home.CrownChestCredits < 1) return 3;
+                    TreasureChestData = Home.StarChest.Data;
+                    break;
+                }
+                case 9:
+                {
+                    if (Home.ClanCrownChest == null || !Home.ClanCrownChest.IsClaimed) return 3;
+                    TreasureChestData = Home.ClanCrownChest.Data;
                     break;
                 }
                 case 4:
@@ -204,10 +215,26 @@
                 Player.AddFreeDiamonds(this.Reward.Diamonds);
             }
 
+            if (TreasureChestData?.RootChest.Name == "Free") Home.UpdateFreeChestDiamondIndex();
+            else if (TreasureChestData?.RootChest.Name == "Star") Home.UpdateCrownChestDiamondIndex();
+
             Home.SetClaimingReward(false);
 
             switch (this.ChestType)
             {
+                case 6:
+                {
+                    Home.Challenge.RewardClaimed = true;
+                    Home.ChallengeReward = null;
+                    Home.Challenge = null;
+                    break;
+                }
+                case 1:
+                {
+                    int slot = Home.Chests.FindIndex(c => c != null && c.Id == this.LocationId);
+                    if (slot >= 0) Home.Chests[slot] = null;
+                    break;
+                }
                 case 2:
                 {
                     Home.FreeChestCollected();
@@ -216,6 +243,11 @@
                 case 3:
                 {
                     Home.CrownChestCollected();
+                    break;
+                }
+                case 9:
+                {
+                    Home.ClanCrownChest = null;
                     break;
                 }
                 case 4:

@@ -13,6 +13,7 @@
         public int LowId;
 
         public byte Type;
+        public string Text;
 
         public List<int> Ticks;
         public List<int> Coords;
@@ -103,7 +104,7 @@
 
             if (this.Type == 7)
             {
-                Logging.Info(this.GetType(), "Unknown Value: " + Stream.ReadByte());
+                this.Text = Stream.ReadString();
             }
 
             if (this.Type == 8)
@@ -125,7 +126,7 @@
 
             if (this.Type == 7)
             {
-                // ?
+                Stream.WriteString(this.Text);
             }
 
             if (this.Type == 8)

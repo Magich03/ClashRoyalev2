@@ -26,7 +26,12 @@
                 throw new LogicException(typeof(AskForAvatarStreamHandler), nameof(AskForAvatarStreamMessage) + " == null at Handle(Device, Message, CancellationToken).");
             }
 
-            Device.NetworkManager.SendMessage(new AvatarStreamMessage());
+            var Player = Device.GameMode.Player;
+
+            Device.NetworkManager.SendMessage(new AvatarStreamMessage(Player.Mails));
+
+            // The message is encoded when sent, so the mails can be marked as read now.
+            Player.Mails.ForEach(Mail => Mail.IsNew = false);
         }
     }
 }

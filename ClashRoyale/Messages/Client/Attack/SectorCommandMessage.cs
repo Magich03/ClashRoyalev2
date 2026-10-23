@@ -14,7 +14,7 @@
         {
             get
             {
-                return 12904;
+                return 10541; // client 3.830
             }
         }
 

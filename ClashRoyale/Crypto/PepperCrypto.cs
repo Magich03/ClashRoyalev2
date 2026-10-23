@@ -30,10 +30,8 @@
 
         public static byte[] HandlePepperLogin(ref PepperInit Init, byte[] Packet)
         {
-            if (Packet.Length >= 32)
+            if (Packet != null && Packet.Length >= 96 && Init.SessionKey?.Length == 24 && Init.ServerPublicKey?.Length == 32)
             {
-                ++Init.State;
-
                 Array.Copy(Packet, Init.ClientPublicKey = new byte[32], 32);
 
                 Blake2BHasher Blake2B = new Blake2BHasher();
@@ -44,9 +42,9 @@
                 byte[] C = new byte[Packet.Length - 16];
                 Array.Copy(Packet, 32, C, 16, Packet.Length - 32);
 
-                Curve25519Xsalsa20Poly1305.CryptoBoxBeforenm(Init.SharedKey = new byte[32], Init.ClientPublicKey, PepperFactory.PublicKeys[Init.KeyVersion]);
+                Curve25519Xsalsa20Poly1305.CryptoBoxBeforenm(Init.SharedKey = new byte[32], Init.ClientPublicKey, PepperFactory.GetSecretKey(Init.KeyVersion));
 
-                if (Curve25519Xsalsa20Poly1305.CryptoBoxAfternm(C, C, Blake2B.Finish(), Init.SharedKey) == 0)
+                if (Curve25519Xsalsa20Poly1305.CryptoBoxOpenAfternm(C, C, Blake2B.Finish(), Init.SharedKey) == 0)
                 {
                     byte[] Sk = new byte[24];
                     Array.Copy(C, 32, Sk, 0, 24);
@@ -62,6 +60,7 @@
 
                     Array.Copy(C, 56, Init.Nonce = new byte[24], 0, 24);
 
+                    ++Init.State;
                     byte[] Decrypted = new byte[C.Length - 80];
                     Array.Copy(C, 80, Decrypted, 0, Decrypted.Length);
                     return Decrypted;
@@ -80,7 +79,7 @@
         {
             ++Init.State;
 
-            Init.Nonce           = new byte[24];
+            Init.Nonce           = System.Security.Cryptography.RandomNumberGenerator.GetBytes(24);
             Init.ClientPublicKey = new byte[32];
             Init.ClientSecretKey = new byte[32];
 
@@ -161,8 +160,8 @@
             byte[] SendNonce = new byte[24];
             byte[] SecretKey = new byte[32];
 
-            XorShift.NextBytes(SendNonce);
-            XorShift.NextBytes(SecretKey);
+            System.Security.Cryptography.RandomNumberGenerator.Fill(SendNonce);
+            System.Security.Cryptography.RandomNumberGenerator.Fill(SecretKey);
 
             SendEncrypter = new PepperEncrypter(SendNonce, SecretKey);
             ReceiveEncrypter = new PepperEncrypter(Init.Nonce, SecretKey);

@@ -39,7 +39,9 @@
                 {
                     if (string.Equals(ClientHelloMessage.MasterHash, Fingerprint.Masterhash))
                     {
-                        if (PepperFactory.SecretKeys.TryGetValue(ClientHelloMessage.KeyVersion, out byte[] SecretKey))
+                        byte[] SecretKey = PepperFactory.GetSecretKey(ClientHelloMessage.KeyVersion);
+                        Logging.Info(typeof(ClientHelloHandler), "Client key version " + ClientHelloMessage.KeyVersion + ", device type " + ClientHelloMessage.DeviceType + ".");
+
                         {
                             if (ClientHelloMessage.DeviceType == 3)
                             {
@@ -93,16 +95,12 @@
 
                                 Curve25519Xsalsa20Poly1305.CryptoBoxGetpublickey(Device.NetworkManager.PepperInit.ServerPublicKey, SecretKey);
 
-                                Device.NetworkManager.SendMessage(new ServerHelloMessage());
+                                Device.NetworkManager.SendMessage(new ServerHelloMessage(System.Security.Cryptography.RandomNumberGenerator.GetBytes(24)));
                             }
                             else
                             {
                                 Device.NetworkManager.SendMessage(new LoginFailedMessage(Reason.Maintenance));
                             }
-                        }
-                        else
-                        {
-                            Device.NetworkManager.SendMessage(new LoginFailedMessage(Reason.UpdateInProgress));
                         }
                     }
                     else

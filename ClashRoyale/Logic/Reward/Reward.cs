@@ -112,6 +112,10 @@
                 {
                     return new DraftReward();
                 }
+                case 2:
+                {
+                    return new InteractiveReward();
+                }
             }
 
             Logging.Error(typeof(Reward), "CreateFromType() - invalid reward type.");

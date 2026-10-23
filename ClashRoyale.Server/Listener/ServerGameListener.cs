@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Listener
+namespace ClashRoyale.Listener
 {
     using ClashRoyale.Logic;
     using ClashRoyale.Messages;
@@ -42,9 +42,13 @@
         /// <summary>
         /// Adds this instance to the matchmaking system.
         /// </summary>
+        public override void ChallengeMatchmaking() { ClashRoyale.Logic.Battle.LadderMatchmaking.Join(this.Device, false, true); }
+
+        public override void Matchmaking(bool team) { ClashRoyale.Logic.Battle.LadderMatchmaking.Join(this.Device, team); }
+
         public override void Matchmaking()
         {
-            // TODO Implement Matchmaking.
+            ClashRoyale.Logic.Battle.LadderMatchmaking.Join(this.Device);
         }
 
         /// <summary>

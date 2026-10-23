@@ -80,12 +80,15 @@ namespace ClashRoyale.Files.Csv.Logic
         {
             get
             {
-                if (this.BaseChest != null)
-                {
-                    return this.ArenaData.GetScaledChestReward(this.BaseTreasureChestData.RandomSpells);
-                }
-
-                return this.ArenaData.GetScaledChestReward(this.RandomSpells);
+                TreasureChestData root = this.RootChest;
+                int count;
+                if (root.SpecialOffer || this.DraftChest)
+                    count = this.RandomSpells;
+                else if (root.InShop)
+                    count = (this.ArenaData.ShopChestRewardMultiplier * this.RandomSpells + 50) / 100;
+                else
+                    count = this.ArenaData.GetScaledChestReward((this.BaseTreasureChestData ?? this).RandomSpells);
+                return System.Math.Max(0, count - this.GuaranteedSpellsData.Length);
             }
         }
 
@@ -108,33 +111,19 @@ namespace ClashRoyale.Files.Csv.Logic
         /// <summary>
         ///     Gets the max gold.
         /// </summary>
-        public int MaxGold
+        public TreasureChestData RootChest => this.BaseTreasureChestData == null ? this : this.BaseTreasureChestData.RootChest;
+
+        public int MaxGold => this.GetGold(this.RootChest.MaxGoldPerCard);
+        public int MinGold => this.GetGold(this.RootChest.MinGoldPerCard);
+
+        private int GetGold(int perCard)
         {
-            get
-            {
-                if (this.BaseTreasureChestData == null)
-                {
-                    return this.RandomSpellCount * this.MaxGoldPerCard;
-                }
-
-                return this.ArenaData.GetScaledChestReward(this.BaseTreasureChestData.MaxGold);
-            }
-        }
-
-        /// <summary>
-        ///     Gets the min gold.
-        /// </summary>
-        public int MinGold
-        {
-            get
-            {
-                if (this.BaseTreasureChestData == null)
-                {
-                    return this.RandomSpellCount * this.MinGoldPerCard;
-                }
-
-                return this.ArenaData.GetScaledChestReward(this.BaseTreasureChestData.MinGold);
-            }
+            int gold = this.RandomSpellCount * perCard;
+            if (!this.RootChest.InShop) return gold;
+            if (gold > 1100) return 100 * ((gold + 50) / 100);
+            if (gold > 100) return 10 * ((gold + 5) / 10);
+            if (gold > 20) return 5 * ((gold + 3) / 5);
+            return gold;
         }
 
         public string BaseChest { get; set; }
@@ -170,6 +159,8 @@ namespace ClashRoyale.Files.Csv.Logic
         public int EpicChance { get; set; }
 
         public int LegendaryChance { get; set; }
+
+        public int LegendaryOverrideChance { get; set; }
 
         public int SkinChance { get; set; }
 
@@ -247,7 +238,14 @@ namespace ClashRoyale.Files.Csv.Logic
 
                 for (int I = 0; I < this.GuaranteedSpells.Length; I++)
                 {
-                    this.GuaranteedSpellsData[I] = CsvFiles.GetSpellDataByName(this.GuaranteedSpells[I]);
+                    // Chests finish loading before CsvFiles.Spells is populated.
+                    foreach (Gamefile file in new[] { Gamefile.SpellsCharacters, Gamefile.SpellsBuildings, Gamefile.SpellsOther })
+                    {
+                        this.GuaranteedSpellsData[I] = CsvFiles.Get(file).Datas.Find(d => d.Name == this.GuaranteedSpells[I]) as SpellData;
+                        if (this.GuaranteedSpellsData[I] != null) break;
+                    }
+                    if (this.GuaranteedSpellsData[I] == null)
+                        throw new Exception("Unknown guaranteed card " + this.GuaranteedSpells[I]);
                 }
             }
             else
@@ -276,45 +274,22 @@ namespace ClashRoyale.Files.Csv.Logic
         /// </summary>
         public int GetChanceForRarity(RarityData Data)
         {
-            int Chance;
-
-            if (this.BaseTreasureChestData != null)
+            int available = this.ArenaData.GetUnlockedSpellCountForRarity(Data);
+            if (available < 1) return 0;
+            TreasureChestData root = this.RootChest;
+            switch (Data.Name)
             {
-                if (this.ArenaData.GetUnlockedSpellCountForRarity(Data) < 1)
-                {
-                    return 0;
-                }
-
-                Chance = this.BaseTreasureChestData.GetChanceForRarity(Data);
+                case "Rare": return root.RareChance;
+                case "Epic": return root.EpicChance;
+                case "Legendary":
+                    if (root.SpecialOffer && root.Name == "Legendary") return this.RandomSpellCount;
+                    if (root.LegendaryOverrideChance > 0)
+                        return root.RandomSpellCount * root.LegendaryOverrideChance;
+                    var common = CsvFiles.Get(Gamefile.Rarities).GetData<RarityData>("Common");
+                    int commonCount = this.ArenaData.GetUnlockedSpellCountForRarity(common);
+                    return commonCount > available ? root.LegendaryChance * commonCount / available : root.LegendaryChance;
+                default: return 0;
             }
-            else
-            {
-                switch (Data.Name)
-                {
-                    case "Legendary":
-                    {
-                        Chance = this.LegendaryChance;
-                        break;
-                    }
-                    case "Epic":
-                    {
-                        Chance = this.EpicChance;
-                        break;
-                    }
-                    case "Rare":
-                    {
-                        Chance = this.RareChance;
-                        break;
-                    }
-                    default:
-                    {
-                        Chance = 1;
-                        break;
-                    }
-                }
-            }
-
-            return Chance;
         }
 
         /// <summary>

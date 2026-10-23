@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Listener
+namespace ClashRoyale.Listener
 {
     using System;
 
@@ -33,6 +33,10 @@
         /// Adds this instance to the matchmaking system.
         /// </summary>
         /// <exception cref="LogicException">GameListener::Matchmaking() is not implemented.</exception>
+        public virtual void ChallengeMatchmaking() { }
+
+        public virtual void Matchmaking(bool team) { this.Matchmaking(); }
+
         public virtual void Matchmaking()
         {
             throw new LogicException(this.GetType(), new NotImplementedException("GameListener::Matchmaking() is not implemented."));

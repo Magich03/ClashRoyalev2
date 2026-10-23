@@ -18,7 +18,7 @@
         {
             get
             {
-                return 211;
+                return 349; // LogicAddChestCommand in client 3.830 (211 in older clients)
             }
         }
 

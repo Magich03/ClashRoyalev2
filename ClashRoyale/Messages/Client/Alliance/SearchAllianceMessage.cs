@@ -72,6 +72,7 @@
 
             this.Stream.ReadInt();
             this.Stream.ReadInt();
+            this.Stream.ReadBoolean();
         }
 
         /// <summary>

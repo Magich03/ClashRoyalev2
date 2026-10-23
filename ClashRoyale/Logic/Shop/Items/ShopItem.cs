@@ -10,6 +10,8 @@
     {
         public int Cost;
         public int ShopIndex;
+        public int Seed;
+        public bool Bought;
 
         public ResourceData BuyResourceData;
 
@@ -51,8 +53,9 @@
         public virtual void Decode(ByteStream Stream)
         {
             Stream.ReadVInt();
-            this.ShopIndex          = Stream.ReadVInt();
             Stream.ReadVInt();
+            this.ShopIndex          = Stream.ReadVInt();
+            this.Seed               = Stream.ReadVInt();
             this.Cost               = Stream.ReadVInt();
             this.BuyResourceData    = Stream.DecodeData<ResourceData>();
         }
@@ -71,9 +74,10 @@
              *  01  00  05  9A-05  80-19  05-01  1A-03  10  01  00  B8-2E  00-00 *
              *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  * */
 
+            Stream.WriteVInt(this.Type);
             Stream.WriteVInt(0);
             Stream.WriteVInt(this.ShopIndex);
-            Stream.WriteVInt(0);
+            Stream.WriteVInt(this.Seed);
             Stream.WriteVInt(this.Cost);
             Stream.EncodeData(this.BuyResourceData);
         }

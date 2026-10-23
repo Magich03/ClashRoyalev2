@@ -48,7 +48,7 @@
 
                     int I = 0;
 
-                    while (Spells.Count >= Count)
+                    while (Spells.Count > Count)
                     {
                         int Rnd = XorShift.Next(Spells.Count);
                         Spell Spell = Spells[Rnd];
@@ -104,7 +104,7 @@
                                     }
                                 }
 
-                                Spell.AddMaterial(Spells[K].Count);
+                                Spell.SetMaterialCount(Spell.Count + Spells[K].Count);
                                 Spells.RemoveAt(K);
                             }
                         }
@@ -128,10 +128,10 @@
             TreasureChestData ChestData = Chest.Data;
             Reward Reward = new Reward();
 
-            Reward.Spells = RewardRandomizer.RandomizeSpells(ChestData, Home);
+            Reward.Spells = RewardRandomizer.RandomizeSpells(ChestData, Home, Chest.OverrideCards > 0 ? Chest.OverrideCards : (int?)null);
 
-            int MaxGold = ChestData.MaxGold;
-            int MinGold = ChestData.MinGold;
+            int MaxGold = Chest.OverrideGold > 0 ? Chest.OverrideGold : ChestData.MaxGold;
+            int MinGold = Chest.OverrideGold > 0 ? Chest.OverrideGold : ChestData.MinGold;
 
             if (MaxGold > 0)
             {
@@ -141,8 +141,23 @@
                 }
                 else
                 {
-                    Reward.Gold = XorShift.Next(MinGold, MaxGold);
+                    Reward.Gold = XorShift.Next(MinGold, MaxGold + 1);
                 }
+            }
+
+            if (ChestData.RootChest.Name == "Free")
+                Reward.Diamonds = Globals.FreeChestDiamondLoop[Home.FreeChestIdx % Globals.FreeChestDiamondLoop.Length];
+            else if (ChestData.RootChest.Name == "Star")
+                Reward.Diamonds = Globals.CrownDiamondLoop[Home.CrownChestIdx % Globals.CrownDiamondLoop.Length];
+
+            // Shop chests with rerolls (Lightning) are interactive rewards in client 3.830: the client shows the strikes.
+            if (Chest.ShopChest != null && Chest.ShopChest.NumRerolls > 0)
+            {
+                return new InteractiveReward(Reward)
+                {
+                    RerollSeed = XorShift.Next(1, int.MaxValue),
+                    Rerolls    = Chest.ShopChest.NumRerolls
+                };
             }
 
             return Reward;
@@ -151,7 +166,7 @@
         /// <summary>
         ///     Randomizes spells.
         /// </summary>
-        public static List<Spell> RandomizeSpells(TreasureChestData Data, Home Home)
+        public static List<Spell> RandomizeSpells(TreasureChestData Data, Home Home, int? countOverride = null)
         {
             List<Spell> Spells = new List<Spell>();
 
@@ -165,7 +180,8 @@
                 }
             }
 
-            int RandomSpellCount = Data.RandomSpellCount;
+            int totalCards = countOverride ?? Data.RandomSpellCount;
+            int RandomSpellCount = totalCards;
             SpellSet SpellSet = new SpellSet(Data.ArenaData, null);
             CsvTable RaritiesTable = CsvFiles.Get(Gamefile.Rarities);
             int[] CountByRarity = new int[RaritiesTable.Datas.Count];
@@ -178,12 +194,12 @@
                 {
                     if (RandomSpellCount > 0)
                     {
-                        int Cnt = Data.RandomSpellCount / Chance;
+                        int Cnt = System.Math.Min(RandomSpellCount, totalCards / Chance);
 
                         CountByRarity[I] = Cnt;
                         RandomSpellCount -= Cnt;
 
-                        if (XorShift.Next(Chance) < Data.RandomSpellCount % Chance)
+                        if (RandomSpellCount > 0 && XorShift.Next(Chance) < totalCards % Chance)
                         {
                             ++CountByRarity[I];
                             --RandomSpellCount;
@@ -196,54 +212,40 @@
 
             for (int I = 0; I < CountByRarity.Length; I++)
             {
-                int J = 0;
-                int K = 0;
-
-                while (K < CountByRarity[I])
+                if (CountByRarity[I] == 0) continue;
+                if (SpellSet.Spells[I].Count == 0)
+                    throw new System.InvalidOperationException("No eligible cards for " + Data.Name + " rarity " + I);
+                for (int K = 0; K < CountByRarity[I]; K++)
                 {
-                    if (J++ >= 5000)
+                    SpellData selected = SpellSet.GetRandomSpell(RaritiesTable.GetWithInstanceId<RarityData>(I));
+                    Spell existing = Spells.Find(s => s.Data == selected);
+                    if (existing == null)
                     {
-                        break;
+                        existing = RewardRandomizer.CreateSpell(selected);
+                        Spells.Add(existing);
                     }
-
-                    SpellData RandomSpellData = SpellSet.GetRandomSpell(RaritiesTable.GetWithInstanceId<RarityData>(I));
-
-                    if (RandomSpellData != null)
-                    {
-                        Spell Spell = RewardRandomizer.CreateSpell(RandomSpellData);
-
-                        if (Spells.Count < 1)
-                        {
-                            Spell.AddMaterial(1);
-                            Spells.Add(Spell);
-
-                            ++K;
-                        }
-                        else
-                        {
-                            Spell Existing = Spells.Find(T => T.Equals(Spell));
-
-                            if (Existing != null)
-                            {
-                                if ((Home.HasSpell(RandomSpellData) ^ true) | (J - 1 >= 1000))
-                                {
-                                    Existing.AddMaterial(1);
-                                    ++K;
-                                }
-                            }
-                            else
-                            {
-                                Spell.AddMaterial(1);
-                                Spells.Add(Spell);
-
-                                ++K;
-                            }
-                        }
-                    }
+                    // Reward stacks must not be capped by collection storage limits.
+                    existing.SetMaterialCount(existing.Count + 1);
                 }
             }
 
-            RewardRandomizer.CombineSpells(Spells, Data.DifferentSpellCount, CountByRarity, Home);
+            if (Data.GuaranteedSpellsData.Length == 0)
+                RewardRandomizer.CombineSpells(Spells, Data.DifferentSpellCount, CountByRarity, Home);
+            // Collection ownership must not leave a chest with more stacks than its UI allows.
+            while (Data.DifferentSpellCount > 0 && Spells.Count > Data.DifferentSpellCount)
+            {
+                int source = -1, target = -1;
+                for (int i = 0; i < Spells.Count && source < 0; i++)
+                {
+                    if (System.Array.IndexOf(Data.GuaranteedSpellsData, Spells[i].Data) >= 0) continue;
+                    for (int j = 0; j < Spells.Count; j++)
+                        if (i != j && Spells[i].Data.RarityData == Spells[j].Data.RarityData)
+                        { source = i; target = j; break; }
+                }
+                if (source < 0) break;
+                Spells[target].SetMaterialCount(Spells[target].Count + Spells[source].Count);
+                Spells.RemoveAt(source);
+            }
 
             for (int I = 0; I < Spells.Count; I++)
             {

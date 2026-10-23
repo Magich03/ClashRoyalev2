@@ -177,13 +177,13 @@
                         using (BinaryWriter Writer = new BinaryWriter(new MemoryStream(Header)))
                         {
                             Writer.Write("SC".ToCharArray());
-                            Writer.Write(BitConverter.GetBytes(Version).Reverse().ToArray());
+                            Writer.Write(Enumerable.Reverse(BitConverter.GetBytes(Version)).ToArray());
 
                             using (var MD5Hash = MD5.Create())
                             {
                                 byte[] MD5 = MD5Hash.ComputeHash(this.Buffer);
 
-                                Writer.Write(BitConverter.GetBytes(MD5.Length).Reverse().ToArray());
+                                Writer.Write(Enumerable.Reverse(BitConverter.GetBytes(MD5.Length)).ToArray());
                                 Writer.Write(MD5);
                             }
                         }

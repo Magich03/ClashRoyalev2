@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Patcher
+namespace ClashRoyale.Patcher
 {
     using System;
     using System.IO;
@@ -48,6 +48,7 @@
         /// </summary>
         private static void Main()
         {
+            System.IO.Directory.SetCurrentDirectory(AppContext.BaseDirectory);
             Program.SHA         = Program.Checksum;
 
             Program.Version     = new Version();

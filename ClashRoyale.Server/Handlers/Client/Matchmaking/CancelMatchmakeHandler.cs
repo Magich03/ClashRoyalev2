@@ -27,10 +27,7 @@
                 throw new LogicException(typeof(CancelMatchmakeHandler), nameof(CancelMatchmakeMessage) + " == null at Handle(Device, Message, CancellationToken).");
             }
 
-            if (BattleManager.Waitings.TryRemove(Device.GameMode.Player.PlayerId, out _))
-            {
-                Device.NetworkManager.SendMessage(new CancelMatchmakeDoneMessage());
-            }
+            LadderMatchmaking.Cancel(Device);
         }
     }
 }

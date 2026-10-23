@@ -74,8 +74,8 @@
                         {
                             if (Home.PurchasedChest == null)
                             {
+                                Home.ChestPurchased(Chest.ChestData, 3, Chest.ShopChestData);
                                 Player.UseDiamonds(Cost);
-                                Home.ChestPurchased(Chest.ChestData, 3);
 
                                 return 0;
                             }

@@ -132,6 +132,10 @@
             {
                 // this.Player.Encode(this.Stream);
             }
+
+            // Client 3.830 reads one more VInt at the end. Without it the client read past the message into stale
+            // buffer data, which broke the profile page and aborted with std::bad_alloc on later visits.
+            this.Stream.WriteVInt(0);
         }
     }
 }

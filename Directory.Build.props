@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Never treat generated or legacy deployment trees as source/content. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/Builds/**;**/bin/**;**/obj/**;**/artifacts/**;**/Downloads/**;**/Patchs/**;**/Data/**;**/ILLink/**</DefaultItemExcludes>
+  </PropertyGroup>
+</Project>

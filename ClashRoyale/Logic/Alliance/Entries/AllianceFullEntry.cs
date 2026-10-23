@@ -8,6 +8,7 @@
         public AllianceMemberEntry[] Members;
 
         public string Description;
+        public AllianceCrownChestEntry CrownChest;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AllianceFullEntry"/> class.
@@ -65,6 +66,9 @@
             {
                 Entry.Encode(Stream);
             }
+
+            Stream.WriteBoolean(this.CrownChest != null);
+            this.CrownChest?.Encode(Stream);
         }
     }
 }

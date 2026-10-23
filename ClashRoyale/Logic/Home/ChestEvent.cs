@@ -89,8 +89,9 @@
         {
             Stream.EncodeData(this.ChestData);
 
+            // Layout matches the official capture in Dumps/OwnHome-Home.txt (Lightning / Fortune / Kings offers).
             Stream.WriteVInt(88);
-            Stream.WriteVInt(0);
+            Stream.WriteVInt(this.ShopChestData.Instance);
 
             Stream.WriteString(this.Type);
 
@@ -99,7 +100,7 @@
 
             Stream.EncodeSpellList(this.FortuneSpells);
 
-            Stream.WriteVInt(-1);
+            Stream.WriteVInt(this.FortuneSpells.Count > 0 ? 90000005 : -1);
             Stream.WriteVInt(0);
             Stream.WriteVInt(-1);
 

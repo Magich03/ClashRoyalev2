@@ -1,7 +1,8 @@
-﻿namespace ClashRoyale
+namespace ClashRoyale
 {
     using System;
-
+    using System.Reflection;
+    using System.Threading;
     using ClashRoyale.CmdHandlers;
     using ClashRoyale.Database;
     using ClashRoyale.Handlers;
@@ -16,9 +17,6 @@
 
     internal static class Program
     {
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Program"/> has been initialized.
-        /// </summary>
         internal static bool Initialized
         {
             get;
@@ -28,48 +26,14 @@
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
-        internal static void Main()
+        private static void Main()
         {
+            System.IO.Directory.SetCurrentDirectory(AppContext.BaseDirectory);
             Base.Initialize();
-            GameDb.Initialize();
+            Test.Initialize();
+            Program.Initialized = true;//progres move main in Test.cs
 
-            Devices.Initialize();
-            Players.Initialize();
-            Clans.Initialize();
-            Battles.Initialize();
-            Leaderboards.Initialize();
-
-            InboxManager.Initialize();
-            EventManager.Initialize();
-            BattleManager.Initialize();
-            RoyalTvManager.Initialize();
-
-            HandlerFactory.Initialize();
-            NetworkTcp.Initialize();
-
-            Program.Initialized     = true;
-            Console.CancelKeyPress += ConsoleOnCancelKeyPress;
-
-            CommandLine.Initialize();
-        }
-
-        /// <summary>
-        /// Called when the cancel key has been pressed.
-        /// </summary>
-        /// <param name="Sender">The sender.</param>
-        /// <param name="ConsoleCancelEventArgs">The <see cref="ConsoleCancelEventArgs"/> instance containing the event data.</param>
-        private static void ConsoleOnCancelKeyPress(object Sender, ConsoleCancelEventArgs ConsoleCancelEventArgs)
-        {
-            ConsoleCancelEventArgs.Cancel = true;
-
-            if (Program.Initialized == false)
-            {
-                Environment.Exit(0);
-            }
-            else
-            {
-                ExitHandler.Run("exit", "-f");
-            }
+            Thread.Sleep(-1);
         }
     }
 }

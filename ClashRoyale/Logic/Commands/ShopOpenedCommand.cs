@@ -14,7 +14,7 @@
         {
             get
             {
-                return 520;
+                return 547; // LogicShopOpenedCommand in client 3.830 (520 is LogicDraftChestChooseCommand)
             }
         }
 

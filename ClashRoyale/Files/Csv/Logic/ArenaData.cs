@@ -50,7 +50,7 @@ namespace ClashRoyale.Files.Csv.Logic
             {
                 ArenaData Previous = null;
 
-                CsvFiles.Get(this.Instance).Datas.ForEach(Data =>
+                this.CsvTable.Datas.ForEach(Data =>
                 {
                     ArenaData ArenaData = (ArenaData) Data;
 
@@ -97,6 +97,8 @@ namespace ClashRoyale.Files.Csv.Logic
         public int SeasonTrophyReset { get; set; }
 
         public int ChestRewardMultiplier { get; set; }
+
+        public int ShopChestRewardMultiplier { get; set; }
 
         public int BoostedCrownChestRewardMultiplier { get; set; }
 
@@ -154,48 +156,10 @@ namespace ClashRoyale.Files.Csv.Logic
             {
                 this.UnlockedSpellsData[I] = new List<SpellData>();
 
-                foreach (SpellData Data in CsvFiles.Get(Gamefile.SpellsCharacters).Datas)
+                foreach (SpellData Data in CsvFiles.Spells)
                 {
-                    if (Data.IsUnlockedInArena(this))
-                    {
-                        if (Data.RarityData == CsvFiles.Get(Gamefile.Rarities).Datas[I])
-                        {
-                            this.UnlockedSpellsData[I].Add(Data);
-                        }
-                    }
-                }
-
-                foreach (SpellData Data in CsvFiles.Get(Gamefile.SpellsBuildings).Datas)
-                {
-                    if (Data.IsUnlockedInArena(this))
-                    {
-                        if (Data.RarityData == CsvFiles.Get(Gamefile.Rarities).Datas[I])
-                        {
-                            this.UnlockedSpellsData[I].Add(Data);
-                        }
-                    }
-                }
-
-                foreach (SpellData Data in CsvFiles.Get(Gamefile.SpellsOther).Datas)
-                {
-                    if (Data.IsUnlockedInArena(this))
-                    {
-                        if (Data.RarityData == CsvFiles.Get(Gamefile.Rarities).Datas[I])
-                        {
-                            this.UnlockedSpellsData[I].Add(Data);
-                        }
-                    }
-                }
-
-                foreach (SpellData Data in CsvFiles.Get(Gamefile.SpellsOther).Datas)
-                {
-                    if (Data.IsUnlockedInArena(this))
-                    {
-                        if (Data.RarityData == CsvFiles.Get(Gamefile.Rarities).Datas[I])
-                        {
-                            this.UnlockedSpellsData[I].Add(Data);
-                        }
-                    }
+                    if (!Data.NotInUse && Data.IsUnlockedInArena(this) && Data.RarityData.Instance == I)
+                        this.UnlockedSpellsData[I].Add(Data);
                 }
             }
 

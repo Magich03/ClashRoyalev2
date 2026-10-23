@@ -339,6 +339,11 @@
                 {
                     return new SkinSetData(CsvRow, this);
                 }
+
+                case 90:
+                {
+                    return new ShopChestData(CsvRow, this);
+                }
             }
 
             return new CsvData(CsvRow, this);

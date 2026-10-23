@@ -1,9 +1,7 @@
 ﻿namespace ClashRoyale.Api
 {
     using System.Threading.Tasks;
-
     using Newtonsoft.Json;
-
     using RestSharp;
 
     public static class IpRequester
@@ -11,11 +9,7 @@
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="IpRequester"/> has been initialized.
         /// </summary>
-        public static bool Initialized
-        {
-            get;
-            set;
-        }
+        public static bool Initialized { get; set; }
 
         private static RestClient Rest;
         private static RestRequest Request;
@@ -30,8 +24,9 @@
                 return;
             }
 
-            IpRequester.Rest      = new RestClient("http://ip-api.com");
-            IpRequester.Request   = new RestRequest("json/{ip}", Method.GET);
+            // Updated Method.Get for modern RestSharp versions.
+            IpRequester.Rest = new RestClient("http://ip-api.com");
+            IpRequester.Request = new RestRequest("json/{ip}", Method.Get);
 
             Request.AddParameter("fields", "countryCode,region,city,status");
 
@@ -45,10 +40,12 @@
         {
             Request.AddOrUpdateParameter("ip", IpAddress, ParameterType.UrlSegment);
 
-            var Result      = await Rest.ExecuteTaskAsync(Request);
-            var IpResponse  = JsonConvert.DeserializeObject<IpResponse>(Result.Content);
+            // Adjust for modern RestSharp async calls.
+            var result = await Rest.ExecuteAsync(Request);
+            var ipResponse = JsonConvert.DeserializeObject<IpResponse>(result.Content);
 
-            return IpResponse;
+            return ipResponse;
         }
     }
 }
+

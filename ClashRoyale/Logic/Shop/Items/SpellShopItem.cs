@@ -51,7 +51,10 @@
             this.SpellData   = Stream.DecodeData<SpellData>();
             this.Amount      = Stream.ReadVInt();
             this.RarityIndex = Stream.ReadVInt();
-            Stream.ReadBoolean();
+            Stream.ReadVInt();
+            Stream.ReadVInt();
+            Stream.ReadVInt();
+            this.Bought      = Stream.ReadVInt() != 0;
         }
 
         /// <summary>
@@ -64,7 +67,10 @@
             Stream.EncodeData(this.SpellData);
             Stream.WriteVInt(this.Amount);
             Stream.WriteVInt(this.RarityIndex);
-            Stream.WriteBoolean(false);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(3000);
+            Stream.WriteVInt(0);
+            Stream.WriteVInt(this.Bought ? 1 : 0);
         }
 
         /// <summary>

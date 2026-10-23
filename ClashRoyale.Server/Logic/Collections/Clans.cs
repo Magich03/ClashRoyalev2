@@ -62,7 +62,26 @@
             Clans.HighSeed      = Config.ServerId;
             Clans.LowSeed       = GameDb.GetClansSeed();
 
+            // Keep every saved clan in memory so the joinable list and search can see them.
+            foreach (ClanDb ClanDb in GameDb.Clans.GetAllAsync().Result)
+            {
+                if (ClanDb.Deserialize(out Clan Clan))
+                {
+                    Clan.LoadingFinished();
+                    Clans.Add(Clan);
+                }
+            }
+
             Clans.Initialized   = true;
+        }
+
+        /// <summary>
+        /// Deletes the specified clan from memory and storage.
+        /// </summary>
+        public static async Task Delete(Clan Entity)
+        {
+            Clans.Entities.TryRemove(Entity.AllianceId, out _);
+            await ClanDb.Delete(Entity.HighId, Entity.LowId);
         }
 
         /// <summary>
@@ -129,19 +148,16 @@
         /// <param name="Store">Whether it has to be stored.</param>
         public static async Task<Clan> Get(int HighId, int LowId, bool Store = true)
         {
-            Logging.Warning(typeof(Clans), "Get(" + HighId + ", " + LowId + ") has been called.");
-
             long ClanId     = (long) HighId << 32 | (uint) LowId;
 
-            ClanDb ClanDb   = await ClanDb.Load(HighId, LowId);
-            Clan Clan       = null;
-
-            if (Clans.Entities.TryGetValue(ClanId, out Clan))
+            if (Clans.Entities.TryGetValue(ClanId, out Clan Clan))
             {
-                return Clan; 
+                return Clan;
             }
             else
             {
+                ClanDb ClanDb = await ClanDb.Load(HighId, LowId);
+
                 if (ClanDb != null)
                 {
                     if (ClanDb.Deserialize(out Clan))

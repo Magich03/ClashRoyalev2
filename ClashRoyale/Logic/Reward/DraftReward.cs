@@ -17,7 +17,7 @@
         {
             get
             {
-                return 1;
+                return 1; // LogicDraftReward::getType in client 3.830 (type 2 is LogicInteractiveReward)
             }
         }
 

@@ -1,6 +1,7 @@
 namespace ClashRoyale.Files.Csv.Logic
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     public class SpellSetData : CsvData
     {
@@ -16,19 +17,14 @@ namespace ClashRoyale.Files.Csv.Logic
             // SpellSetData.
         }
 
-        public List<string> Spells { get; set; }
+        public string[] Spells { get; set; }
 
         /// <summary>
         ///     Called when all instances has been loaded for initialized members in instance.
         /// </summary>
         public override void LoadingFinished()
         {
-            this.SpellsData = new SpellData[this.Spells.Count];
-
-            for (int I = 0; I < this.Spells.Count; I++)
-            {
-                this.SpellsData[I] = CsvFiles.GetSpellDataByName(this.Spells[I]);
-            }
+            this.SpellsData = this.Spells.SelectMany(name => name == "*" ? CsvFiles.Spells : new List<SpellData> { CsvFiles.GetSpellDataByName(name) }).Where(card => card != null && !card.NotInUse).Distinct().ToArray();
         }
     }
 }

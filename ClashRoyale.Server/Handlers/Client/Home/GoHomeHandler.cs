@@ -7,7 +7,9 @@
     using ClashRoyale.Exceptions;
     using ClashRoyale.Extensions.Utils;
     using ClashRoyale.Logic;
+    using ClashRoyale.Logic.Battle;
     using ClashRoyale.Logic.Collections;
+    using ClashRoyale.Logic.Shop;
     using ClashRoyale.Messages;
     using ClashRoyale.Messages.Client.Home;
     using ClashRoyale.Messages.Server.Home;
@@ -29,13 +31,22 @@
                 throw new LogicException(typeof(GoHomeHandler), nameof(GoHomeMessage) + " == null at Handle(Device, Message, CancellationToken).");
             }
 
+            LadderMatchmaking.Cancel(Device, false);
+            await MatchBattleSession.WaitForResult(Device);
+            MatchBattleSession.Stop(Device);
+            TrainingBattleSession.Stop(Device);
+
             if (Device.GameMode.State <= HomeState.Home)
             {
                 var Player = await Players.Get(Device.NetworkManager.AccountId.HigherInt, Device.NetworkManager.AccountId.LowerInt);
 
                 if (Player != null)
                 {
+                    await ClashRoyale.Logic.Alliance.ClanChestService.Refresh(Player, false);
+                    ShopGenerator.Refresh(Player.Home, Player);
                     Device.NetworkManager.SendMessage(new OwnHomeDataMessage(Player, Player.Home, TimeUtil.Timestamp));
+                    Player.Home.ClanChestNotifiedSession = null;
+                    ClashRoyale.Logic.Alliance.ClanChestService.Notify(Player);
                 }
                 else
                 {

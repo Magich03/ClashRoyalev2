@@ -34,8 +34,9 @@
         {
             base.Decode(Stream);
 
+            // LogicDiscardQuestCommand (584) in client 3.830: base, VInt, bool.
             this.QuestIndex     = Stream.ReadVInt();
-            this.QuestUnknown   = Stream.ReadVInt();
+            this.QuestUnknown   = Stream.ReadBoolean() ? 1 : 0;
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Messages.Server.Home
+namespace ClashRoyale.Messages.Server.Home
 {
     using ClashRoyale.Enums;
     using ClashRoyale.Extensions;
@@ -12,7 +12,7 @@
         {
             get
             {
-                return 24107;
+                return 24696;
             }
         }
 

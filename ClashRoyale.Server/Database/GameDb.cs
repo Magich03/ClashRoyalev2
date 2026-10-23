@@ -1,129 +1,112 @@
 ﻿namespace ClashRoyale.Database
 {
     using ClashRoyale.Database.Models;
-
-    using MongoDB.Driver;
+    using System;
+    using System.IO;
+    using System.Threading.Tasks;
 
     public static class GameDb
     {
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="GameDb"/> has been already initialized.
-        /// </summary>
-        public static bool Initialized
-        {
-            get;
-            set;
-        }
+        public static bool Initialized { get; set; }
 
-        public static IMongoCollection<PlayerDb> Players;
-        public static IMongoCollection<ClanDb> Clans;
-        public static IMongoCollection<BattleDb> Battles;
+        public static JsonRepository<PlayerDb> Players;
+        public static JsonRepository<ClanDb> Clans;
+        public static JsonRepository<BattleDb> Battles;
+
+        private static readonly string DataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
 
         /// <summary>
-        /// Initializes this instance.
+        /// Initializes the database and collections using JSON file storage.
         /// </summary>
         public static void Initialize()
         {
             if (GameDb.Initialized)
             {
+                Console.WriteLine("GameDb is already initialized.");
                 return;
             }
 
-            var MongoClient     = new MongoClient("mongodb://GL.Servers.CR:YXPZvFNuryLwWyD4fDckxEV5qFH1f3jBWck8scvt@ns1.gobelinland.fr:27017");
-            var MongoDb         = MongoClient.GetDatabase("ClashRoyale");
-
-            Logging.Info(typeof(GameDb), "GameDb is connected to " + MongoClient.Settings.Server.Host + ".");
-
-            if (MongoDb.GetCollection<PlayerDb>("Players") == null)
+            try
             {
-                MongoDb.CreateCollection("Players");
-            }
+                Console.WriteLine("Initializing JSON file-based storage...");
 
-            if (MongoDb.GetCollection<ClanDb>("Clans") == null)
+                // Create data directory if it doesn't exist
+                if (!Directory.Exists(DataPath))
+                {
+                    Directory.CreateDirectory(DataPath);
+                }
+
+                // Initialize repositories
+                GameDb.Players = new JsonRepository<PlayerDb>(DataPath, "Players");
+                GameDb.Clans = new JsonRepository<ClanDb>(DataPath, "Clans");
+                GameDb.Battles = new JsonRepository<BattleDb>(DataPath, "Battles");
+
+                // Verify repositories are not null
+                if (GameDb.Players == null || GameDb.Clans == null || GameDb.Battles == null)
+                {
+                    throw new Exception("Failed to initialize one or more repositories.");
+                }
+
+                GameDb.Initialized = true;
+                Console.WriteLine("GameDb initialized successfully with JSON file storage.");
+                Console.WriteLine($"Data directory: {DataPath}");
+            }
+            catch (Exception ex)
             {
-                MongoDb.CreateCollection("Clans");
+                Console.WriteLine($"Error initializing GameDb: {ex.Message}");
+                Logging.Error(typeof(GameDb), $"GameDb initialization failed: {ex.Message}");
             }
-
-            if (MongoDb.GetCollection<BattleDb>("Battles") == null)
-            {
-                MongoDb.CreateCollection("Battles");
-            }
-
-            GameDb.Players      = MongoDb.GetCollection<PlayerDb>("Players");
-            GameDb.Clans        = MongoDb.GetCollection<ClanDb>("Clans");
-            GameDb.Battles      = MongoDb.GetCollection<BattleDb>("Battles");
-
-            GameDb.Players.Indexes.CreateOne(Builders<PlayerDb>.IndexKeys.Combine(
-                Builders<PlayerDb>.IndexKeys.Ascending(T => T.HighId),
-                Builders<PlayerDb>.IndexKeys.Descending(T => T.LowId)),
-
-                new CreateIndexOptions()
-                {
-                    Name = "entityIds",
-                    Background = true
-                    
-                }
-            );
-
-            GameDb.Clans.Indexes.CreateOne(Builders<ClanDb>.IndexKeys.Combine(
-                Builders<ClanDb>.IndexKeys.Ascending(T => T.HighId),
-                Builders<ClanDb>.IndexKeys.Descending(T => T.LowId)),
-
-                new CreateIndexOptions()
-                {
-                    Name = "entityIds",
-                    Background = true
-                    
-                }
-            );
-
-            GameDb.Battles.Indexes.CreateOne(Builders<BattleDb>.IndexKeys.Combine(
-                Builders<BattleDb>.IndexKeys.Ascending(T => T.HighId),
-                Builders<BattleDb>.IndexKeys.Descending(T => T.LowId)),
-
-                new CreateIndexOptions()
-                {
-                    Name = "entityIds",
-                    Background = true
-                    
-                }
-            );
-
-            GameDb.Initialized  = true;
         }
 
-
         /// <summary>
-        /// Gets the seed for the specified collection.
+        /// Gets the seed for the specified collection (Players).
         /// </summary>
         public static int GetPlayersSeed()
-        { 
-            return GameDb.Players.Find(T => T.HighId == Config.ServerId)
-                .Sort(Builders<PlayerDb>.Sort.Descending(T => T.LowId))
-                .Limit(1)
-                .SingleOrDefault()?.LowId ?? 0;
+        {
+            try
+            {
+                var task = Task.Run(async () => await GameDb.Players.GetMaxLowIdAsync(Config.ServerId));
+                return task.Result;
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(typeof(GameDb), $"Error getting players seed: {ex.Message}");
+                return 0;
+            }
         }
 
         /// <summary>
-        /// Gets the seed for the specified collection.
+        /// Gets the seed for the specified collection (Clans).
         /// </summary>
         public static int GetClansSeed()
         {
-            return GameDb.Clans.Find(T => T.HighId == Config.ServerId)
-                .Sort(Builders<ClanDb>.Sort.Descending(T => T.LowId))
-                .Limit(1)
-                .SingleOrDefault()?.LowId ?? 0;
+            try
+            {
+                var task = Task.Run(async () => await GameDb.Clans.GetMaxLowIdAsync(Config.ServerId));
+                return task.Result;
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(typeof(GameDb), $"Error getting clans seed: {ex.Message}");
+                return 0;
+            }
         }
 
         /// <summary>
-        /// Gets the seed for the specified collection.
+        /// Gets the seed for the specified collection (Battles).
         /// </summary>
         public static int GetBattlesSeed()
         {
-            return GameDb.Battles.Find(T => T.HighId == Config.ServerId)
-                .Sort(Builders<BattleDb>.Sort.Descending(T => T.LowId))
-                .Limit(1)
-                .SingleOrDefault()?.LowId ?? 0;
+            try
+            {
+                var task = Task.Run(async () => await GameDb.Battles.GetMaxLowIdAsync(Config.ServerId));
+                return task.Result;
+            }
+            catch (Exception ex)
+            {
+                Logging.Error(typeof(GameDb), $"Error getting battles seed: {ex.Message}");
+                return 0;
+            }
         }
     }
 }

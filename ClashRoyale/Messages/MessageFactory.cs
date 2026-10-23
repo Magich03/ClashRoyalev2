@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Messages
+namespace ClashRoyale.Messages
 {
     using System;
     using System.Collections.Generic;
@@ -71,6 +71,17 @@
             MessageFactory.Messages.Add(10609, typeof(AskForAllianceDataMessage));
             MessageFactory.Messages.Add(10857, typeof(AskForJoinableAlliancesListMessage));
             MessageFactory.Messages.Add(10949, typeof(SearchAllianceMessage));
+            MessageFactory.Messages.Add(10541, typeof(SectorCommandMessage));
+            MessageFactory.Messages.Add(16068, typeof(SendBattleEventMessage));
+            MessageFactory.Messages.Add(28934, typeof(BattleResultMessage));
+            MessageFactory.Messages.Add(10554, typeof(ChatToAllianceStreamMessage));
+            MessageFactory.Messages.Add(10587, typeof(EditAllianceMessage));
+            MessageFactory.Messages.Add(11802, typeof(AskForAllianceStreamMessage));
+            MessageFactory.Messages.Add(13038, typeof(ReplyJoinRequestMessage));
+            MessageFactory.Messages.Add(15985, typeof(LeaveAllianceMessage));
+            MessageFactory.Messages.Add(16190, typeof(JoinAllianceMessage));
+            MessageFactory.Messages.Add(16341, typeof(ChangeAllianceMemberRoleMessage));
+            MessageFactory.Messages.Add(17800, typeof(KickAllianceMemberMessage));
 
             MessageFactory.Messages.Add(11033, typeof(CreateAllianceMessage));
             MessageFactory.Messages.Add(11149, typeof(AskForAvatarRankingListMessage));
@@ -109,16 +120,25 @@
             MessageFactory.Messages.Add(22726, typeof(RequestApiDataMessage));
 
             MessageFactory.Messages.Add(24135, typeof(KeepAliveOkMessage));
-            MessageFactory.Messages.Add(24445, typeof(InboxListMessage));
+            MessageFactory.Messages.Add(27709, typeof(InboxListMessage));
             MessageFactory.Messages.Add(24457, typeof(AllianceOnlineStatusUpdatedMessage));
             MessageFactory.Messages.Add(24719, typeof(AllianceStreamMessage));
+            MessageFactory.Messages.Add(21075, typeof(AllianceStreamEntryMessage));
+            MessageFactory.Messages.Add(21753, typeof(AllianceMemberRemovedMessage));
+            MessageFactory.Messages.Add(22534, typeof(SearchClansDataMessage));
+            MessageFactory.Messages.Add(25107, typeof(AllianceJoinFailedMessage));
+            MessageFactory.Messages.Add(25445, typeof(JoinableAllianceListMessage));
+            MessageFactory.Messages.Add(25643, typeof(AllianceStreamRemovedMessage));
+            MessageFactory.Messages.Add(26310, typeof(KickAllianceMemberOkMessage));
+            MessageFactory.Messages.Add(29058, typeof(ChangeAllianceMemberRoleOkMessage));
+            MessageFactory.Messages.Add(29685, typeof(AllianceChangeFailedMessage));
 
             MessageFactory.Messages.Add(25105, typeof(AllianceRankingListMessage));
             MessageFactory.Messages.Add(25390, typeof(AvatarLocalRankingListMessage));
             MessageFactory.Messages.Add(25412, typeof(HomeBattleReplayDataMessage));
             MessageFactory.Messages.Add(25880, typeof(VisitedHomeDataMessage));
 
-            MessageFactory.Messages.Add(26068, typeof(InboxCountMessage));
+            MessageFactory.Messages.Add(27317, typeof(InboxCountMessage));
             MessageFactory.Messages.Add(26550, typeof(AllianceDataMessage));
             MessageFactory.Messages.Add(26973, typeof(AllianceLocalRankingListMessage));
 
@@ -136,7 +156,7 @@
 
             Factory.Messages.Add(12903, typeof(RequestSectorStateMessage));
             Factory.Messages.Add(12904, typeof(SectorCommandMessage));
-            Factory.Messages.Add(12951, typeof(SendBattleEventMessage));
+            Factory.Messages.Add(16068, typeof(SendBattleEventMessage));
 
             Factory.Messages.Add(14101, typeof(GoHomeMessage));
             

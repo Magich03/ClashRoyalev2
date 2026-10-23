@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Player.Slots
+namespace ClashRoyale.Logic.Player.Slots
 {
     using System.Collections.Generic;
     using ClashRoyale.Extensions;
@@ -58,15 +58,28 @@
         /// <summary>
         ///     Encodes this instance.
         /// </summary>
-        public void Encode(ChecksumEncoder Stream)
+        public void Encode(ChecksumEncoder Stream, IReadOnlyDictionary<CsvData, int> ResourceOverrides = null)
         {
             Stream.WriteVInt(8);
 
             for (int I = 0; I < 8; I++)
             {
-                Stream.WriteVInt(this.Slots[I].Count);
-
-                this.Slots[I].ForEach(Slot => { Slot.Encode(Stream); });
+                var overrides = I == (int)CommodityType.Resource ? ResourceOverrides : null;
+                int count = this.Slots[I].Count;
+                if (overrides != null)
+                    foreach (var entry in overrides)
+                        if (!this.Slots[I].Exists(slot => slot.Data == entry.Key)) count++;
+                Stream.WriteVInt(count);
+                foreach (var slot in this.Slots[I])
+                {
+                    if (overrides != null && overrides.TryGetValue(slot.Data, out int value))
+                        new DataSlot(slot.Data, value).Encode(Stream);
+                    else slot.Encode(Stream);
+                }
+                if (overrides != null)
+                    foreach (var entry in overrides)
+                        if (!this.Slots[I].Exists(slot => slot.Data == entry.Key))
+                            new DataSlot(entry.Key, entry.Value).Encode(Stream);
             }
         }
 

@@ -28,6 +28,8 @@
 
             Device.NetworkManager.KeepAliveMessageReceived();
             Device.NetworkManager.SendMessage(new KeepAliveOkMessage());
+            if(Device.GameMode?.Player != null && Device.GameMode.State == ClashRoyale.Enums.HomeState.Home)
+                await ClashRoyale.Logic.Alliance.ClanChestService.Refresh(Device.GameMode.Player, true);
         }
     }
 }

@@ -26,6 +26,8 @@
                 throw new LogicException(typeof(SendBattleEventHandler), nameof(SendBattleEventMessage) + " == null at Handle(Device, Message, CancellationToken).");
             }
 
+            if (await ClashRoyale.Logic.Battle.MatchBattleSession.ReceiveResult(Device, SendBattleEventMessage.BattleEvent.Text)) return;
+            if (ClashRoyale.Logic.Battle.MatchBattleSession.Contains(Device)) return;
             if (Device.GameMode.State == HomeState.Attack)
             {
                 Device.GameMode.SectorManager.ReceiveBattleEvent(SendBattleEventMessage.BattleEvent);

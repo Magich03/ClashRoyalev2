@@ -12,7 +12,7 @@ namespace ClashRoyale.Messages.Server.Account
         {
             get
             {
-                return 26068;
+                return 27317; // 26068 is AvatarTierUpdateMessage in client 3.830
             }
         }
 
@@ -68,7 +68,7 @@ namespace ClashRoyale.Messages.Server.Account
         /// </summary>
         public override void Encode()
         {
-            this.Stream.WriteVInt(this.InboxNewMessageCnt);
+            this.Stream.WriteInt(this.InboxNewMessageCnt); // client reads a 4-byte int
         }
     }
 }

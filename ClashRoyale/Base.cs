@@ -1,12 +1,10 @@
-﻿namespace ClashRoyale
+namespace ClashRoyale
 {
     using ClashRoyale.Api;
     using ClashRoyale.Crypto.Randomizers;
     using ClashRoyale.Extensions.Game;
     using ClashRoyale.Files;
     using ClashRoyale.Files.Csv;
-    using ClashRoyale.Files.Sc;
-    using ClashRoyale.Files.Sound;
     using ClashRoyale.Messages;
 
     public static class Base
@@ -33,9 +31,7 @@
             // Sentry.Initialize();
             XorShift.Initialize();
 
-            ScFiles.Initialize();
             CsvFiles.Initialize();
-            SoundFiles.Initialize();
             Fingerprint.Initialize();
             Home.Initialize();
 

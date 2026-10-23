@@ -4,10 +4,6 @@
 
     using ClashRoyale.Logic.Alliance;
 
-    using MongoDB.Bson;
-    using MongoDB.Bson.Serialization.Attributes;
-    using MongoDB.Driver;
-
     using Newtonsoft.Json;
 
     public class ClanDb
@@ -15,7 +11,6 @@
         /// <summary>
         /// The settings for the <see cref="JsonConvert" /> class.
         /// </summary>
-        [BsonIgnore]
         private static readonly JsonSerializerSettings JsonSettings = new JsonSerializerSettings
         {
             TypeNameHandling            = TypeNameHandling.None,            MissingMemberHandling   = MissingMemberHandling.Ignore,
@@ -23,12 +18,9 @@
             ReferenceLoopHandling       = ReferenceLoopHandling.Ignore,     Formatting              = Formatting.None
         };
 
-        [BsonId]                    public BsonObjectId _id;
-
-        [BsonElement("highId")]     public int HighId;
-        [BsonElement("lowId")]      public int LowId;
-
-        [BsonElement("profile")]    public BsonDocument Profile;
+        public int HighId;
+        public int LowId;
+        public Clan Profile;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanDb"/> class.
@@ -43,12 +35,12 @@
         /// </summary>
         /// <param name="HighId">The high identifier.</param>
         /// <param name="LowId">The low identifier.</param>
-        /// <param name="Profile">The profile.</param>
+        /// <param name="Json">The JSON string.</param>
         public ClanDb(int HighId, int LowId, string Json)
         {
             this.HighId     = HighId;
             this.LowId      = LowId;
-            this.Profile    = BsonDocument.Parse(Json);
+            this.Profile    = JsonConvert.DeserializeObject<Clan>(Json, ClanDb.JsonSettings);
         }
 
         /// <summary>
@@ -59,7 +51,7 @@
         {
             this.HighId     = Clan.HighId;
             this.LowId      = Clan.LowId;
-            this.Profile    = BsonDocument.Parse(JsonConvert.SerializeObject(Clan, ClanDb.JsonSettings));
+            this.Profile    = Clan;
         }
 
         /// <summary>
@@ -72,107 +64,93 @@
         }
 
         /// <summary>
-        /// Creates the clan in the database.
+        /// Saves the clan in the database.
         /// </summary>
         public static async Task<ClanDb> Save(Clan Clan)
         {
-            var UpdatedEntity = await GameDb.Clans.FindOneAndUpdateAsync(ClanDb =>
-
-                ClanDb.HighId   == Clan.HighId &&
-                ClanDb.LowId    == Clan.LowId,
-                
-                Builders<ClanDb>.Update.Set(ClanDb => ClanDb.Profile, BsonDocument.Parse(JsonConvert.SerializeObject(Clan, ClanDb.JsonSettings)))
-            );
-
-            if (UpdatedEntity != null)
+            try
             {
-                if (UpdatedEntity.HighId == Clan.HighId && UpdatedEntity.LowId == Clan.LowId)
+                var clanDb = new ClanDb(Clan);
+                var result = await GameDb.Clans.FindOneAndUpdateAsync(Clan.HighId, Clan.LowId, clanDb);
+
+                if (result != null && result.HighId == Clan.HighId && result.LowId == Clan.LowId)
                 {
-                    return UpdatedEntity;
+                    return result;
                 }
                 else
                 {
-                    Logging.Error(typeof(PlayerDb), "UpdatedEntity.Ids != this.Ids at Save().");
+                    Logging.Error(typeof(ClanDb), "Failed to save clan.");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Logging.Error(typeof(PlayerDb), "UpdatedEntity == null at Save().");
+                Logging.Error(typeof(ClanDb), $"Error at Save(): {ex.Message}");
             }
 
             return null;
         }
 
         /// <summary>
-        /// Loads this instance from the database.
+        /// Loads the clan from the database.
         /// </summary>
         public static async Task<ClanDb> Load(int HighId, int LowId)
         {
             if (LowId > 0)
             {
-                var Entities = await GameDb.Clans.FindAsync(ClanDb => ClanDb.HighId == HighId && ClanDb.LowId == LowId);
-
-                if (Entities != null)
+                try
                 {
-                    var Entity = Entities.FirstOrDefault();
+                    var entity = await GameDb.Clans.FindAsync(HighId, LowId);
 
-                    if (Entity != null)
+                    if (entity != null)
                     {
-                        return Entity;
+                        return entity;
                     }
                     else
                     {
-                        Logging.Error(typeof(PlayerDb), "Entity == null at Load().");
+                        Logging.Warning(typeof(ClanDb), $"Clan not found: {HighId}_{LowId}");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Logging.Error(typeof(PlayerDb), "Entities == null at Load().");
+                    Logging.Error(typeof(ClanDb), $"Error at Load(): {ex.Message}");
                 }
             }
             else
             {
-                Logging.Error(typeof(PlayerDb), "this.LowId < 0 at Load().");
+                Logging.Error(typeof(ClanDb), "LowId < 0 at Load().");
             }
 
             return null;
         }
 
         /// <summary>
-        /// Deletes this instance from the database.
+        /// Deletes the clan from the database.
         /// </summary>
         public static async Task<bool> Delete(int HighId, int LowId)
         {
             if (LowId > 0)
             {
-                var Result = await GameDb.Clans.DeleteOneAsync(ClanDb => ClanDb.HighId == HighId && ClanDb.LowId == LowId);
-
-                if (Result.IsAcknowledged)
+                try
                 {
-                    if (Result.DeletedCount > 0)
+                    var result = await GameDb.Clans.DeleteOneAsync(HighId, LowId);
+
+                    if (result)
                     {
-                        if (Result.DeletedCount == 1)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            Logging.Error(typeof(PlayerDb), "Result.DeletedCount > 1 at Delete().");
-                        }
+                        return true;
                     }
                     else
                     {
-                        Logging.Warning(typeof(PlayerDb), "Result.DeletedCount == 0 at Delete().");
+                        Logging.Warning(typeof(ClanDb), $"Clan not found for deletion: {HighId}_{LowId}");
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Logging.Error(typeof(PlayerDb), "Result.IsAcknowledged != true at Delete().");
+                    Logging.Error(typeof(ClanDb), $"Error at Delete(): {ex.Message}");
                 }
             }
             else
             {
-                Logging.Error(typeof(PlayerDb), "LowId <= 0 at Delete(HighId, LowId).");
+                Logging.Error(typeof(ClanDb), "LowId <= 0 at Delete().");
             }
 
             return false;
@@ -185,12 +163,8 @@
         {
             if (this.Profile != null)
             {
-                Clan = JsonConvert.DeserializeObject<Clan>(this.Profile.ToJson(), ClanDb.JsonSettings);
-
-                if (Clan != null)
-                {
-                    return true;
-                }
+                Clan = this.Profile;
+                return true;
             }
             else
             {

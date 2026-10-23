@@ -49,11 +49,11 @@
             CsvFiles.Spells = new List<SpellData>(72);
             CsvFiles.Characters = new List<CharacterData>(72);
 
-            CsvFiles.Paths.Add(1, @"Gamefiles/csv_client/locales.csv");
-            CsvFiles.Paths.Add(2, @"Gamefiles/csv_client/billing_packages.csv");
-            CsvFiles.Paths.Add(3, @"Gamefiles/csv_logic/globals.csv");
-            CsvFiles.Paths.Add(4, @"Gamefiles/csv_client/sounds.csv");
-            CsvFiles.Paths.Add(5, @"Gamefiles/csv_logic/resources.csv");
+            CsvFiles.Paths.Add(1, @"Gamefiles/csv_client/locales.csv");//
+            CsvFiles.Paths.Add(2, @"Gamefiles/csv_client/billing_packages.csv");//
+            CsvFiles.Paths.Add(3, @"Gamefiles/csv_logic/globals.csv");//
+            CsvFiles.Paths.Add(4, @"Gamefiles/csv_client/sounds.csv");//
+            CsvFiles.Paths.Add(5, @"Gamefiles/csv_logic/resources.csv");//
 
             CsvFiles.Paths.Add(9, @"Gamefiles/csv_logic/character_buffs.csv");
 
@@ -91,6 +91,7 @@
 
             CsvFiles.Paths.Add(50, @"Gamefiles/csv_client/background_decos.csv");
 
+            CsvFiles.Paths.Add(51, @"Gamefiles/csv_logic/spell_sets.csv");
             CsvFiles.Paths.Add(52, @"Gamefiles/csv_logic/chest_order.csv");
             CsvFiles.Paths.Add(53, @"Gamefiles/csv_logic/taunts.csv");
             CsvFiles.Paths.Add(54, @"Gamefiles/csv_logic/arenas.csv");
@@ -128,6 +129,7 @@
             CsvFiles.Paths.Add(85, @"Gamefiles/csv_logic/event_targeting_definitions.csv");
             CsvFiles.Paths.Add(86, @"Gamefiles/csv_logic/shop_cycle.csv");
             CsvFiles.Paths.Add(87, @"Gamefiles/csv_logic/skin_sets.csv");
+            CsvFiles.Paths.Add(90, @"Gamefiles/csv_logic/shop_chests.csv");
 
             foreach (KeyValuePair<int, string> Pair in CsvFiles.Paths)
             {

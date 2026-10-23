@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Converters
+namespace ClashRoyale.Logic.Converters
 {
     using System;
 
@@ -23,6 +23,9 @@
 
         public override object ReadJson(JsonReader Reader, Type ObjectType, object ExistingValue, JsonSerializer Serializer)
         {
+            if (Reader.TokenType == JsonToken.Null)
+                return null;
+
             Chest Chest = (Chest) ExistingValue;
 
             if (Chest == null)

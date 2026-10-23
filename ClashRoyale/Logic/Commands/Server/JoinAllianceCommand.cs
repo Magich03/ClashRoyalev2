@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Commands.Server
+namespace ClashRoyale.Logic.Commands.Server
 {
     using ClashRoyale.Extensions;
     using ClashRoyale.Extensions.Game;
@@ -25,7 +25,7 @@
         {
             get
             {
-                return 206;
+                return 263; // LogicJoinAllianceCommand in client 3.830 (206 in older clients)
             }
         }
 

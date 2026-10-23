@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Commands.Server
+namespace ClashRoyale.Logic.Commands.Server
 {
     using ClashRoyale.Extensions;
     using ClashRoyale.Logic.Mode;
@@ -16,7 +16,7 @@
         {
             get
             {
-                return 207;
+                return 206; // LogicChangeAllianceRoleCommand in client 3.830 (207 in older clients)
             }
         }
 

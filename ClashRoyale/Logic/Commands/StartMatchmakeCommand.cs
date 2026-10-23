@@ -19,7 +19,10 @@
             }
         }
 
-        private bool Is2v2;
+        public int MatchType;
+        private bool MatchmakingOption;
+        private int DeckIndex = -1;
+        public bool Is2v2 { get => this.MatchType == 1; set => this.MatchType = value ? 1 : 0; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StartMatchmakeCommand"/> class.
@@ -37,9 +40,11 @@
         {
             base.Decode(Stream);
 
-            this.Is2v2 = Stream.ReadBoolean();
-            Stream.ReadVInt();
-            Stream.ReadVInt();
+            // Client 3.830 layout: base, VInt, bool, VInt.
+            // Native 0xa2058 compares the FIRST VInt (+0x1c) to 1 for teams.
+            this.MatchType = Stream.ReadVInt();
+            this.MatchmakingOption = Stream.ReadBoolean();
+            this.DeckIndex = Stream.ReadVInt();
         }
 
         /// <summary>
@@ -50,9 +55,9 @@
         {
             base.Encode(Stream);
 
-            Stream.WriteBoolean(this.Is2v2);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(-1);
+            Stream.WriteVInt(this.MatchType);
+            Stream.WriteBoolean(this.MatchmakingOption);
+            Stream.WriteVInt(this.DeckIndex);
         }
 
         /// <summary>
@@ -78,7 +83,7 @@
                     }
                     else
                     {
-                        GameMode.Listener.Matchmaking();
+                        GameMode.Listener.Matchmaking(this.Is2v2);
                     }
                     
                     return 0;
