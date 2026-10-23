@@ -13,7 +13,7 @@ This fork uses JSON file storage for the current server.
 The .NET 8 solution contains the server, its shared game/protocol library, `ClashRoyale.Patcher`, and `Downloader`.
 The obsolete C# clients, proxy, CSV editor, and conversion utilities have been removed.
 Desktop texture rendering and local sound playback are also removed from server startup.
-Game assets, the patcher, Frida/APK tools, native dumps, and existing account data are retained.
+Game assets, the patcher, reference dumps, and existing account data are retained.
 
 Build from the repository root:
 
@@ -71,12 +71,4 @@ installed; they do not install as two separate apps. Neither bundled script
 contains diagnostic logging or memory-dump routines. `Dumps/` retains the
 original protocol reference files for server development.
 
-Rebuild both variants from a compatible Astral 2.1.8 / 3.830.6 base APK with:
-
-```powershell
-python Frida/build_clients.py --base-apk path/to/client.apk --output artifacts/clients --host 192.168.1.7
-```
-
-The script uses Android SDK build-tools and the existing Android debug keystore.
-For Pepper, configure the matching public key in `Frida/astral-production.script.js`.
 Keep the server private key outside Git and outside release downloads.
