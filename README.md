@@ -57,3 +57,26 @@ We are working hard to not only bring you the best servers but become one of the
 ## Licence
 This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivs 4.0 Unported License.  
 To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-nd/4.0/ or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+
+## Android client releases
+
+Signed APK downloads are published under GitHub Releases, outside Git history.
+Two variants use the same package name (`com.greedycell.astralroyale`):
+
+- Pepper: native Pepper encryption enabled, with the server public key.
+- RC4: Pepper disabled, using the legacy RC4 connection.
+
+Both LAN builds connect to `192.168.1.7:9339`. They replace one another when
+installed; they do not install as two separate apps. Neither bundled script
+contains diagnostic logging or memory-dump routines. `Dumps/` retains the
+original protocol reference files for server development.
+
+Rebuild both variants from a compatible Astral 2.1.8 / 3.830.6 base APK with:
+
+```powershell
+python Frida/build_clients.py --base-apk path/to/client.apk --output artifacts/clients --host 192.168.1.7
+```
+
+The script uses Android SDK build-tools and the existing Android debug keystore.
+For Pepper, configure the matching public key in `Frida/astral-production.script.js`.
+Keep the server private key outside Git and outside release downloads.

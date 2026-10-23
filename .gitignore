@@ -270,3 +270,7 @@ __pycache__/
 
 # Deployment encryption key (private)
 /ClashRoyale.Server/Secrets/
+
+# Runtime diagnostics
+*.log
+*.dmp
