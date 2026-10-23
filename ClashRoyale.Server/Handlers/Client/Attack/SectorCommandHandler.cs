@@ -6,6 +6,7 @@
     using ClashRoyale.Enums;
     using ClashRoyale.Exceptions;
     using ClashRoyale.Logic;
+    using ClashRoyale.Logic.Battle;
     using ClashRoyale.Messages;
     using ClashRoyale.Messages.Client.Attack;
 
@@ -24,6 +25,15 @@
             if (SectorCommandMessage == null)
             {
                 throw new LogicException(typeof(SectorCommandHandler), nameof(SectorCommandMessage) + " == null at Handle(Device, Message, CancellationToken).");
+            }
+
+            Logging.Info(typeof(SectorCommandHandler), "Sector command at tick " + SectorCommandMessage.Tick + ": " + (SectorCommandMessage.Command?.ToString() ?? "none"));
+
+            if (MatchBattleSession.AddCommand(Device, SectorCommandMessage.Command)) return;
+
+            if (SectorCommandMessage.Command != null && TrainingBattleSession.AddCommand(Device, SectorCommandMessage.Command))
+            {
+                return;
             }
 
             if (Device.GameMode.State == HomeState.Attack)

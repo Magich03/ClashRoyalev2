@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Commands.Server
+namespace ClashRoyale.Logic.Commands.Server
 {
     using ClashRoyale.Extensions;
     using ClashRoyale.Extensions.Game;
@@ -18,7 +18,7 @@
         {
             get
             {
-                return 205;
+                return 290; // LogicLeaveAllianceCommand in client 3.830 (205 in older clients)
             }
         }
 
@@ -73,7 +73,7 @@
             Home Home       = GameMode.Home;
             Player Player   = GameMode.Player;
 
-            if (Home != null)
+            if (Home == null)
             {
                 return 1;
             }

@@ -267,3 +267,6 @@ __pycache__/
 *.apk
 *.ipa
 *.apk.idsig
+
+# Deployment encryption key (private)
+/ClashRoyale.Server/Secrets/

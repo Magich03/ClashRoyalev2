@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Commands.Manager
+namespace ClashRoyale.Logic.Commands.Manager
 {
     using System.Collections.Generic;
 
@@ -164,10 +164,20 @@
                             return new TransactionsRevokedCommand(); */
                         case 349:
                             return new AddChestCommand();
+                        case 276:
+                            return new AddClanChestCommand();
                         case 393:
                             return new ClaimRewardCommand();
+                        case 206:
+                            return new ChangeAllianceRoleCommand();
+                        case 263:
+                            return new JoinAllianceCommand();
                         case 275:
-                            return new DiamondsRemovedCommand();
+                            return new TransactionsRevokedCommand();
+                        case 290:
+                            return new LeaveAllianceCommand();
+                        case 313:
+                            return new AllianceUnitReceivedCommand();
                         case 278:
                             return new ChangeAvatarNameCommand();
                     }
@@ -175,13 +185,22 @@
 
                 switch (Type)
                 {
-                    /* case 1:
-                        return new DoSpellCommand(); */
+                    case 23:
+                        return new PickChooseCommand();
+                    case 34:
+                        return new DraftChooseCommand();
+                    case 51:
+                        return new PlaceCardCommand();
                 }
             }
 
             switch (Type)
             {
+                case 504:
+                case 534:
+                case 541:
+                case 561:
+                    return new ChallengeCommand(Type);
                 case 501:
                     return new UnknownCommand();
                 case 505:
@@ -206,6 +225,11 @@
                     return new ClaimAchievementRewardCommand();
                 case 538:
                     return new SpellPageOpenedCommand(); */
+                case 542:
+                case 543:
+                case 568:
+                case 597:
+                    return new ChestActionCommand(Type);
                 case 539:
                     return new BuyChestCommand();
                 case 544:
@@ -220,10 +244,22 @@
                     return new RequestNewQuestCommand();
                 case 592:
                     return new FuseSpellsCommand();
+                case 595:
+                case 591:
+                    return new CollectProgressChestCommand(Type);
                 case 594:
                     return new StartMatchmakeCommand();
                 case 599:
                     return new PageOpenedCommand();
+                case 589:
+                    return new SendAllianceMailCommand();
+                case 547:
+                    return new ShopOpenedCommand();
+            }
+
+            if (LayoutCommand.Layouts.TryGetValue(Type, out string Layout))
+            {
+                return new LayoutCommand(Type, Layout);
             }
 
             Logging.Info(typeof(CommandManager), "CreateCommand() - Command type " + Type + " does not exist.");

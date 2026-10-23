@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale
+namespace ClashRoyale
 {
     using System;
     using System.Reflection;
@@ -28,6 +28,7 @@
         /// </summary>
         private static void Main()
         {
+            System.IO.Directory.SetCurrentDirectory(AppContext.BaseDirectory);
             Base.Initialize();
             Test.Initialize();
             Program.Initialized = true;//progres move main in Test.cs

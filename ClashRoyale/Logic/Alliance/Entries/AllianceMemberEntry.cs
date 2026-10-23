@@ -15,6 +15,7 @@
         [JsonProperty("donations")] public int Donations;
         [JsonProperty("expLevel")]  public int Level;
         [JsonProperty("score")]     public int Score;
+        [JsonProperty("joinedAt")] public long JoinedAt;
         [JsonProperty("crowns")]    public int Crowns;
         [JsonProperty("role")]      public int Role;
 
@@ -46,6 +47,7 @@
         /// </summary>
         public AllianceMemberEntry(Player Player, int Role)
         {
+            this.JoinedAt = System.DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             this.SetPlayer(Player);
             this.SetRole(Role);
         }
@@ -79,8 +81,8 @@
         /// <param name="Stream">The stream.</param>
         public void Decode(ByteStream Stream)
         {
-            this.HighId     = Stream.ReadVInt();
-            this.LowId      = Stream.ReadVInt();
+            this.HighId     = Stream.ReadInt();
+            this.LowId      = Stream.ReadInt();
             this.Name       = Stream.ReadStringReference();
             this.Arena      = Stream.DecodeData<ArenaData>();
             this.Role       = Stream.ReadVInt();
@@ -91,7 +93,7 @@
             Stream.ReadVInt();
             Stream.ReadVInt();
             Stream.ReadVInt();
-            Stream.ReadVInt();
+            this.Crowns = Stream.ReadVInt();
             Stream.ReadVInt();
             Stream.ReadVInt();
             Stream.ReadVInt();
@@ -102,8 +104,8 @@
 
             if (Stream.ReadBoolean())
             {
-                Stream.ReadVInt(); // HomeId
-                Stream.ReadVInt();
+                Stream.ReadInt(); // HomeId
+                Stream.ReadInt();
             }
         }
 
@@ -126,7 +128,7 @@
             Stream.WriteVInt(0);
             Stream.WriteVInt(0);
             Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
+            Stream.WriteVInt(this.Crowns); // native member +0x34, getter 0x31f42a
             Stream.WriteVInt(0);
             Stream.WriteVInt(0);
             Stream.WriteVInt(0);

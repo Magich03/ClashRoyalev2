@@ -18,6 +18,8 @@
 
         [JsonProperty("header")] 		public AllianceHeaderEntry HeaderEntry;     
         [JsonProperty("members")] 		public AllianceMemberEntries Members;
+        [JsonProperty("crownChestProgress")] public ClanChestProgress ChestProgress = new ClanChestProgress();
+
         [JsonProperty("messages")] 		public AllianceStreamEntries Messages;
 
         /// <summary>
@@ -72,7 +74,8 @@
                 Entries[I].Encode(Stream);
             }
 
-            Stream.WriteBoolean(false);
+            Stream.WriteBoolean(true);
+            this.ChestProgress.Status(this, System.DateTimeOffset.UtcNow).Encode(Stream);
         }
 
         /// <summary>
@@ -80,7 +83,45 @@
         /// </summary>
         public void LoadingFinished()
         {
-            // LoadingFinished.
+            this.Refresh();
+        }
+
+        /// <summary>
+        /// Keeps the header (id, member count, score, access type) in sync with the clan state.
+        /// </summary>
+        public void Refresh()
+        {
+            this.HeaderEntry.SetAlliance(this.HighId, this.LowId, this.Members.Count);
+            this.HeaderEntry.Score = this.Members.Values.Sum(Member => Member.Score);
+            this.HeaderEntry.Donations = this.Members.Values.Sum(Member => Member.Donations);
+
+            if (this.HeaderEntry.Type < 1 || this.HeaderEntry.Type > 3)
+            {
+                this.HeaderEntry.Type = 1;
+            }
+        }
+
+        /// <summary>
+        /// Updates the member entry of the specified player with its current profile.
+        /// </summary>
+        public void UpdateMember(ClashRoyale.Logic.Player.Player Player)
+        {
+            if (this.Members.TryGetValue(Player.PlayerId, out AllianceMemberEntry Member))
+            {
+                Member.SetPlayer(Player);
+            }
+        }
+
+        /// <summary>
+        /// Builds the full entry sent in the alliance data message.
+        /// </summary>
+        public AllianceFullEntry GetFullEntry()
+        {
+            this.Refresh();
+            return new AllianceFullEntry(this.HeaderEntry, this.Members.Values.OrderByDescending(Member => Member.Score).ToArray(), this.Description ?? string.Empty)
+            {
+                CrownChest = this.ChestProgress.Status(this, System.DateTimeOffset.UtcNow)
+            };
         }
 
         /// <summary>

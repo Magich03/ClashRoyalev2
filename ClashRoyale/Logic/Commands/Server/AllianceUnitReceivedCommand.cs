@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Commands.Server
+namespace ClashRoyale.Logic.Commands.Server
 {
     using ClashRoyale.Extensions;
     using ClashRoyale.Extensions.Helper;
@@ -20,7 +20,7 @@
         {
             get
             {
-                return 208;
+                return 313; // LogicAllianceUnitReceivedCommand in client 3.830 (208 in older clients)
             }
         }
 

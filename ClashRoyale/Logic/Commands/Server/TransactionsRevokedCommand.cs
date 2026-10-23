@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Commands.Server
+namespace ClashRoyale.Logic.Commands.Server
 {
     using ClashRoyale.Extensions;
     using ClashRoyale.Logic.Mode;
@@ -15,7 +15,7 @@
         {
             get
             {
-                return 215;
+                return 275; // LogicTransactionsRevokedCommand in client 3.830 (215 in older clients)
             }
         }
 

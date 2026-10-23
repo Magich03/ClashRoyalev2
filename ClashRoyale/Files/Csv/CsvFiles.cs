@@ -91,6 +91,7 @@
 
             CsvFiles.Paths.Add(50, @"Gamefiles/csv_client/background_decos.csv");
 
+            CsvFiles.Paths.Add(51, @"Gamefiles/csv_logic/spell_sets.csv");
             CsvFiles.Paths.Add(52, @"Gamefiles/csv_logic/chest_order.csv");
             CsvFiles.Paths.Add(53, @"Gamefiles/csv_logic/taunts.csv");
             CsvFiles.Paths.Add(54, @"Gamefiles/csv_logic/arenas.csv");

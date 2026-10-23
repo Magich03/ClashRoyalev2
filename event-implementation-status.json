@@ -1,0 +1,72 @@
+{
+  "implemented_new_event_ids": [
+    73002021,
+    73002022,
+    73002023,
+    73002024,
+    73002025,
+    73002026,
+    73002027,
+    73002028,
+    73002029,
+    73002030,
+    73002031,
+    73002032,
+    73002033,
+    73002034,
+    73002035,
+    73002036,
+    73002037,
+    73002038,
+    73002039
+  ],
+  "new_event_groups": [
+    "Gold Rush 1v1/2v2",
+    "Gem Rush 1v1/2v2",
+    "Electro Wizard",
+    "Battle Ram",
+    "2v2 Insane Draft",
+    "Fixed Deck Order 1v1/2v2",
+    "Alternate Mirror decks 1v1/2v2",
+    "Royal Ghost, Mega Knight, Electro Wizard, Battle Ram release and draft events"
+  ],
+  "rewards": {
+    "gold_rush_per_tower": [
+      100,
+      200,
+      500
+    ],
+    "gem_rush_per_tower": [
+      3,
+      5,
+      10
+    ],
+    "policy": "Additional cumulative bonus, including losses/draws, once per result; gems credited to home balance. Result-screen gem field is not implemented."
+  },
+  "validation": {
+    "server_build": "work/event-skins-build",
+    "regression_log": "work/event-skin-tests.log",
+    "live": "Gem Rush loaded with gem tower artwork and active troop combat on BlueStacks using the clean APK. Gold Rush previously completed without skins; the other skin variants passed server packet tests but need live visual verification."
+  },
+  "skins": {
+    "enabled": true,
+    "modes": [
+      "Gold Rush 1v1/2v2",
+      "Gem Rush 1v1/2v2",
+      "Double Elixir"
+    ],
+    "implementation": "Server-only battle-avatar Resource slots CurrentKingSkin and CurrentPrincessSkin contain skin global IDs. Saved player selections are not mutated. Character skin flag remains false: that field overrides troop animation exports, which caused the old crash.",
+    "native_evidence": "LogicClientAvatar skin getters 0x1f0a9a and 0x36e32c read resource slot 0; setters 0x108e00 and 0x122f0c store global IDs. Character renderer 0x2f5b2c consumes character+0xb4 as troop animation skin.",
+    "clean_apk": "work/touchdown-round.apk",
+    "new_client_patch": false,
+    "tests": "Avatar packet decoding for Gold/Gem/Pump skins, existing selection replacement, saved-selection immutability, ordinary ladder isolation, character field alignment, full event regression suite."
+  },
+  "unfinished": {
+    "PickMode": "Server command 23, 16-offer/8-pick state, validated choices, bot picks and battle packet are implemented and tested. Not advertised; selection transition and reporter selection-clock handling still require live verification/update.",
+    "PvE/TvE": "Native puzzle/wave CSVs exist. Mission state, waves, restricted decks, non-crown victory and reward integration are not implemented.",
+    "KingOfTheHill": "Arena and kingofthehill tilemaps exist in APK; native name predicate found but no direct callers in cached xrefs. Rules and layout remain unverified.",
+    "ThreeBridges": "CSV entry only; no matching native string/assets found.",
+    "HeroChallenge": "Both hero spell definitions are NOTINUSE, with missing usable character/icon references.",
+    "GemGrab": "No native mode or matching asset found; not added as a renamed ordinary match."
+  }
+}

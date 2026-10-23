@@ -45,7 +45,7 @@
         {
             get
             {
-                return (uint) this.HighId << 32 | (uint) this.LowId;
+                return (long) this.HighId << 32 | (uint) this.LowId;
             }
         }
 

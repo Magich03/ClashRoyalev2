@@ -89,17 +89,10 @@
         /// </summary>
         public async Task<bool> TryAddOnlineMember(Player Player)
         {
-            if (this.Connected.TryAdd(Player.PlayerId, Player))
-            {
-                await this.SendStatusUpdated();
-                return true;
-            }
-            else
-            {
-                Logging.Warning(this.GetType(), "TryAdd(PlayerId, Player) != true at TryAddOnlineMember(Player).");
-            }
-
-            return false;
+            // A relog replaces the previous session's player instance.
+            this.Connected[Player.PlayerId] = Player;
+            await this.SendStatusUpdated();
+            return true;
         }
 
         /// <summary>
@@ -139,6 +132,29 @@
         /// <summary>
         /// Returns this instance data as an array.
         /// </summary>
+        /// <summary>
+        /// Gets the online player with the specified id, or null.
+        /// </summary>
+        public Player GetConnected(long PlayerId)
+        {
+            this.Connected.TryGetValue(PlayerId, out Player Player);
+            return Player;
+        }
+
+        /// <summary>
+        /// Sends a message to every online member. A new message is built per member because a message is encoded in place.
+        /// </summary>
+        public void Broadcast(System.Func<Messages.Message> CreateMessage, long ExceptId = 0)
+        {
+            foreach (Player Member in this.Connected.Values.ToArray())
+            {
+                if (Member.PlayerId != ExceptId && Member.GameMode?.Listener != null)
+                {
+                    Member.GameMode.Listener.SendMessage(CreateMessage());
+                }
+            }
+        }
+
         public AllianceMemberEntry[] ToArray()
         {
             return this.Values.ToArray();

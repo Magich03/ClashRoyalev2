@@ -44,6 +44,7 @@ namespace ClashRoyale.Enums
 
         BackgroundDecos     = 50,
 
+        SpellSets           = 51,
         ChestOrder          = 52,
         Taunts              = 53,
         Arenas              = 54,

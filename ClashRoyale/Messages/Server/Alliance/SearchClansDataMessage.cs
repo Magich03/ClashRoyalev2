@@ -13,7 +13,7 @@
         {
             get
             {
-                return 24310;
+                return 22534;
             }
         }
 

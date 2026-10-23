@@ -96,6 +96,7 @@
             HandlerFactory.MessageHandlers.Add(new SectorCommandMessage().Type,                 SectorCommandHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new SendBattleEventMessage().Type,               SendBattleEventHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new AskForTvContentMessage().Type,               AskForTvContentHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new InboxOpenedMessage().Type,                   InboxOpenedHandler.Handle);
 
             HandlerFactory.MessageHandlers.Add(new ServerErrorMessage().Type,                   ServerErrorHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new ServerShutdownMessage().Type,                ServerShutdownHandler.Handle);
@@ -105,6 +106,15 @@
             HandlerFactory.MessageHandlers.Add(new AskForAvatarLocalRankingListMessage().Type,  AskForAvatarLocalRankingListHandler.Handle);
 
             HandlerFactory.MessageHandlers.Add(new CreateAllianceMessage().Type,                CreateAllianceHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new AskForJoinableAlliancesListMessage().Type,   AskForJoinableAlliancesListHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new SearchAllianceMessage().Type,                SearchAlliancesHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new JoinAllianceMessage().Type,                  JoinAllianceHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new LeaveAllianceMessage().Type,                 LeaveAllianceHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new ChatToAllianceStreamMessage().Type,          ChatToAllianceStreamHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new AskForAllianceStreamMessage().Type,          AskForAllianceStreamHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new ChangeAllianceMemberRoleMessage().Type,      ChangeAllianceMemberRoleHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new KickAllianceMemberMessage().Type,            KickAllianceMemberHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new EditAllianceMessage().Type,                  EditAllianceHandler.Handle);
 
             HandlerFactory.Initialized = true;
         }

@@ -12,7 +12,7 @@
         {
             get
             {
-                return 14321;
+                return 13038;
             }
         }
 
@@ -68,6 +68,7 @@
             this.HighId     = this.Stream.ReadInt();
             this.LowId      = this.Stream.ReadInt();
             this.IsAccepted = this.Stream.ReadBoolean();
+            this.Stream.ReadString();
         }
 
         /// <summary>

@@ -12,7 +12,7 @@ namespace ClashRoyale.Messages.Server.Matchmaking
         {
             get
             {
-                return 24108;
+                return 27213;
             }
         }
 

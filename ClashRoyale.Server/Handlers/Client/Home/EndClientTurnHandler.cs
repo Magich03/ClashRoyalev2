@@ -1,12 +1,15 @@
-﻿namespace ClashRoyale.Handlers.Client.Home
+namespace ClashRoyale.Handlers.Client.Home
 {
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
     using ClashRoyale.Exceptions;
     using ClashRoyale.Logic;
     using ClashRoyale.Logic.Alliance;
+    using ClashRoyale.Handlers.Client.Alliance;
     using ClashRoyale.Logic.Collections;
+    using ClashRoyale.Logic.Commands;
     using ClashRoyale.Logic.Player;
     using ClashRoyale.Messages;
     using ClashRoyale.Messages.Client.Home;
@@ -39,13 +42,30 @@
                 });
             }
 
+            if (EndClientTurnMessage.Commands != null)
+            {
+                foreach (SendAllianceMailCommand Mail in EndClientTurnMessage.Commands.OfType<SendAllianceMailCommand>())
+                {
+                    await ClanHelper.SendMail(Device.GameMode.Player, Mail.Title, Mail.Message);
+                }
+            }
+
+            bool hasRewardClaim = Device.GameMode.CommandManager.Queue.Any(c => c.Type == 393);
             for (int I = Device.GameMode.Time; I < EndClientTurnMessage.Tick; I++)
             {
                 Device.GameMode.UpdateOneTick();
             }
 
             Player Player = Device.GameMode.Player;
+            // Persist the consumed chest and its rewards together after the server command is acknowledged.
+            if (hasRewardClaim || EndClientTurnMessage.Commands?.Any(c => c is ChallengeCommand) == true)
+                await ClashRoyale.Logic.Collections.Players.Save(Player);
 
+            if (EndClientTurnMessage.Commands?.OfType<ChallengeCommand>().Any(c => c.Result != 0 && (c.Type == 541 || c.Type == 504)) == true)
+            {
+                ClashRoyale.Logic.Battle.LadderMatchmaking.Cancel(Device, false);
+                Device.NetworkManager.SendMessage(new ClashRoyale.Messages.Server.Home.OwnHomeDataMessage(Player, Player.Home, ClashRoyale.Extensions.Utils.TimeUtil.Timestamp));
+            }
             if (Player.IsInAlliance)
             {
                 Clan Clan = await Clans.Get(Player.ClanHighId, Player.ClanLowId);

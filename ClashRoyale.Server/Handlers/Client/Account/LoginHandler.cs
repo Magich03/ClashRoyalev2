@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Handlers.Client.Account
+namespace ClashRoyale.Handlers.Client.Account
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -8,7 +8,10 @@
     using ClashRoyale.Extensions.Utils;
     using ClashRoyale.Files;
     using ClashRoyale.Logic;
+    using ClashRoyale.Handlers.Client.Alliance;
+    using ClashRoyale.Logic.Alliance;
     using ClashRoyale.Logic.Collections;
+    using ClashRoyale.Messages.Server.Alliance;
     using ClashRoyale.Logic.Inbox;
     using ClashRoyale.Logic.Mode;
     using ClashRoyale.Logic.Player;
@@ -162,8 +165,33 @@
             Player.Home.ClaimPendingPurchasedChest();
             ShopGenerator.Refresh(Player.Home, Player);
 
+            // Drop a clan that no longer exists (or no longer lists this player) before the avatar is sent.
+            Clan Clan = await ClanHelper.GetClan(Player);
+
+            if (Clan == null && Player.IsInAlliance)
+            {
+                ClanHelper.ClearOfflineAlliance(Player);
+            }
+
+            await ClashRoyale.Logic.Alliance.ClanChestService.Refresh(Player, false);
+            // Finish pre-update live runs under the new single-match format without discarding earned rewards.
+            if (Player.Home.Challenge?.SingleMatch == true) {
+                Player.Home.Challenge.Wins=System.Math.Min(1,Player.Home.Challenge.Wins);
+                Player.Home.Challenge.Losses=System.Math.Min(1,Player.Home.Challenge.Losses);
+                ClashRoyale.Logic.Battle.ChallengeBattle.EnsurePendingReward(Player);
+                await Players.Save(Player);
+            }
             Device.NetworkManager.SendMessage(new LoginOkMessage(Player));
             Device.NetworkManager.SendMessage(new OwnHomeDataMessage(Player, Player.Home, TimeUtil.Timestamp));
+
+            if (Clan != null)
+            {
+                Clan.UpdateMember(Player);
+                Device.NetworkManager.SendMessage(new AllianceStreamMessage(Clan.Messages.ToArray()));
+                await Clan.Members.TryAddOnlineMember(Player);
+            }
+
+            ClashRoyale.Logic.Alliance.ClanChestService.Notify(Player);
 
             if (InboxManager.Entries.Count > 0)
             {

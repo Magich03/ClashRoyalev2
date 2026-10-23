@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale
+namespace ClashRoyale
 {
     using System;
 
@@ -55,10 +55,6 @@
                     else if (Args[0] == "stats")
                     {
                         StatsHandler.Handle(Args);
-                    }
-                    else if (Args[0] == "sound")
-                    {
-                        SoundHandler.Handle(Args);
                     }
                 }
             }

@@ -1,126 +1,35 @@
-﻿namespace ClashRoyale.Messages.Server.Avatar
+namespace ClashRoyale.Messages.Server.Avatar
 {
-    using ClashRoyale.Compression.ZLib;
     using ClashRoyale.Enums;
     using ClashRoyale.Extensions;
     using ClashRoyale.Extensions.Helper;
+    using ClashRoyale.Files.Csv.Logic;
 
+    // Native decode 0x603c6 and encode 0x24647c (ARMv7 3.830).
     public class BattleResultMessage : Message
     {
-        /// <summary>
-        /// Gets the type of this message.
-        /// </summary>
-        public override short Type
-        {
-            get
-            {
-                return 20225;
-            }
-        }
-
-        /// <summary>
-        /// Gets the service node of this message.
-        /// </summary>
-        public override Node ServiceNode
-        {
-            get
-            {
-                return Node.Avatar;
-            }
-        }
-
+        public override short Type => 28934;
+        public override Node ServiceNode => Node.Avatar;
+        public int Result, TrophyDelta, Gold, OwnCrowns, OpponentCrowns;
+        public TreasureChestData ChestData;
         public byte[] FullUpdate;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BattleResultMessage"/> class.
-        /// </summary>
-        public BattleResultMessage()
-        {
-            // BattleResultMessage.
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BattleResultMessage"/> class.
-        /// </summary>
-        /// <param name="Stream">The stream.</param>
-        public BattleResultMessage(ByteStream Stream) : base(Stream)
-        {
-            // BattleResultMessage.
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BattleResultMessage"/> class.
-        /// </summary>
-        /// <param name="Update">The update.</param>
-        public BattleResultMessage(byte[] Update)
-        {
-            this.FullUpdate = Update;
-        }
-
-        /// <summary>
-        /// Decodes this instance.
-        /// </summary>
-        public override void Decode()
-        {
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-
-            this.Stream.ReadVInt();
-
-            if (this.Stream.ReadBoolean())
-            {
-                this.FullUpdate = ZlibStream.UncompressBuffer(this.Stream.ReadBytes());
-            }
-            else
-            {
-                this.FullUpdate = this.Stream.ReadBytes();
-            }
-
-            this.Stream.ReadBoolean();
-
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-            this.Stream.ReadVInt();
-
-            this.Stream.ReadBoolean();
-        }
-
-        /// <summary>
-        /// Encodes this instance.
-        /// </summary>
+        public BattleResultMessage() { }
+        public BattleResultMessage(ByteStream stream) : base(stream) { }
+        public BattleResultMessage(byte[] update) { FullUpdate = update; }
         public override void Encode()
         {
-            this.Stream.WriteVInt(3); // Crown
-            this.Stream.WriteVInt(99); // Trophies Gain
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteBytes(ZLibHelper.CompressCompressableByteArray(this.FullUpdate));
-            this.Stream.WriteBoolean(false);
-
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-            this.Stream.WriteVInt(0);
-
-            this.Stream.WriteBoolean(false);
+            Stream.WriteVInt(Result);
+            Stream.WriteVInt(TrophyDelta);
+            Stream.WriteVInt(Gold);
+            for (int i=0;i<5;i++) Stream.WriteVInt(0);
+            Stream.WriteVInt(OwnCrowns);
+            Stream.WriteVInt(OpponentCrowns);
+            Stream.EncodeData(ChestData);
+            // A null snapshot preserves the already-simulated arena (native handler explicitly supports it).
+            Stream.WriteBytes(FullUpdate);
+            Stream.WriteBoolean(false);
+            for (int i=0;i<4;i++) Stream.WriteVInt(0); // optional data references
+            Stream.WriteBoolean(false);
         }
     }
 }

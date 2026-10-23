@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Mode
+namespace ClashRoyale.Logic.Mode
 {
     using ClashRoyale.Enums;
     using ClashRoyale.Extensions;
@@ -18,6 +18,7 @@
     {
         public Time Time;
         public HomeState State;
+        public int RequestedChallengeId;
 
         public Battle Battle;
         public Player Player;

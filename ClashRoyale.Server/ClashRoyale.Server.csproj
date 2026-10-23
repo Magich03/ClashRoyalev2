@@ -16,13 +16,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>Builds\Debug\</OutputPath>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>Builds\Release\</OutputPath>
     <DebugType>embedded</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
@@ -33,7 +31,34 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClashRoyale\ClashRoyale.csproj" />
-    <ProjectReference Include="..\ClashRoyale.Patcher\ClashRoyale.Patcher.csproj" />
+    <ProjectReference Include="..\ClashRoyale.Patcher\ClashRoyale.Patcher.csproj" ReferenceOutputAssembly="false" Private="false" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Secrets\pepper.key" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <!-- Build the Patcher as a companion tool, without linking it into the server. -->
+  <Target Name="CollectPatcherArtifacts" DependsOnTargets="ResolveProjectReferences">
+    <MSBuild Projects="../ClashRoyale.Patcher/ClashRoyale.Patcher.csproj"
+             Targets="GetTargetPath" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="_PatcherTarget" />
+    </MSBuild>
+    <ItemGroup>
+      <_PatcherArtifact Include="%(_PatcherTarget.RootDir)%(_PatcherTarget.Directory)ClashRoyale.Patcher.*" />
+    </ItemGroup>
+  </Target>
+  <Target Name="CopyPatcherToBuild" AfterTargets="Build" DependsOnTargets="CollectPatcherArtifacts">
+    <Copy SourceFiles="@(_PatcherArtifact)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+    <ItemGroup>
+      <FileWrites Include="@(_PatcherArtifact->'$(TargetDir)%(Filename)%(Extension)')" />
+    </ItemGroup>
+  </Target>
+  <Target Name="IncludePatcherInPublish" BeforeTargets="ComputeFilesToPublish" DependsOnTargets="CollectPatcherArtifacts">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="@(_PatcherArtifact)">
+        <RelativePath>%(Filename)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 </Project>

@@ -53,7 +53,7 @@
 
         public static int CryptoBoxKeypair(byte[] Pk, byte[] Sk)
         {
-            new Random().NextBytes(Sk);
+            System.Security.Cryptography.RandomNumberGenerator.Fill(Sk);
             return Curve25519.CryptoScalarmultBase(Pk, Sk);
         }
 

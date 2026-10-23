@@ -20,8 +20,7 @@
             }
         }
 
-        private int Unknown;
-        private SpellData Spell;
+        private readonly System.Collections.Generic.List<SpellData> Spells = new System.Collections.Generic.List<SpellData>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpellSeenCommand"/> class.
@@ -39,8 +38,13 @@
         {
             base.Decode(Stream);
 
-            this.Unknown = Stream.ReadVInt();
-            this.Spell = Stream.DecodeData<SpellData>();
+            // LogicSpellPageOpenedCommand (517) in client 3.830: base, then a counted list of card references.
+            int Count = Stream.ReadVInt();
+
+            for (int I = 0; I < Count; I++)
+            {
+                this.Spells.Add(Stream.DecodeData<SpellData>());
+            }
         }
 
         /// <summary>
@@ -56,14 +60,10 @@
 
                 if (Player != null)
                 {
-                    var Card = Home.GetSpellByData(this.Spell);
-
-                    if (Card == null)
+                    foreach (SpellData Spell in this.Spells)
                     {
-                        return 3;
+                        Home.GetSpellByData(Spell)?.SetShowNewIcon(false);
                     }
-
-                    Card.SetShowNewIcon(false);
 
                     return 0;
                 }

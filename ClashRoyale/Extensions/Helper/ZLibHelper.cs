@@ -38,7 +38,10 @@
                 return Output;
             }
 
-            return Input;
+            // Not compressed: the client still reads the flag byte first.
+            byte[] Raw = new byte[Input.Length + 1];
+            Array.Copy(Input, 0, Raw, 1, Input.Length);
+            return Raw;
         }
 
         public static byte[] DecompressCompressableByteArray(byte[] Input)

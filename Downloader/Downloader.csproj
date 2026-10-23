@@ -1,15 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <RollForward>Major</RollForward>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <AssemblyName>Downloader</AssemblyName>
-    <Version>1.0.0.0</Version>
   </PropertyGroup>
-
+  <ItemGroup>
+    <None Include="..\fingerprint.json" Link="fingerprint.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Compile Include="..\ClashRoyale\Compression\LZMA\**\*.cs" Link="Compression\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Network
+namespace ClashRoyale.Network
 {
     using System;
     using System.Diagnostics;
@@ -17,6 +17,9 @@
 
     public class NetworkManager
     {
+        // Stateful encryption and socket submission must use the same per-connection order.
+        private readonly object SendLock = new object();
+
         public Device Device;
         public RequestTime RequestTime;
         public LogicLong AccountId;
@@ -143,38 +146,41 @@
         {
             Logging.Info(typeof(NetworkTcp), "Sending " + Message.GetType().Name + ".");
 
-            if (this.Device.Token.IsConnected)
+            lock (this.SendLock)
             {
-                if (Message.IsServerToClientMessage)
+                if (this.Device.Token.IsConnected)
                 {
-                    Message.Encode();
-                    byte[] Bytes = Message.Stream.ToArray(0, Message.Stream.Offset);
-
-                    if (this.SendEncrypter == null)
+                    if (Message.IsServerToClientMessage)
                     {
-                        if (this.PepperInit.State == 1)
+                        Message.Encode();
+                        byte[] Bytes = Message.Stream.ToArray(0, Message.Stream.Offset);
+
+                        if (this.SendEncrypter == null)
                         {
-                            Bytes = PepperCrypto.SendPepperAuthentificationResponse(ref this.PepperInit, Bytes);
+                            if (this.PepperInit.State == 1)
+                            {
+                                Bytes = PepperCrypto.SendPepperAuthentificationResponse(ref this.PepperInit, Bytes);
+                            }
+                            else if (this.PepperInit.State == 3)
+                            {
+                                Bytes = PepperCrypto.SendPepperLoginResponse(ref this.PepperInit, out this.SendEncrypter, out this.ReceiveEncrypter, Bytes);
+                            }
                         }
-                        else if (this.PepperInit.State == 3)
+                        else
                         {
-                            Bytes = PepperCrypto.SendPepperLoginResponse(ref this.PepperInit, out this.SendEncrypter, out this.ReceiveEncrypter, Bytes);
+                            Bytes = this.SendEncrypter.Encrypt(Bytes);
                         }
+
+                        Message.Stream.SetByteArray(Bytes);
+
+                        LogPacket("Sent", Message.Type, Bytes);
+                        NetworkTcp.Send(this.WriteHeader(Message), this.Device.Token);
+                        HandlerFactory.MessageHandle(this.Device, Message);
                     }
                     else
                     {
-                        Bytes = this.SendEncrypter.Encrypt(Bytes);
+                        Logging.Error(this.GetType(), $"Message.IsServerToClientMessage != true at SendMessage(Message {Message.Type}).");
                     }
-
-                    Message.Stream.SetByteArray(Bytes);
-
-                    LogPacket("Sent", Message.Type, Bytes);
-                    NetworkTcp.Send(this.WriteHeader(Message), this.Device.Token);
-                    HandlerFactory.MessageHandle(this.Device, Message);
-                }
-                else
-                {
-                    Logging.Error(this.GetType(), $"Message.IsServerToClientMessage != true at SendMessage(Message {Message.Type}).");
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Logic.Home
+namespace ClashRoyale.Logic.Home
 {
     using ClashRoyale.Extensions;
     using ClashRoyale.Extensions.Helper;
@@ -21,7 +21,13 @@
 
         private int Source;
         private int SlotIndex;
+        private int ChestId;
+        public int Id => this.ChestId;
+        public bool IsClaimed => this.Claimed;
+        public void SetId(int value) { this.ChestId = value; }
 
+        public int OverrideGold;
+        public int OverrideCards;
         private Reward Reward;
         private Timer UnlockTimer;
         private TreasureChestData ChestData;
@@ -129,6 +135,8 @@
         public void Decode(ByteStream Reader)
         {
             this.ChestData  = Reader.DecodeData<TreasureChestData>();
+            if (Reader.ReadBoolean())
+                throw new System.NotSupportedException("Embedded chest contents are not supported.");
             this.Unlocked   = Reader.ReadBoolean();
             this.Claimed    = Reader.ReadBoolean();
             this.New        = Reader.ReadBoolean();
@@ -139,13 +147,13 @@
                 this.UnlockTimer.Decode(Reader);
             }
 
-            Reader.ReadVInt();
+            this.ChestId = Reader.ReadVInt();
 
             this.Source     = Reader.ReadVInt();
             this.SlotIndex  = Reader.ReadVInt();
 
-            Reader.ReadVInt();
-            Reader.ReadVInt();
+            this.OverrideGold = Reader.ReadVInt();
+            this.OverrideCards = Reader.ReadVInt();
 
             Reader.ReadBoolean();
             Reader.ReadBoolean();
@@ -158,6 +166,8 @@
         public void Encode(ByteStream Stream)
         {
             Stream.EncodeData(this.ChestData);
+            // 3.830 chest decoder reads optional chest contents before state flags.
+            Stream.WriteBoolean(false);
             Stream.WriteBoolean(this.Unlocked);
             Stream.WriteBoolean(this.Claimed);
             Stream.WriteBoolean(this.New);
@@ -169,12 +179,12 @@
                 this.UnlockTimer.Encode(Stream);
             }
 
-            Stream.WriteVInt(0);
+            Stream.WriteVInt(this.ChestId);
             Stream.WriteVInt(this.Source);
             Stream.WriteVInt(this.SlotIndex);
 
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
+            Stream.WriteVInt(this.OverrideGold);
+            Stream.WriteVInt(this.OverrideCards);
 
             Stream.WriteBoolean(false);
             Stream.WriteBoolean(false);
@@ -208,6 +218,8 @@
         /// <summary>
         /// Sets the source.
         /// </summary>
+        public void SetSlot(int value) { this.SlotIndex = value; }
+
         public void SetSource(int Value)
         {
             this.Source = Value;
@@ -246,7 +258,7 @@
             if (GameMode != null)
             {
                 GameMode.Home.SetClaimingReward(true);
-                GameMode.CommandManager.AddAvailableServerCommand(new ClaimRewardCommand(RewardRandomizer.RandomizeReward(this, GameMode.Home), ChestType, 14));
+                GameMode.CommandManager.AddAvailableServerCommand(new ClaimRewardCommand(RewardRandomizer.RandomizeReward(this, GameMode.Home), ChestType, ChestType == 1 ? this.ChestId : 14));
             }
         }
 
@@ -282,9 +294,12 @@
         {
             JsonHelper.GetJsonBoolean(Json, "x", out this.Unlocked);
             JsonHelper.GetJsonNumber(Json, "s", out this.Source);
-            JsonHelper.GetJsonBoolean(Json, "n", out this.Unlocked);
+            JsonHelper.GetJsonBoolean(Json, "n", out this.New);
             JsonHelper.GetJsonNumber(Json, "slot", out this.SlotIndex);
+            JsonHelper.GetJsonNumber(Json, "id", out this.ChestId);
             JsonHelper.GetJsonData(Json, "d", out this.ChestData);
+            JsonHelper.GetJsonNumber(Json, "gold", out this.OverrideGold);
+            JsonHelper.GetJsonNumber(Json, "cards", out this.OverrideCards);
 
             if (JsonHelper.GetJsonObject(Json, "t", out JToken JTimer))
             {
@@ -300,10 +315,13 @@
         {
             JObject Json = new JObject();
 
+            Json.Add("gold", this.OverrideGold);
+            Json.Add("cards", this.OverrideCards);
             Json.Add("x", this.Unlocked);
             Json.Add("s", this.Source);
             Json.Add("n", this.New);
             Json.Add("slot", this.SlotIndex);
+            Json.Add("id", this.ChestId);
 
             JsonHelper.SetLogicData(Json, "d", this.ChestData);
 

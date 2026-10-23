@@ -38,6 +38,8 @@ namespace ClashRoyale.Logic.Player
 
         [JsonProperty("isDemoAccount")]         public bool IsDemoAccount;
 
+        [JsonProperty("lastRewardedMatch")] public string LastRewardedMatch;
+
         // Game
         
         [JsonProperty("isNameSet")]             public bool IsNameSet;
@@ -90,6 +92,27 @@ namespace ClashRoyale.Logic.Player
         // Apis
         
         [JsonProperty("api")]                   public ApiManager ApiManager;
+
+        // Inbox
+
+        [JsonProperty("mails")]                 public System.Collections.Generic.List<AllianceMailEntry> Mails = new System.Collections.Generic.List<AllianceMailEntry>();
+        [JsonProperty("mailSeed")]              public int MailSeed;
+
+        /// <summary>
+        /// Adds a clan mail to the inbox, keeping the newest 50.
+        /// </summary>
+        public void AddMail(AllianceMailEntry Mail)
+        {
+            Mail.HighId = 0;
+            Mail.LowId  = ++this.MailSeed;
+
+            this.Mails.Add(Mail);
+
+            if (this.Mails.Count > 50)
+            {
+                this.Mails.RemoveAt(0);
+            }
+        }
 
         /// <summary>
         /// Gets the player identifier.
@@ -665,7 +688,7 @@ namespace ClashRoyale.Logic.Player
         /// </summary>
         /// <param name="Stream">The stream.</param>
         /// <param name="BattleEncode">if set to <c>true</c> [battle encode].</param>
-        public void Encode(ChecksumEncoder Stream, bool BattleEncode = false)
+        public void Encode(ChecksumEncoder Stream, bool BattleEncode = false, GameModeData BattleMode = null)
         {
             Stream.WriteLogicLong(this.HighId, this.LowId); // Avatar
             Stream.WriteLogicLong(this.HighId, this.LowId); // Account
@@ -703,7 +726,22 @@ namespace ClashRoyale.Logic.Player
             Stream.WriteVInt(0);
             Stream.WriteVInt(0);
 
-            this.CommoditySlots.Encode(Stream);
+            // Send temporary event cosmetics in the battle snapshot without changing saved selections.
+            System.Collections.Generic.Dictionary<CsvData, int> skinOverrides = null;
+            if (BattleEncode && BattleMode != null)
+            {
+                skinOverrides = new System.Collections.Generic.Dictionary<CsvData, int>();
+                foreach (var selection in new[] { ("CurrentKingSkin", BattleMode.KingSkin), ("CurrentPrincessSkin", BattleMode.PrincessSkin) })
+                {
+                    if (string.IsNullOrEmpty(selection.Item2)) continue;
+                    var skin = CsvFiles.Get(Gamefile.Skins).GetData<SkinData>(selection.Item2)
+                        ?? throw new InvalidOperationException("Missing event tower skin " + selection.Item2);
+                    var resource = CsvFiles.Get(Gamefile.Resources).GetData<ResourceData>(selection.Item1)
+                        ?? throw new InvalidOperationException("Missing skin selection resource " + selection.Item1);
+                    skinOverrides[resource] = skin.GlobalId;
+                }
+            }
+            this.CommoditySlots.Encode(Stream, skinOverrides);
 
             if (!BattleEncode)
             {
@@ -744,14 +782,18 @@ namespace ClashRoyale.Logic.Player
             Stream.WriteVInt(0);
             Stream.WriteVInt(0);
 
-            Stream.WriteBool(false);
+            Stream.WriteVInt(0); // +0xdc
+            Stream.WriteVInt(7); // training step +0xe0
+            Stream.WriteVInt(1); // +0xe4
+            Stream.WriteVInt(0); // array +0xf4
+            var challenge = this.Home?.Challenge;
+            bool active = challenge != null && !challenge.Finished && !challenge.RewardClaimed;
+            Stream.WriteBoolean(active);
+            if (active) challenge.Encode(Stream);
+            Stream.WriteBoolean(false);
+            Stream.WriteVInt(1);
+            Stream.WriteBoolean(false);
 
-            Stream.WriteVInt(7); // Training Step
-            Stream.WriteVInt(1); // 0x00 = Training || bool (?)
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(1); // bool (?)
-            Stream.WriteVInt(0);
         }
 
         /// <summary>

@@ -13,7 +13,7 @@
         {
             get
             {
-                return 24445;
+                return 27709; // client 3.830 id
             }
         }
 
@@ -76,12 +76,8 @@
         /// </summary>
         public override void Encode()
         {
-            this.Stream.WriteVInt(this.Entries.Length);
-
-            foreach (InboxEntry Entry in this.Entries)
-            {
-                Entry.Encode(this.Stream);
-            }
+            // Client 3.830 reads a 4-byte count; the news entry layout is not verified yet, so the list is sent empty.
+            this.Stream.WriteInt(0);
         }
     }
 }

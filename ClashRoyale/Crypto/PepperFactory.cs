@@ -27,7 +27,7 @@
             get
             {
                 byte[] k = new byte[32];
-                Curve25519Xsalsa20Poly1305.CryptoBoxGetpublickey(k, PepperFactory.SecretKeys[14]);
+                Curve25519Xsalsa20Poly1305.CryptoBoxGetpublickey(k, PepperFactory.GetSecretKey(14));
                 return k;
             }
         }
@@ -35,8 +35,18 @@
         /// <summary>
         /// The patched client always encrypts with <see cref="ModdedPublicKey"/>, so any key version maps to secret key 14.
         /// </summary>
+        private static readonly System.Lazy<byte[]> DeploymentKey = new(() =>
+        {
+            string path = System.Environment.GetEnvironmentVariable("CLASH_PEPPER_KEY_FILE")
+                ?? System.IO.Path.Combine(System.AppContext.BaseDirectory, "Secrets", "pepper.key");
+            if (!System.IO.File.Exists(path)) return null;
+            byte[] key = System.IO.File.ReadAllBytes(path);
+            if (key.Length != 32) throw new System.IO.InvalidDataException("Pepper key must be exactly 32 bytes.");
+            return key;
+        });
         public static byte[] GetSecretKey(int KeyVersion)
         {
+            if (DeploymentKey.Value != null) return DeploymentKey.Value;
             return PepperFactory.SecretKeys.TryGetValue(KeyVersion, out byte[] Key) ? Key : PepperFactory.SecretKeys[14];
         }
 
