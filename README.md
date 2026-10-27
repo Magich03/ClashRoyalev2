@@ -44,29 +44,6 @@ key over an existing deployment. Old `Builds` deployments are not automatically 
 arenas per match, shared by all players. Touchdown retains its required map.
 Ladder/training arenas, saved player arenas and reward eligibility are unchanged.
 
-## Private clan commands
-
-
-Type `/help` in clan chat to list commands. Slash messages are intercepted before clan storage or broadcast. Replies from `Server` go only to the requesting connection and are not saved in clan history. Successful account changes are saved and shown in the Login failed popup instead of clan chat. Tap Try Again to reload the updated account.
-
-| Command | Effect on your account |
-| --- | --- |
-| `/max` | Unlock all cards, set valid maximum card/king levels, fill gold, set 1,000,000 gems and raise trophies to at least the highest enabled league threshold (6,400). |
-| `/min` | Reset to Arena 1, zero trophies/best score, king level 1 and only the starting eight cards at base levels; clear spare card counts, gold and gems. |
-| `/gold <amount>` | Set gold from 0 through the game's gold cap. |
-| `/arena <number>` | Set current trophies to that arena or league threshold, preserving higher best trophies. Use `/arena` to list valid numbers. |
-| `/gems <amount>` | Set gems from 0 through 1,000,000. |
-| `/status` | Show server uptime, online players, queues, battles, memory/runtime and account status. |
-| `/info` | Show server information and preset behavior. |
-| `/help` | List registered commands. |
-
-Both presets retain clan and battle history. `/min` resets all saved decks to the starter deck and removes other cards. `/max` retains your deck and updates trophies, best score and arena without lowering an existing higher score. Account-changing commands require the player to be home and outside matchmaking/battles.
-
-Self-service account cheats are enabled for everyone by default. Set the server environment variable `CLASH_CHAT_CHEATS` to `off` to disable them, or to comma-separated player IDs such as `0:1,0:2` to restrict them. `*` enables all accounts. Help, info and status remain available.
-
-The existing `/` delimiter and command registry are in `ClashRoyale/Messages/MessageFactory.cs`. Each cheat has its own class under `ClashRoyale/Logic/Cheats/Commands/`; add new commands there and register them in the factory. `PrivateClanCommands` handles private delivery, validation, saving and refreshes. No client patch is required.
-The league introduction acknowledgement and other home flags are saved per account. No client patch is required.
-
 ## About us
 **GameDef** has been around since 2017, offering the latest discussion on games from Supercell.  
 We are working hard to not only bring you the best servers but become one of the best communities.
