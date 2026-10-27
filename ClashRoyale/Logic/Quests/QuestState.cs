@@ -179,7 +179,9 @@ public sealed class QuestState
     {
         s.WriteBoolean(true);s.WriteVInt(Entries.Count);foreach(var q in Entries)q.Encode(s,now);s.WriteVInt(0);
         s.WriteVInt(Points);s.WriteVInt(MainData.QuestThreshold);s.WriteVInt(Seen?1:0);
-        s.WriteVInt((int)Math.Max(0,LastDiscardAt+86400-now));s.WriteVInt((int)Math.Max(0,NextFillAt-now));s.WriteVInt(0);s.WriteVInt(NextId);s.WriteVInt(ChestIndex);
+        // Native +0x88/+0x8c are pending quest-generation counts, not cooldown seconds.
+        // The server already creates/replaces quests; no client generation remains pending.
+        s.WriteVInt(0);s.WriteVInt(0);s.WriteVInt(0);s.WriteVInt(NextId);s.WriteVInt(ChestIndex);
         s.WriteVInt(0);s.EncodeLogicData(CsvFiles.Get(Gamefile.ChestOrder).GetData(ChestCycle),52);s.EncodeLogicData(MainData,91);
         s.WriteBoolean(Points>=MainData.QuestThreshold);if(Points>=MainData.QuestThreshold)MainChest.Encode(s);
         for(int i=0;i<14;i++)s.WriteVInt(0);s.WriteVInt(0);s.WriteVInt(0);s.WriteVInt(-1);s.WriteVInt(-1);
