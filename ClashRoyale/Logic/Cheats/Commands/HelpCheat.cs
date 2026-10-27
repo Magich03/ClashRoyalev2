@@ -7,7 +7,8 @@ namespace ClashRoyale.Logic.Cheats.Commands
     {
         public override CheatResult Prepare(Player player, string[] arguments) => arguments.Length != 0
             ? new("Usage: /help")
-            : new("Commands: " + string.Join(", ", MessageFactory.Cheats.Keys.Select(name => MessageFactory.Delimiter + name))
-                + ". /gold and /gems take an amount; /arena takes an arena number. Replies are private.");
+            : new("Commands: " + string.Join(", ", MessageFactory.Cheats.Keys.Where(name => name != "arena" || player.Rank == ClashRoyale.Enums.Rank.Administrator).Select(name => MessageFactory.Delimiter + name))
+                + ". /gold and /gems take an amount."
+                + (player.Rank == ClashRoyale.Enums.Rank.Administrator ? " /arena takes an arena number." : "") + " Replies are private.");
     }
 }

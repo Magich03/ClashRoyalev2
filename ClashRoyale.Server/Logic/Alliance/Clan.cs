@@ -19,6 +19,7 @@
         [JsonProperty("header")] 		public AllianceHeaderEntry HeaderEntry;     
         [JsonProperty("members")] 		public AllianceMemberEntries Members;
         [JsonProperty("crownChestProgress")] public ClanChestProgress ChestProgress = new ClanChestProgress();
+        [JsonProperty("donationWeek")] public long DonationWeek;
 
         [JsonProperty("messages")] 		public AllianceStreamEntries Messages;
 
@@ -91,6 +92,12 @@
         /// </summary>
         public void Refresh()
         {
+            long week=(System.DateTimeOffset.UtcNow.ToUnixTimeSeconds()/86400+3)/7;
+            if(this.DonationWeek!=week)
+            {
+                if(this.DonationWeek!=0)foreach(var member in this.Members.Values)member.Donations=0;
+                this.DonationWeek=week;
+            }
             this.HeaderEntry.SetAlliance(this.HighId, this.LowId, this.Members.Count);
             this.HeaderEntry.Score = this.Members.Values.Sum(Member => Member.Score);
             this.HeaderEntry.Donations = this.Members.Values.Sum(Member => Member.Donations);

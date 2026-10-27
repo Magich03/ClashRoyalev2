@@ -26,7 +26,8 @@ namespace ClashRoyale.Files.Csv.Logic
 
         public int DonateReward { get; set; }
 
-        public int DonateXp { get; set; }
+        public int DonateXP { get; set; }
+        public int DonateXp => this.DonateXP;
 
         public int GoldConversionValue { get; set; }
 

@@ -35,6 +35,7 @@
                 return;
             }
 
+            if (ClashRoyale.Handlers.Client.Alliance.ClanFriendlyBattleHandler.Contains(Device) || MatchBattleSession.Contains(Device)) return;
             LadderMatchmaking.Cancel(Device, false);
             MatchBattleSession.Stop(Device);
             // StartMissionMessage in client 3.830: answer with the battle state of a training battle against the NPC.

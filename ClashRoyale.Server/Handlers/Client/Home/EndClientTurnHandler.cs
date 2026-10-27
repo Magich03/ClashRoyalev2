@@ -56,6 +56,12 @@ namespace ClashRoyale.Handlers.Client.Home
                 Device.GameMode.UpdateOneTick();
             }
 
+            while (Device.GameMode.CommandManager.CompletedCardRequests.TryDequeue(out var request))
+                if (!request.Handled) { request.Handled=true; await ClanDonationHandler.Request(Device,request.Card); }
+
+            while (Device.GameMode.CommandManager.CompletedFriendlyChallenges.TryDequeue(out var challenge))
+                if (!challenge.Handled) { challenge.Handled=true; await ClanFriendlyBattleHandler.Create(Device,challenge); }
+
             Player Player = Device.GameMode.Player;
             // Persist the consumed chest and its rewards together after the server command is acknowledged.
             if (hasRewardClaim || EndClientTurnMessage.Commands?.Any(c => c is ChallengeCommand || c is SetHomeFlagCommand || c is ClaimSeasonRewardCommand || c is DraftChestChooseCommand || c is ClaimQuestRewardCommand || c is ClaimMainQuestRewardCommand || c is RequestNewQuestCommand || c is QuestsSeenCommand) == true)

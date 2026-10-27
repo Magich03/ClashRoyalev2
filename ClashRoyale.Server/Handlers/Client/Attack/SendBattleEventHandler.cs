@@ -27,7 +27,11 @@
             }
 
             if (await ClashRoyale.Logic.Battle.MatchBattleSession.ReceiveResult(Device, SendBattleEventMessage.BattleEvent.Text)) return;
-            if (ClashRoyale.Logic.Battle.MatchBattleSession.Contains(Device)) return;
+            if (ClashRoyale.Logic.Battle.MatchBattleSession.Contains(Device))
+            {
+                ClashRoyale.Logic.Battle.MatchBattleSession.RelayBattleEvent(Device, SendBattleEventMessage.BattleEvent);
+                return;
+            }
             if (Device.GameMode.State == HomeState.Attack)
             {
                 Device.GameMode.SectorManager.ReceiveBattleEvent(SendBattleEventMessage.BattleEvent);

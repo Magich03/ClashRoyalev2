@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ClashRoyale\ClashRoyale.csproj" />
     <ProjectReference Include="..\ClashRoyale.Patcher\ClashRoyale.Patcher.csproj" ReferenceOutputAssembly="false" Private="false" />
+    <ProjectReference Include="..\NativeBattle\Worker\NativeBattle.Worker.csproj" ReferenceOutputAssembly="false" Private="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +58,25 @@
     <ItemGroup>
       <ResolvedFileToPublish Include="@(_PatcherArtifact)">
         <RelativePath>%(Filename)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+  <Target Name="CollectNativeWorkerArtifacts" DependsOnTargets="ResolveProjectReferences">
+    <MSBuild Projects="../NativeBattle/Worker/NativeBattle.Worker.csproj" Targets="GetTargetPath" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="_NativeWorkerTarget" />
+    </MSBuild>
+    <ItemGroup>
+      <_NativeWorkerArtifact Include="%(_NativeWorkerTarget.RootDir)%(_NativeWorkerTarget.Directory)NativeBattle.*" Exclude="%(_NativeWorkerTarget.RootDir)%(_NativeWorkerTarget.Directory)*.pdb" />
+    </ItemGroup>
+  </Target>
+  <Target Name="CopyNativeWorkerToBuild" AfterTargets="Build" DependsOnTargets="CollectNativeWorkerArtifacts">
+    <Copy SourceFiles="@(_NativeWorkerArtifact)" DestinationFolder="$(TargetDir)NativeBattle" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="IncludeNativeWorkerInPublish" BeforeTargets="ComputeFilesToPublish" DependsOnTargets="CollectNativeWorkerArtifacts">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="@(_NativeWorkerArtifact)">
+        <RelativePath>NativeBattle/%(Filename)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>

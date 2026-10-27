@@ -10,6 +10,7 @@ namespace ClashRoyale.Logic.Commands.Server
 
     public class AllianceUnitReceivedCommand : ServerCommand
     {
+        public bool AlreadyApplied;
         public string Sender;
         public SpellData Data;
 
@@ -68,6 +69,7 @@ namespace ClashRoyale.Logic.Commands.Server
         /// </summary>
         public override byte Execute(GameMode GameMode)
         {
+            if (this.AlreadyApplied) return 0;
             Player Player = GameMode.Player;
 
             if (Player != null)

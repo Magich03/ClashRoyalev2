@@ -1,116 +1,60 @@
-﻿namespace ClashRoyale.Logic.Alliance.Stream
+namespace ClashRoyale.Logic.Alliance.Stream;
+using ClashRoyale.Extensions;
+using ClashRoyale.Extensions.Helper;
+using ClashRoyale.Files.Csv;
+using ClashRoyale.Files.Csv.Logic;
+using ClashRoyale.Logic.Player;
+using Newtonsoft.Json.Linq;
+
+public sealed class ChallengeStreamEntry : StreamEntry
 {
-    using ClashRoyale.Extensions;
-    using ClashRoyale.Extensions.Helper;
-    using ClashRoyale.Logic.Player;
-    using ClashRoyale.Maths;
-
-    using Newtonsoft.Json.Linq;
-
-    public class ChallengeStreamEntry : StreamEntry
+    public override int Type => 10;
+    public long AcceptingAvatarId, HostPartnerId, OpponentPartnerId;
+    public string HostPartner, OpponentPartner;
+    public bool Team => Mode?.Players == "TvT";
+    public string AcceptingAvatar, Message;
+    public int SpectatorCount, SenderScore, EventId;
+    public bool TournamentMode, Closed, MatchmakingParty;
+    public GameModeData Mode;
+    public ChallengeStreamEntry() { }
+    public ChallengeStreamEntry(Player sender):base(sender){SenderScore=sender.Score;}
+    public override void Encode(ChecksumEncoder s)
     {
-        /// <summary>
-        /// Gets the type of this stream entry.
-        /// </summary>
-        public override int Type
+        base.Encode(s);
+        s.WriteString(Message);
+        s.WriteBoolean(AcceptingAvatar!=null);if(AcceptingAvatar!=null)s.WriteString(AcceptingAvatar);
+        s.WriteVInt(SenderScore);s.WriteBoolean(Closed);s.WriteBoolean(TournamentMode);s.WriteVInt(SpectatorCount);
+        s.WriteBoolean(Team && !MatchmakingParty); // Native +0x54 distinguishes four-player friendlies from teammate requests.
+        s.WriteBoolean(AcceptingAvatarId!=0);if(AcceptingAvatarId!=0)s.WriteLong(AcceptingAvatarId);
+        s.EncodeData(Mode);
+        if(Team)
         {
-            get
+            s.WriteBoolean(false); // +0x57
+            s.WriteBoolean(false); // Clan invitation carries player names/IDs, not an external party.
+            if (!MatchmakingParty)
             {
-                return 10;
+            s.WriteString(HostPartner);s.WriteString(OpponentPartner);
+            s.WriteBoolean(HostPartnerId!=0);if(HostPartnerId!=0)s.WriteLong(HostPartnerId);
+            s.WriteBoolean(OpponentPartnerId!=0);if(OpponentPartnerId!=0)s.WriteLong(OpponentPartnerId);
             }
         }
-
-        private LogicLong AcceptingAvatarId;
-
-        private string AcceptingAvatar;
-        private string Message;
-
-        private int SpectatorCount;
-        private int SenderScore;
-
-        private bool TournamentMode;
-        private bool Closed;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChallengeStreamEntry"/> class.
-        /// </summary>
-        public ChallengeStreamEntry()
-        {
-            // ChallengeStreamEntry.
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ChallengeStreamEntry"/> class.
-        /// </summary>
-        /// <param name="Sender">The sender.</param>
-        public ChallengeStreamEntry(Player Sender) : base(Sender)
-        {
-            // ChallengeStreamEntry.
-        }
-
-        /// <summary>
-        /// Encodes this instance.
-        /// </summary>
-        public override void Encode(ChecksumEncoder Stream)
-        {
-            base.Encode(Stream);
-
-            Stream.WriteString(this.Message);
-
-            Stream.WriteBoolean(this.AcceptingAvatar != null);
-
-            if (this.AcceptingAvatar != null)
-            {
-                Stream.WriteString(this.AcceptingAvatar);
-            }
-
-            Stream.WriteVInt(this.SenderScore);
-            Stream.WriteBoolean(this.Closed);
-            Stream.WriteBoolean(this.TournamentMode);
-            Stream.WriteVInt(this.SpectatorCount);
-            Stream.WriteBoolean(this.AcceptingAvatarId != 0);
-
-            if (this.AcceptingAvatarId != 0)
-            {
-                Stream.WriteLong(this.AcceptingAvatarId);
-            }
-
-            Stream.EncodeData(null);
-
-            Stream.WriteBoolean(false);
-            Stream.WriteBoolean(false);
-        }
-
-        /// <summary>
-        /// Loads this instance from json.
-        /// </summary>
-        public override void Load(JToken JToken)
-        {
-            base.Load(JToken);
-
-            JsonHelper.GetJsonString(JToken, "accepting_avatar", out this.AcceptingAvatar);
-            JsonHelper.GetJsonNumber(JToken, "spectator_count", out this.SpectatorCount);
-            JsonHelper.GetJsonString(JToken, "message", out this.Message);
-            JsonHelper.GetJsonNumber(JToken, "sender_score", out this.SenderScore);
-            JsonHelper.GetJsonBoolean(JToken, "tournament_mode", out this.TournamentMode);
-            JsonHelper.GetJsonBoolean(JToken, "closed", out this.Closed);
-        }
-
-        /// <summary>
-        /// Saves this instance to json.
-        /// </summary>
-        public override JObject Save()
-        {
-            JObject Json = base.Save();
-
-            Json.Add("accepting_avatar", this.AcceptingAvatar);
-            Json.Add("spectator_count", this.SpectatorCount);
-            Json.Add("message", this.Message);
-            Json.Add("sender_score", this.SenderScore);
-            Json.Add("tournament_mode", this.TournamentMode);
-            Json.Add("closed", this.Closed);
-
-            return Json;
-        }
+        s.WriteBoolean(false); // Optional arena override.
+        ClashRoyale.Logic.Event.LiveEventCatalog.EncodeBattleEvent(s, EventId);
+    }
+    public override void Load(JToken j)
+    {
+        base.Load(j);AcceptingAvatar=(string)j["accepting_avatar"];AcceptingAvatarId=(long?)j["accepting_id"]??0;
+        Message=(string)j["message"];SenderScore=(int?)j["sender_score"]??0;SpectatorCount=0;
+        TournamentMode=(bool?)j["tournament_mode"]??true;Mode=CsvFiles.GetWithGlobalId((int?)j["mode"]??0) as GameModeData ?? CsvFiles.Get(ClashRoyale.Enums.Gamefile.GameModes).GetData<GameModeData>("Friendly");
+        HostPartner=(string)j["host_partner"];OpponentPartner=(string)j["opponent_partner"];HostPartnerId=(long?)j["host_partner_id"]??0;OpponentPartnerId=(long?)j["opponent_partner_id"]??0;
+        // Invitations belong to live connections; never resurrect one after a server restart.
+        EventId=(int?)j["event_id"]??0;Closed=true;MatchmakingParty=(bool?)j["matchmaking_party"]??false;
+    }
+    public override JObject Save()
+    {
+        var j=base.Save();j["accepting_avatar"]=AcceptingAvatar;j["accepting_id"]=AcceptingAvatarId;
+        j["message"]=Message;j["sender_score"]=SenderScore;j["tournament_mode"]=TournamentMode;
+        j["host_partner"]=HostPartner;j["opponent_partner"]=OpponentPartner;j["host_partner_id"]=HostPartnerId;j["opponent_partner_id"]=OpponentPartnerId;
+        j["event_id"]=EventId;j["matchmaking_party"]=MatchmakingParty;j["closed"]=Closed;j["mode"]=Mode?.GlobalId;return j;
     }
 }

@@ -78,6 +78,7 @@ public sealed class QuestEntry
                 ReadFilter(s);break;
             case 4:q.SpellId=s.DecodeLogicData(26)?.GlobalId??0;q.Rarity=s.DecodeLogicData(14)?.Name??"";s.ReadVInt();q.MinElixir=s.ReadVInt();q.MaxElixir=s.ReadVInt();ReadFilter(s);break;
             case 5:int type=s.ReadVInt();q.Action=type==1?"Card":type==2?"Resource":"Chest";q.Resource=s.DecodeLogicData(5)?.Name??"";q.Rarity=s.DecodeLogicData(14)?.Name??"";q.BaseChest=s.DecodeLogicData(19)?.Name??"";break;
+            case 6:q.Action=s.ReadVInt()==1?"Request":"Donate";q.Rarity=s.ReadString();break;
             default:throw new System.IO.InvalidDataException("Unsupported replacement quest");
         }
         return q;

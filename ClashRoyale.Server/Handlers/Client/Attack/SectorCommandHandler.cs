@@ -29,6 +29,7 @@
 
             Logging.Info(typeof(SectorCommandHandler), "Sector command at tick " + SectorCommandMessage.Tick + ": " + (SectorCommandMessage.Command?.ToString() ?? "none"));
 
+            MatchBattleSession.ObserveClientState(Device, SectorCommandMessage.Tick, SectorCommandMessage.Checksum);
             if (MatchBattleSession.AddCommand(Device, SectorCommandMessage.Command)) return;
 
             if (SectorCommandMessage.Command != null && TrainingBattleSession.AddCommand(Device, SectorCommandMessage.Command))

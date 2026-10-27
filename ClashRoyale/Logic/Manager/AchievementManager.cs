@@ -6,6 +6,7 @@
     using ClashRoyale.Logic.Home;
     using ClashRoyale.Logic.Mode;
     using ClashRoyale.Logic.Player;
+    using ClashRoyale.Logic.Player.Enums;
     using ClashRoyale.Maths;
 
     public class AchievementManager
@@ -61,6 +62,7 @@
                         }
                         case 1:
                         {
+                            Value = Player.CommoditySlots.GetCommodityCount(CommodityType.Resource, CsvFiles.Get(Gamefile.Resources).GetData<ClashRoyale.Files.Csv.Logic.ResourceData>("DonationsTotal"));
                             break;
                         }
                         case 2:

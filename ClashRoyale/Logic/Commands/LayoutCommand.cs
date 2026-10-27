@@ -31,7 +31,6 @@ namespace ClashRoyale.Logic.Commands
             { 542, "Bv" },      // StartExploring
             { 543, "Bvb" },     // SpeedUpExploring
             { 545, "vvB" },     // ShopItemPurchaseNonIAP
-            { 551, "Bd" },      // RequestSpells
             { 552, "Bv" },      // SelectSkin
             { 558, "B" },       // HelpOpened
             { 560, "Bvv" },     // BuyBooster

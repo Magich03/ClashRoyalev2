@@ -71,6 +71,8 @@ namespace ClashRoyale.Handlers.Client.Account
                     {
                         if (!Player.IsBanned)
                         {
+                            Player = await AccountRecovery.Resolve(Player);
+                            if (Player.IsBanned) { Device.NetworkManager.SendMessage(new LoginFailedMessage(Reason.Banned)); return; }
                             await LoginHandler.Login(Device, LoginMessage, Player);
                         }
                         else

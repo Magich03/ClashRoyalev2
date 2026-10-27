@@ -12,6 +12,7 @@ namespace ClashRoyale.Logic.Cheats.Commands
     {
         public override CheatResult Prepare(Player player, string[] arguments)
         {
+            if (player.Rank != Rank.Administrator) return new("Only server administrators can use /arena.");
             var arenas = CsvFiles.Get(Gamefile.Arenas).Datas.Cast<ArenaData>()
                 .Where(a => a.IsInUse && !a.TrainingCamp && !a.PveArena).OrderBy(a => a.Arena).ToArray();
             if (arguments.Length != 1 || !int.TryParse(arguments[0], NumberStyles.None, CultureInfo.InvariantCulture, out int number))

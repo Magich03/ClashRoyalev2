@@ -23,7 +23,7 @@ namespace ClashRoyale.Logic.Shop
             DateTime Now = DateTime.UtcNow;
             bool NewDay  = Home.ShopDay != Now.Day;
 
-            if (!NewDay && Home.ShopItems.Count > 0)
+            if (!NewDay && Home.ShopItems.Count > 0 && Home.ShopArenaId == Player.Arena?.GlobalId)
             {
                 return;
             }
@@ -34,6 +34,7 @@ namespace ClashRoyale.Logic.Shop
             }
 
             Home.ShopDay = Now.Day;
+            Home.ShopArenaId = Player.Arena?.GlobalId ?? -1;
             Home.ShopTimer.StartTimer((int) (Now.Date.AddDays(1) - Now).TotalSeconds);
 
             Home.ShopItems.Clear();
@@ -96,7 +97,7 @@ namespace ClashRoyale.Logic.Shop
                 ShopChestData Offer = ShopChests.Datas.OfType<ShopChestData>().FirstOrDefault(Data =>
                     Data.Type == Type && ShopGenerator.InArenaRange(ArenaNumber, Data.MinArena, Data.MaxArena));
 
-                TreasureChestData Chest = Offer == null ? null : Chests.GetData<TreasureChestData>(Offer.Name + "_" + Player.Arena.Name);
+                TreasureChestData Chest = Offer == null ? null : Chests.GetData<TreasureChestData>(Offer.Name + "_" + (string.IsNullOrEmpty(Player.Arena.ChestArena) ? Player.Arena.Name : Player.Arena.ChestArena));
 
                 if (Chest == null)
                 {

@@ -16,13 +16,7 @@ namespace ClashRoyale.Logic.Cheats
             if (max)
             {
                 player.Home.AddAllSpells();
-                var topArena = CsvFiles.Get(ClashRoyale.Enums.Gamefile.Arenas).Datas
-                    .Cast<ClashRoyale.Files.Csv.Logic.ArenaData>()
-                    .Where(a => a.IsInUse && !a.TrainingCamp && !a.PveArena)
-                    .OrderByDescending(a => a.TrophyLimit).First();
-                player.Score = System.Math.Max(player.Score, topArena.TrophyLimit);
-                player.SetMaxScore(System.Math.Max(player.MaxScore, player.Score));
-                player.Arena = topArena;
+
             }
             else
             {
@@ -36,12 +30,7 @@ namespace ClashRoyale.Logic.Cheats
                 player.Home.SpellCollection = new ClashRoyale.Logic.Home.Spells.SpellCollection();
                 player.Home.SelectedDeck = 0;
                 player.Home.SavedDecks = Enumerable.Range(0, 5).Select(_ => (int[])starterIds.Clone()).ToArray();
-                player.Score = 0;
-                player.SetMaxScore(0);
-                player.Arena = CsvFiles.Get(ClashRoyale.Enums.Gamefile.Arenas).Datas
-                    .Cast<ClashRoyale.Files.Csv.Logic.ArenaData>()
-                    .Where(a => a.IsInUse && !a.TrainingCamp && !a.PveArena)
-                    .OrderBy(a => a.TrophyLimit).First();
+
             }
             foreach (var spell in player.Home.SpellDeck.GetSpells().Concat(player.Home.SpellCollection.GetSpells()).Where(s => s != null))
             {

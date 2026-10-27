@@ -1,6 +1,7 @@
 ﻿namespace ClashRoyale.Logic.Alliance.Slots
 {
     using System.Collections.Generic;
+    using System.Collections.Concurrent;
     using System.Linq;
     using System.Threading;
 
@@ -11,14 +12,14 @@
     public class AllianceStreamEntries
     {
         [JsonProperty("seed")]      private int Seed;
-        [JsonProperty("entries")]   private Dictionary<long, StreamEntry> Entries;
+        [JsonProperty("entries")]   private ConcurrentDictionary<long, StreamEntry> Entries;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AllianceStreamEntries"/> class.
         /// </summary>
         public AllianceStreamEntries()
         {
-            this.Entries    = new Dictionary<long, StreamEntry>(Config.MaxChatEntries);
+            this.Entries    = new ConcurrentDictionary<long, StreamEntry>();
         }
 
         /// <summary>
@@ -31,10 +32,10 @@
 
             if (this.Entries.Count > Config.MaxChatEntries)
             {
-                this.RemoveEntry(this.Entries.Values.First()); // TODO : Not wise, performance side
+                this.RemoveEntry(this.Entries.Values.FirstOrDefault()); // TODO : Not wise, performance side
             }
 
-            this.Entries.Add(Entry.StreamId, Entry);
+            this.Entries.TryAdd(Entry.StreamId, Entry);
         }
 
         /// <summary>
@@ -42,9 +43,9 @@
         /// </summary>
         public void RemoveEntry(StreamEntry Entry)
         {
-            if (!Entry.Removed)
+            if (Entry != null && !Entry.Removed)
             {
-                if (this.Entries.Remove(Entry.StreamId))
+                if (this.Entries.TryRemove(Entry.StreamId, out _))
                 {
                     Entry.Removed = true;
                 }

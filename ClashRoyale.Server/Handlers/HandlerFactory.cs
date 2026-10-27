@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Handlers
+namespace ClashRoyale.Handlers
 {
     using System;
     using System.Collections.Generic;
@@ -94,6 +94,8 @@
             HandlerFactory.MessageHandlers.Add(new CancelMatchmakeMessage().Type,               CancelMatchmakeHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new StartTrainingBattleMessage().Type,           StartTrainingBattleHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new SectorCommandMessage().Type,                 SectorCommandHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new ClashRoyale.Messages.Client.Sector.RequestSectorStateMessage().Type, RequestSectorStateHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new SendRematchMessage().Type, SendRematchHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new SendBattleEventMessage().Type,               SendBattleEventHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new AskForTvContentMessage().Type,               AskForTvContentHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new InboxOpenedMessage().Type,                   InboxOpenedHandler.Handle);
@@ -110,6 +112,9 @@
             HandlerFactory.MessageHandlers.Add(new SearchAllianceMessage().Type,                SearchAlliancesHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new JoinAllianceMessage().Type,                  JoinAllianceHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new LeaveAllianceMessage().Type,                 LeaveAllianceHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new DonateAllianceUnitMessage().Type, ClanDonationHandler.Handle);
+            HandlerFactory.MessageHandlers.Add(new AcceptChallengeMessage().Type, ClanFriendlyBattleHandler.Accept);
+            HandlerFactory.MessageHandlers.Add(new CancelChallengeMessage().Type, ClanFriendlyBattleHandler.Cancel);
             HandlerFactory.MessageHandlers.Add(new ChatToAllianceStreamMessage().Type,          ChatToAllianceStreamHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new AskForAllianceStreamMessage().Type,          AskForAllianceStreamHandler.Handle);
             HandlerFactory.MessageHandlers.Add(new ChangeAllianceMemberRoleMessage().Type,      ChangeAllianceMemberRoleHandler.Handle);

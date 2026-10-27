@@ -52,7 +52,7 @@ namespace ClashRoyale.Logic.Battle
             mode ??= CsvFiles.GameModeLadderData;
             EncodeOnce(stream, first, second, null, draft, eventId, mode);
             var arena = ArenaFor(first, mode, seed, eventId);
-            EncodeFullUpdate(stream, first, null, arena.PvPLocationData, mode, seed, second, null, draft, pick, arena);
+            EncodeFullUpdate(stream, first, null, arena.PvPLocationData, mode, seed, second, null, draft, pick, arena, eventId > 0 ? 5 : 0);
             return stream.ByteStream.ToArray(0, stream.ByteStream.Offset);
         }
 
@@ -66,13 +66,14 @@ namespace ClashRoyale.Logic.Battle
             EncodeOnce(stream, players[0], players[1], players, draft, eventId, mode);
             var arena = ArenaFor(players[0], mode, seed, eventId, true);
             EncodeFullUpdate(stream, players[0], null, arena.TeamVsTeamLocationData,
-                mode, seed, players[1], players, draft, null, arena);
+                mode, seed, players[1], players, draft, null, arena, eventId > 0 ? 5 : 0);
             return stream.ByteStream.ToArray(0, stream.ByteStream.Offset);
         }
 
         // This selects a battle map only; account arena and reward eligibility stay unchanged.
         public static ArenaData ArenaFor(Player player, GameModeData mode, int seed = 0, int eventId = 0, bool team = false)
         {
+            if(eventId==0 && mode?.Name=="TeamVsTeam")return player.Arena;
             if (mode.TargetTouchdowns > 0)
                 return CsvFiles.Get(Gamefile.Arenas).GetData<ArenaData>("Arena_TouchdownTest");
             if (!team && mode.Players != "TvT" && eventId <= 0) return player.Arena;
@@ -115,7 +116,7 @@ namespace ClashRoyale.Logic.Battle
         /// <summary>
         /// LogicGameMode::decode (0x1b316c).
         /// </summary>
-        private static void EncodeFullUpdate(ChecksumEncoder Stream, Player Player, NpcData Npc, LocationData Location, GameModeData GameMode, int Seed, Player Opponent = null, Player[] Team = null, ClashRoyale.Logic.Event.DraftSelection Draft = null, ClashRoyale.Logic.Event.PickSelection Pick = null, ArenaData Arena = null)
+        private static void EncodeFullUpdate(ChecksumEncoder Stream, Player Player, NpcData Npc, LocationData Location, GameModeData GameMode, int Seed, Player Opponent = null, Player[] Team = null, ClashRoyale.Logic.Event.DraftSelection Draft = null, ClashRoyale.Logic.Event.PickSelection Pick = null, ArenaData Arena = null, int BattleType = 0)
         {
             Stream.WriteVInt(0);                    // tick
             Stream.WriteVInt(0);                    // checksum
@@ -126,7 +127,7 @@ namespace ClashRoyale.Logic.Battle
             Stream.WriteInt(Seed);                  // LogicRandom
             Stream.WriteVInt(Seed);
 
-            BattleStateEncoder.EncodeBattleCore(Stream, Player, Npc, Location, GameMode, Opponent, Team, Draft, Pick, Arena);
+            BattleStateEncoder.EncodeBattleCore(Stream, Player, Npc, Location, GameMode, Opponent, Team, Draft, Pick, Arena, BattleType);
 
             Stream.WriteVInt(12);
 
@@ -148,7 +149,7 @@ namespace ClashRoyale.Logic.Battle
             EncodeBattleCore(Stream, Player, Npc, Location, GameMode, null);
         }
 
-        private static void EncodeBattleCore(ChecksumEncoder Stream, Player Player, NpcData Npc, LocationData Location, GameModeData GameMode, Player Opponent, Player[] Team = null, ClashRoyale.Logic.Event.DraftSelection Draft = null, ClashRoyale.Logic.Event.PickSelection Pick = null, ArenaData Arena = null)
+        private static void EncodeBattleCore(ChecksumEncoder Stream, Player Player, NpcData Npc, LocationData Location, GameModeData GameMode, Player Opponent, Player[] Team = null, ClashRoyale.Logic.Event.DraftSelection Draft = null, ClashRoyale.Logic.Event.PickSelection Pick = null, ArenaData Arena = null, int BattleType = 0)
         {
             Stream.EncodeLogicData(Location, (int) Gamefile.Locations);
             Stream.EncodeLogicData(Npc, (int) Gamefile.Npcs);
@@ -165,7 +166,9 @@ namespace ClashRoyale.Logic.Battle
             BattleStateEncoder.WriteVIntArray(Stream, 8);
 
             // Battle settings (0x15fdce): 4 VInts, game mode, PvE mode, TvE mode.
-            Stream.WriteVInt(0);
+            // Type 5 identifies event/challenge battles. Native 0x265fd0 uses it to
+            // show both teammates for tournament-level modes, including Touchdown.
+            Stream.WriteVInt(BattleType);
             Stream.WriteVInt(0);
             Stream.WriteVInt(0);
             Stream.WriteVInt(0);

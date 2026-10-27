@@ -94,6 +94,7 @@ namespace ClashRoyale.Messages
             MessageFactory.Messages.Add(10949, typeof(SearchAllianceMessage));
             MessageFactory.Messages.Add(10541, typeof(SectorCommandMessage));
             MessageFactory.Messages.Add(16068, typeof(SendBattleEventMessage));
+            MessageFactory.Messages.Add(18088, typeof(SendRematchMessage));
             MessageFactory.Messages.Add(28934, typeof(BattleResultMessage));
             MessageFactory.Messages.Add(10554, typeof(ChatToAllianceStreamMessage));
             MessageFactory.Messages.Add(10587, typeof(EditAllianceMessage));
@@ -102,6 +103,9 @@ namespace ClashRoyale.Messages
             MessageFactory.Messages.Add(15985, typeof(LeaveAllianceMessage));
             MessageFactory.Messages.Add(16190, typeof(JoinAllianceMessage));
             MessageFactory.Messages.Add(16341, typeof(ChangeAllianceMemberRoleMessage));
+            MessageFactory.Messages.Add(18277, typeof(DonateAllianceUnitMessage));
+            MessageFactory.Messages.Add(11339, typeof(AcceptChallengeMessage));
+            MessageFactory.Messages.Add(15860, typeof(CancelChallengeMessage));
             MessageFactory.Messages.Add(17800, typeof(KickAllianceMemberMessage));
 
             MessageFactory.Messages.Add(11033, typeof(CreateAllianceMessage));
@@ -178,6 +182,7 @@ namespace ClashRoyale.Messages
             Factory.Messages.Add(12903, typeof(RequestSectorStateMessage));
             Factory.Messages.Add(12904, typeof(SectorCommandMessage));
             Factory.Messages.Add(16068, typeof(SendBattleEventMessage));
+            Factory.Messages.Add(18088, typeof(SendRematchMessage));
 
             Factory.Messages.Add(14101, typeof(GoHomeMessage));
             

@@ -13,7 +13,7 @@
         {
             get
             {
-                return 22952;
+                return 29500;
             }
         }
 
@@ -24,7 +24,7 @@
         {
             get
             {
-                return Node.Attack;
+                return Node.Sector;
             }
         }
 
@@ -61,6 +61,7 @@
         /// </summary>
         public override void Decode()
         {
+            this.Event = new BattleEvent();
             this.Event.Decode(this.Stream);
         }
 

@@ -14,6 +14,7 @@
 
         public byte Type;
         public string Text;
+        public bool Flag;
 
         public List<int> Ticks;
         public List<int> Coords;
@@ -54,7 +55,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="BattleEvent"/> class.
         /// </summary>
-        public BattleEvent(byte Type)
+        public BattleEvent(byte Type) : this()
         {
             this.Type 	= Type;
         }
@@ -109,7 +110,7 @@
 
             if (this.Type == 8)
             {
-                Logging.Info(this.GetType(), "Unknown Boolean: " + Stream.ReadByte());
+                this.Flag = Stream.ReadBoolean();
             }
         }
 
@@ -131,7 +132,7 @@
 
             if (this.Type == 8)
             {
-                Stream.WriteBoolean(false);
+                Stream.WriteBoolean(this.Flag);
             }
         }
 

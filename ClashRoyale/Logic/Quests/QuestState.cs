@@ -26,7 +26,7 @@ public sealed class QuestState
     public Chest MainChest, PendingChest;
     public Reward PendingReward;
     public int PendingType;
-    private static readonly Lazy<CsvData[]> Catalog = new(() => new[] {"play","cast","collect"}
+    private static readonly Lazy<CsvData[]> Catalog = new(() => new[] {"play","cast","collect","donate"}
         .SelectMany((name,i)=>new CsvTable(101+i,"Gamefiles/csv_logic/quests/"+name+".csv").Datas).ToArray());
     public static long Now => DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
@@ -59,6 +59,7 @@ public sealed class QuestState
         bool ArenaAllowed(CsvData d,string field,bool min) { string name=Value(d,field);var a=CsvFiles.Get(Gamefile.Arenas).GetData<ArenaData>(name);return a==null || (min?p.Arena.Arena>=a.Arena:p.Arena.Arena<=a.Arena); }
         var pool=Catalog.Value.Where(d=>Number(d,"Weight")>0 && ArenaAllowed(d,"MinArena",true) && ArenaAllowed(d,"MaxArena",false))
             .Where(d=> !Entries.Any(q=>q.Name==d.Name))
+            .Where(d=>d.Type!=104 || p.IsInAlliance && p.ExpLevel>=3)
             // Only generate objectives whose authoritative game actions are available on this server.
             .Where(d=> d.Type!=101 || Value(d,"GameType")=="Ladder" && Value(d,"PlayerType")=="1v1")
             .Where(d=> d.Type!=102 || string.IsNullOrEmpty(Value(d,"Type")))
@@ -66,7 +67,7 @@ public sealed class QuestState
             .ToArray();
         if(pool.Length==0)throw new InvalidOperationException("No eligible quests for arena "+p.Arena.Name);
         var order=CsvFiles.Get(Gamefile.QuestOrder).GetData<QuestOrderData>(p.Arena.QuestCycle) ?? CsvFiles.Get(Gamefile.QuestOrder).Datas.Cast<QuestOrderData>().First();
-        string Family(CsvData d)=>d.Type==101?"Win":d.Type==102?"Cast":"Collect";
+        string Family(CsvData d)=>d.Type==101?"Win":d.Type==102?"Cast":d.Type==104?"Donate":"Collect";
         var families=pool.Select(Family).Distinct().Select(name=>new {Name=name,Weight=order.QuestCount[Array.IndexOf(order.QuestType,name)]}).Where(x=>x.Weight>0).ToArray();
         if(families.Length>0)
         {
@@ -77,7 +78,7 @@ public sealed class QuestState
         }
         int roll=Random.Shared.Next(pool.Sum(d=>Number(d,"Weight")));var chosen=pool[0];
         foreach(var d in pool) {roll-=Number(d,"Weight");if(roll<0){chosen=d;break;}}
-        var q=new QuestEntry {Id=NextId++,Type=chosen.Type==101?2:chosen.Type==102?4:5,Name=chosen.Name,Title=Value(chosen,"Title"),Info=Value(chosen,"Info"),Export=Value(chosen,"ItemExportName"),Goal=Number(chosen,"Count"),Size=Number(chosen,"Size"),Rarity=Value(chosen,"Rarity"),MinElixir=Number(chosen,"MinElixir"),MaxElixir=Number(chosen,"MaxElixir"),Action=Value(chosen,chosen.Type==103?"DataType":"Type"),Resource=Value(chosen,"Resource"),BaseChest=Value(chosen,"BaseChest")};
+        var q=new QuestEntry {Id=NextId++,Type=chosen.Type==101?2:chosen.Type==102?4:chosen.Type==104?6:5,Name=chosen.Name,Title=Value(chosen,"Title"),Info=Value(chosen,"Info"),Export=Value(chosen,"ItemExportName"),Goal=Number(chosen,"Count"),Size=Number(chosen,"Size"),Rarity=Value(chosen,"Rarity"),MinElixir=Number(chosen,"MinElixir"),MaxElixir=Number(chosen,"MaxElixir"),Action=Value(chosen,chosen.Type==103?"DataType":"Type"),Resource=Value(chosen,"Resource"),BaseChest=Value(chosen,"BaseChest")};
         q.SpellId=CsvFiles.GetSpellDataByName(Value(chosen,"Spell"))?.GlobalId??0;
         q.RequiredCards=Enumerable.Range(0,chosen.CsvRow.GetSize("Spell")).Select(i=>CsvFiles.GetSpellDataByName(chosen.CsvRow.GetValue("Spell",i))?.GlobalId??0).Where(id=>id!=0).ToArray();
         int reward=Random.Shared.Next(order.RewardCount.Sum());int idx=0;
@@ -116,6 +117,11 @@ public sealed class QuestState
         if(team||challenge)return;
         foreach(var q in Entries.Where(q=>q.Type==4 && !q.Completed))
             if((q.SpellId==0||q.SpellId==data.GlobalId) && (string.IsNullOrEmpty(q.Rarity)||q.Rarity==data.RarityData.Name) && (q.MinElixir==0||data.ManaCost>=q.MinElixir) && (q.MaxElixir==0||data.ManaCost<=q.MaxElixir)) q.Progress=Math.Min(q.Goal,q.Progress+1);
+    }
+    public void ClanAction(string action, SpellData card, int count)
+    {
+        foreach(var q in Entries.Where(q=>q.Type==6 && !q.Completed && q.Action==action))
+            if(string.IsNullOrEmpty(q.Rarity)||q.Rarity==card.RarityData.Name)q.Progress=Math.Min(q.Goal,q.Progress+Math.Max(0,count));
     }
     public void Collect(Reward reward,TreasureChestData chest)
     {

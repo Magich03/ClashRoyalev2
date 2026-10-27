@@ -88,7 +88,7 @@ namespace ClashRoyale.Logic.Player
 
         // Debug
         
-        [JsonProperty("debugRank")]             public Rank Rank = Rank.Administrator;
+        [JsonProperty("debugRank")]             public Rank Rank = Rank.Player;
 
         // Apis
         

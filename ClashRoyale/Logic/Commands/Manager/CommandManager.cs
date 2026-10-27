@@ -13,6 +13,8 @@ namespace ClashRoyale.Logic.Commands.Manager
     public class CommandManager
     {
         public int Seed;
+        public Queue<RequestSpellsCommand> CompletedCardRequests = new();
+        public Queue<CreateFriendlyChallengeCommand> CompletedFriendlyChallenges = new();
 
         public GameMode GameMode;
         public List<Command> Queue;
@@ -177,6 +179,8 @@ namespace ClashRoyale.Logic.Commands.Manager
                             return new TransactionsRevokedCommand();
                         case 290:
                             return new LeaveAllianceCommand();
+                        case 293:
+                            return new DonateAllianceUnitCommand();
                         case 313:
                             return new AllianceUnitReceivedCommand();
                         case 278:
@@ -202,6 +206,9 @@ namespace ClashRoyale.Logic.Commands.Manager
                 case 541:
                 case 561:
                     return new ChallengeCommand(Type);
+                case 509: return new CreateFriendlyChallengeCommand();
+                case 551:
+                    return new RequestSpellsCommand();
                 case 573:
                     return new SetHomeFlagCommand();
                 case 501:

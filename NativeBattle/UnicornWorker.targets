@@ -1,0 +1,28 @@
+<Project>
+  <!-- Apply only to a dedicated emulator worker, never the network server.
+       Unicorn 2.1.4 longjmp is incompatible with CFG (upstream issue 2281). -->
+  <UsingTask TaskName="PrepareUnicornWorkerHost" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup><HostPath ParameterType="System.String" Required="true" /></ParameterGroup>
+    <Task>
+      <Using Namespace="System" /><Using Namespace="System.IO" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        byte[] bytes = File.ReadAllBytes(HostPath);
+        if (bytes.Length < 64 || bytes[0] != 'M' || bytes[1] != 'Z') throw new InvalidDataException("Expected Windows worker apphost.");
+        int pe = BitConverter.ToInt32(bytes, 0x3c);
+        if (pe < 0 || pe > bytes.Length - 96 || BitConverter.ToUInt32(bytes, pe) != 0x4550) throw new InvalidDataException("Invalid PE header.");
+        int flagsOffset = pe + 24 + 70;
+        ushort flags = BitConverter.ToUInt16(bytes, flagsOffset);
+        if ((flags & 0x4000) != 0) {
+          BitConverter.GetBytes((ushort)(flags & ~0x4000)).CopyTo(bytes, flagsOffset);
+          File.WriteAllBytes(HostPath, bytes);
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+  <Target Name="PrepareDedicatedUnicornHost" AfterTargets="Build" Condition="$([MSBuild]::IsOSPlatform('Windows')) and Exists('$(TargetDir)$(AssemblyName).exe')">
+    <PrepareUnicornWorkerHost HostPath="$(TargetDir)$(AssemblyName).exe" />
+  </Target>
+  <Target Name="PreparePublishedUnicornHost" AfterTargets="Publish" Condition="$([MSBuild]::IsOSPlatform('Windows')) and Exists('$(PublishDir)$(AssemblyName).exe')">
+    <PrepareUnicornWorkerHost HostPath="$(PublishDir)$(AssemblyName).exe" />
+  </Target>
+</Project>
