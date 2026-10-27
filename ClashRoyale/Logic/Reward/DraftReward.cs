@@ -1,14 +1,14 @@
-﻿namespace ClashRoyale.Logic.Reward
+namespace ClashRoyale.Logic.Reward
 {
     using ClashRoyale.Extensions;
 
     public class DraftReward : Reward
     {
-        private int ChestGlobalId;
-        private int ChestId;
-        private int ChestType;
-        private int FreeGems;
-        private int PaidGems;
+        public int ChestGlobalId;
+        public int ChestId;
+        public int ChestType;
+        public int FreeGems;
+        public int PaidGems;
 
         /// <summary>
         ///     Gets the type of this reward.

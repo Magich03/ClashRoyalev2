@@ -78,6 +78,7 @@ namespace ClashRoyale.Logic.Battle
             HasBot = humans.Length < 4;
         }
         public static void StartTeam(Device[] humans, bool challenge = false) => StartSession(new MatchBattleSession(humans, challenge));
+        public static int ActiveCount => Sessions.Values.Distinct().Count(s => !s.Closed && !s.Finished);
         public static bool Contains(Device device) => Sessions.ContainsKey(device);
         public static void Start(Device first, Device second, bool challenge = false)
         {
@@ -147,6 +148,7 @@ namespace ClashRoyale.Logic.Battle
                     int deviceIndex = Array.IndexOf(session.Devices, device);
                     var data = session.Players[session.HumanSlots[deviceIndex]].Home.SpellDeck[card.HandIndex]?.Data;
                     if (data == null || (card.DataClass != 0 && (card.DataClass != data.GlobalId / 1000000 || card.DataInstance != data.Instance))) return true;
+                    device.GameMode.Home.Quests.Cast(data, session.Team, session.Challenge);
                     // Snapshot the public deployment; client-supplied levels and opponent IDs cannot alter it.
                     session.Pending.Add(new PlaceCardCommand {
                         ExecutorId = new LogicLong(device.GameMode.Player.HighId, device.GameMode.Player.LowId),

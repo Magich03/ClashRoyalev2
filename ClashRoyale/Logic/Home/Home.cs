@@ -75,6 +75,9 @@ namespace ClashRoyale.Logic.Home
 
         // SEEN
 
+        [JsonProperty("homeFlags")]                 public int HomeFlags;
+        [JsonProperty("quests")] public ClashRoyale.Logic.Quests.QuestState Quests = new();
+
         [JsonProperty("pageOpenedBits")]            public int PageOpened;
         [JsonProperty("lastLevelUpPopup")]          public int LastLevelUpPopup;
 
@@ -1119,9 +1122,27 @@ namespace ClashRoyale.Logic.Home
                 Stream.WriteVInt(Arena.GlobalId);
             }
 
-            Stream.AddRange("02-00-9E-8B-26-00-5A-21-00-57-5A-24-F4-D7-B4-B8-9B-0C-00-00-00-00-00-00-00-00-00-01-04-04-01-00-00-00-00-19-54-49-44-5F-43-41-53-54-5F-51-55-45-53-54-5F-4D-49-4E-5F-45-4C-49-58-49-52-00-00-00-00-1E-00-00-00-00-00-13-43-61-73-74-5F-51-75-65-73-74-5F-48-69-67-68-43-6F-73-74-00-00-00-1E-54-49-44-5F-43-41-53-54-5F-51-55-45-53-54-5F-4D-49-4E-5F-45-4C-49-58-49-52-5F-49-4E-46-4F-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-0E-71-75-65-73-74-5F-69-74-65-6D-5F-70-76-70-14-01-0E-01-09-00-00-00-06-00-01-01-00-06-02-00-00-00-00-15-54-49-44-5F-52-45-51-55-45-53-54-5F-51-55-45-53-54-5F-41-4E-59-00-00-00-00-03-02-00-00-00-00-0B-52-65-71-75-65-73-74-5F-41-6E-79-00-00-00-1A-54-49-44-5F-52-45-51-55-45-53-54-5F-51-55-45-53-54-5F-41-4E-59-5F-49-4E-46-4F-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-0E-71-75-65-73-74-5F-69-74-65-6D-5F-70-76-70-14-01-0E-00-26-01-00-00-00-00-01-03-00-00-00-00-14-54-49-44-5F-46-52-45-45-5F-43-48-45-53-54-5F-51-55-45-53-54-00-00-00-00-03-02-00-00-00-00-10-51-75-65-73-74-5F-46-72-65-65-43-68-65-73-74-73-00-00-00-14-54-49-44-5F-46-52-45-45-5F-43-48-45-53-54-5F-51-55-45-53-54-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-15-71-75-65-73-74-5F-69-74-65-6D-5F-66-72-65-65-5F-63-68-65-73-74-05-03-13-07-01-13-07-01-13-07-01-03-01-01-00-03-00-04-04-01-00-00-7F-00-04-04-00-00-00-00-19-54-49-44-5F-43-41-53-54-5F-51-55-45-53-54-5F-4D-41-58-5F-45-4C-49-58-49-52-00-00-00-00-32-00-00-00-00-00-12-43-61-73-74-5F-51-75-65-73-74-5F-4C-6F-77-43-6F-73-74-00-00-00-1E-54-49-44-5F-43-41-53-54-5F-51-55-45-53-54-5F-4D-41-58-5F-45-4C-49-58-49-52-5F-49-4E-46-4F-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-0E-71-75-65-73-74-5F-69-74-65-6D-5F-70-76-70-14-01-05-01-8A-05-00-00-00-00-02-01-01-00-01-02-A9-13-01-00-00-00-26-51-75-C3-AA-74-65-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-00-00-00-1C-69-63-6F-6E-5F-71-75-65-73-74-5F-74-79-70-65-5F-73-70-65-63-69-61-6C-65-76-65-6E-74-06-00-00-00-00-00-00-00-00-00-41-47-61-67-6E-65-7A-20-36-C2-A0-63-6F-75-72-6F-6E-6E-65-73-20-64-61-6E-73-20-6C-65-20-64-C3-A9-66-69-20-C3-A9-6C-65-63-74-72-6F-63-75-74-65-75-72-73-20-63-6F-6E-74-72-65-20-63-68-61-73-73-65-75-72-00-00-00-08-73-63-2F-75-69-2E-73-63-00-00-00-16-71-75-65-73-74-5F-69-74-65-6D-5F-73-70-65-63-69-61-6C-5F-70-76-70-14-01-05-01-A8-0F-02-00-00-00-01-A8-13-19-32-01-00-00-9A-05-05-01-00-07-01-00-00-00-00-01-00-00-00-00-00-00-00-00-00-00-0C-04-00-02-01-04-02-02-01-04-04-04-00-04-00-02-03-05-04-05".HexaToBytes());
-            
-            Stream.AddRange("00-04-03-02-02  00  7F-7F-00-00  B6-01".HexaToBytes());
+            var season = this.GameMode?.Player?.Season;
+            var prize = season?.Pending;
+            bool drafting = prize?.ClaimStarted == true && prize.Draft?.Spells?.Count > 0;
+            Stream.WriteBoolean(false); // +0xe4 legacy tournament chest
+            Stream.WriteBoolean(false); // +0xe8 legacy tournament result
+            Stream.WriteBoolean(drafting); // +0x270 remaining draft choices
+            if (drafting) prize.Draft.Encode(Stream);
+            Stream.WriteBoolean(false); // +0x278 draft source chest
+            Stream.WriteBoolean(drafting); // +0x274 choices already made
+            if (drafting) new ClashRoyale.Logic.Reward.Reward {
+                Spells = prize.Chosen, DiscardedSpells = prize.Discarded,
+                Gold = prize.Draft.Gold, Diamonds = prize.Draft.Diamonds
+            }.Encode(Stream);
+            Stream.WriteBoolean(prize != null && !drafting); // +0xdc season chest
+            if (prize != null && !drafting) prize.Chest.Encode(Stream);
+            Stream.EncodeLogicData(prize?.Arena, 54);
+            Stream.WriteVInt(season?.History.Count ?? 0);
+            if (season != null) foreach (var result in season.History) result.Encode(Stream);
+            Stream.WriteInt(this.HomeFlags & 15); // native home +0x2ec; preserve the actual client acknowledgement
+            this.Quests.Encode(Stream, ClashRoyale.Logic.Quests.QuestState.Now);
+            Stream.WriteVInt(0); Stream.WriteVInt(0); Stream.WriteVInt(118);
 
             Stream.WriteVInt(this.ShopItems.Count);
 

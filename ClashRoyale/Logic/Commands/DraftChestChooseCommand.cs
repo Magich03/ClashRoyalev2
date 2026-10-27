@@ -33,7 +33,7 @@ namespace ClashRoyale.Logic.Commands
 
         public override byte Execute(GameMode GameMode)
         {
-            return 0;
+            return ClashRoyale.Logic.Seasons.SeasonRewards.Choose(GameMode, this.Choice);
         }
     }
 }

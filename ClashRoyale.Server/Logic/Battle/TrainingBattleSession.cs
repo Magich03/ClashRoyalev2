@@ -15,6 +15,9 @@ namespace ClashRoyale.Logic.Battle
     {
         private const int TurnMilliseconds = 500;
 
+        public static int ActiveCount => Sessions.Count;
+        public static bool Contains(Device device) => Sessions.ContainsKey(device);
+
         private static readonly ConcurrentDictionary<Device, TrainingBattleSession> Sessions = new ConcurrentDictionary<Device, TrainingBattleSession>();
 
         private readonly Device Device;

@@ -101,8 +101,23 @@ namespace ClashRoyale.Logic.Commands.Server
                 return 2;
             }
 
+            if (this.Reward == null) return 3;
             switch (this.ChestType)
             {
+                case 14:
+                case 13:
+                    if (!Home.Quests.CanFinish(this.ChestType, this.LocationId)) return 3;
+                    TreasureChestData = Home.Quests.PendingChest.Data;
+                    break;
+                case 10:
+                {
+                    var prize = Player.Season?.Pending;
+                    if (prize?.ClaimStarted != true || prize.Chest.Id != this.LocationId || prize.Draft == null) return 3;
+                    if (this.Reward is DraftReward) return 0; // Choices, not this acknowledgement, award the cards.
+                    if (prize.Draft.Spells.Count != 0) return 3;
+                    TreasureChestData = prize.Chest.Data;
+                    break;
+                }
                 case 6:
                 {
                     if (Home.ChallengeReward == null || !Home.ChallengeReward.IsClaimed || Home.Challenge == null || Home.Challenge.RewardClaimed) return 3;
@@ -218,10 +233,18 @@ namespace ClashRoyale.Logic.Commands.Server
             if (TreasureChestData?.RootChest.Name == "Free") Home.UpdateFreeChestDiamondIndex();
             else if (TreasureChestData?.RootChest.Name == "Star") Home.UpdateCrownChestDiamondIndex();
 
+            Home.Quests.Collect(this.Reward, TreasureChestData);
             Home.SetClaimingReward(false);
 
             switch (this.ChestType)
             {
+                case 14:
+                case 13:
+                    Home.Quests.Finish(Player);
+                    break;
+                case 10:
+                    Player.Season.Prizes.RemoveAt(0);
+                    break;
                 case 6:
                 {
                     Home.Challenge.RewardClaimed = true;

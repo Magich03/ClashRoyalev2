@@ -28,14 +28,16 @@
                 throw new LogicException(typeof(AskForAvatarRankingListHandler), nameof(AskForAvatarRankingListMessage) + " == null at Handle(Device, Message, CancellationToken).");
             }
 
+            var ranks = await SeasonService.Rankings();
             LeaderboardPlayers Leaderboard = Leaderboards.GlobalPlayers;
 
             if (Leaderboard != null)
             {
                 Device.NetworkManager.SendMessage(new AvatarRankingListMessage()
                 {
-                    Entries = Leaderboard.Players.ToArray(),
-                    LastSeasonEntries = Leaderboard.LastSeason.ToArray()
+                    Entries = ranks.Current,
+                    LastSeasonEntries = ranks.Previous,
+                    TimeLeft = ClashRoyale.Logic.Seasons.LeagueSeason.SecondsLeft(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                 });
             }
             else

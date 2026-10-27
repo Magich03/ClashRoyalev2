@@ -45,6 +45,8 @@ namespace ClashRoyale.Network
         /// </summary>
         private void LogPacket(string direction, short type, byte[] data)
         {
+            // Clan command requests and private replies must never enter packet diagnostics.
+            if (type == 10554 || type == 21075 || type == 20103) return;
             string packetData = BitConverter.ToString(data).Replace("-", " ");
             Debug.WriteLine($"[DEBUG] {direction} Packet: Type={type}, Length={data.Length}, Data={packetData}");
         }

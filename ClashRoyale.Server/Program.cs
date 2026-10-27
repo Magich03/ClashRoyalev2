@@ -29,6 +29,8 @@ namespace ClashRoyale
         private static void Main()
         {
             System.IO.Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+            ClashRoyale.Logic.Cheats.Commands.StatusCheat.ActivitySummary = () =>
+                $"Online {Players.OnlineCount} | Queue {LadderMatchmaking.QueueCount} | Battles {MatchBattleSession.ActiveCount} | Training {TrainingBattleSession.ActiveCount}";
             Base.Initialize();
             Test.Initialize();
             Program.Initialized = true;//progres move main in Test.cs

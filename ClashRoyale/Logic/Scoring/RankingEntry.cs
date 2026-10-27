@@ -49,7 +49,7 @@
         /// <param name="PreviousOrder">The previous order.</param>
         public void Initialize(LogicLong Id, string Name, int Score, int Order, int PreviousOrder)
         {
-            this.EntryId        = EntryId;
+            this.EntryId        = Id;
             this.Name           = Name;
             this.Score          = Score;
             this.Order          = Order;

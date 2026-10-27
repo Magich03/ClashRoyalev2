@@ -163,6 +163,9 @@ namespace ClashRoyale.Handlers.Client.Account
             Device.Defines.Android      = Message.IsAndroid;
 
             Player.Home.ClaimPendingPurchasedChest();
+            await ClashRoyale.Logic.Scoring.SeasonService.Refresh(Player);
+            Player.Home.SetClaimingReward(Player.Season.Pending?.ClaimStarted == true);
+            if ((Player.Home.Quests ??= new()).Refresh(Player, ClashRoyale.Logic.Quests.QuestState.Now)) await Players.Save(Player);
             ShopGenerator.Refresh(Player.Home, Player);
 
             // Drop a clan that no longer exists (or no longer lists this player) before the avatar is sent.
@@ -183,6 +186,7 @@ namespace ClashRoyale.Handlers.Client.Account
             }
             Device.NetworkManager.SendMessage(new LoginOkMessage(Player));
             Device.NetworkManager.SendMessage(new OwnHomeDataMessage(Player, Player.Home, TimeUtil.Timestamp));
+            Player.Home.Quests.Resume(Device.GameMode);
 
             if (Clan != null)
             {

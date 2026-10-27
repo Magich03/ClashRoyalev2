@@ -47,7 +47,7 @@
             base.Encode(Stream);
 
             Stream.WriteVInt(this.QuestIndex);
-            Stream.WriteVInt(this.QuestUnknown);
+            Stream.WriteBoolean(this.QuestUnknown != 0);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@
         /// </summary>
         public override byte Execute(GameMode GameMode)
         {
-            return 0;
+            return GameMode.Home.Quests.Discard(GameMode, this.QuestIndex, this.QuestUnknown != 0, ClashRoyale.Logic.Quests.QuestState.Now);
         }
     }
 }

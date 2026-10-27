@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Handlers.Client.Home
+namespace ClashRoyale.Handlers.Client.Home
 {
     using System.Threading;
     using System.Threading.Tasks;
@@ -43,8 +43,12 @@
                 if (Player != null)
                 {
                     await ClashRoyale.Logic.Alliance.ClanChestService.Refresh(Player, false);
-                    ShopGenerator.Refresh(Player.Home, Player);
+                    await ClashRoyale.Logic.Scoring.SeasonService.Refresh(Player);
+            Player.Home.SetClaimingReward(Player.Season.Pending?.ClaimStarted == true);
+            if ((Player.Home.Quests ??= new()).Refresh(Player, ClashRoyale.Logic.Quests.QuestState.Now)) await Players.Save(Player);
+            ShopGenerator.Refresh(Player.Home, Player);
                     Device.NetworkManager.SendMessage(new OwnHomeDataMessage(Player, Player.Home, TimeUtil.Timestamp));
+            Player.Home.Quests.Resume(Device.GameMode);
                     Player.Home.ClanChestNotifiedSession = null;
                     ClashRoyale.Logic.Alliance.ClanChestService.Notify(Player);
                 }

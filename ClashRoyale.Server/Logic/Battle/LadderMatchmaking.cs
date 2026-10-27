@@ -24,6 +24,13 @@ namespace ClashRoyale.Logic.Battle
             public string ChallengeRunId;
         }
 
+        public static int QueueCount { get { lock (Gate) return Waiting.Count; } }
+
+        public static bool Contains(Device device)
+        {
+            lock (Gate) return device.GameMode.Player != null && Waiting.ContainsKey(device.GameMode.Player.PlayerId);
+        }
+
         public static void Join(Device device, bool team = false, bool challenge = false)
         {
             lock (Gate)

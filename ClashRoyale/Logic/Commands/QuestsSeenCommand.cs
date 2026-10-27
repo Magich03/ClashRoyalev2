@@ -28,6 +28,7 @@
         /// </summary>
         public override byte Execute(GameMode GameMode)
         {
+            GameMode.Home.Quests.Seen = true;
             return 0;
         }
     }

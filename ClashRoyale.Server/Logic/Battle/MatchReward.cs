@@ -42,6 +42,7 @@ namespace ClashRoyale.Logic.Battle
             // Keep the home counter unchanged in the return-home snapshot.
             player.CommoditySlots.SetCommodityCount(ClashRoyale.Logic.Player.Enums.CommodityType.Resource,
                 ClashRoyale.Files.Csv.CsvFiles.StarCountData, own);
+            player.Home.Quests.Battle(player, own, enemy, team);
             player.LastRewardedMatch = matchId;
             player.RefreshArena();
             return result;

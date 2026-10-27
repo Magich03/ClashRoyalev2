@@ -19,7 +19,6 @@ namespace ClashRoyale.Logic.Commands
         {
             { 500, "Bv" },      // UpdateFlagSeen
             { 501, "Bvvv" },    // EventSeen
-            { 510, "Bvb" },     // ClaimQuestReward
             { 514, "lbsB" },    // ShareReplay
             { 516, "B" },       // CollectFreeChest
             { 519, "B" },       // UnlockGameRoom
@@ -28,7 +27,6 @@ namespace ClashRoyale.Logic.Commands
             { 528, "B" },       // ClaimNewLevelsReward
             { 534, "B" },       // ClaimSurvivalReward
             { 537, "Bsl" },     // KickAllianceMember
-            { 540, "B" },       // ClaimMainQuestReward
             { 541, "Bv" },      // StartSurvival
             { 542, "Bv" },      // StartExploring
             { 543, "Bvb" },     // SpeedUpExploring
@@ -36,7 +34,6 @@ namespace ClashRoyale.Logic.Commands
             { 551, "Bd" },      // RequestSpells
             { 552, "Bv" },      // SelectSkin
             { 558, "B" },       // HelpOpened
-            { 559, "B" },       // ClaimSeasonReward
             { 560, "Bvv" },     // BuyBooster
             { 561, "B" },       // UpdateHomeSurvivalState
             { 563, "Bblsv" },   // JoinGameRoom
@@ -45,7 +42,6 @@ namespace ClashRoyale.Logic.Commands
             { 568, "Bv" },      // ClearChestSource
             { 570, "Bvv" },     // EventShopOfferSeen
             { 571, "Bv" },      // NewShopChestSeen
-            { 573, "Bvb" },     // SetHomeFlag
             { 574, "Bl" },      // SpeedUpGameRoomReward
             { 578, "Bvv" },     // SelectHeroAbility
             { 579, "dB" },      // ClaimAchievementReward

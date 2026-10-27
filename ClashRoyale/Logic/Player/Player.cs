@@ -24,6 +24,7 @@ namespace ClashRoyale.Logic.Player
     public class Player : PlayerBase
     {
         public GameMode GameMode;
+        [JsonProperty("season")] public ClashRoyale.Logic.Seasons.LeagueSeason Season = new();
 
         // Id
 
@@ -466,7 +467,9 @@ namespace ClashRoyale.Logic.Player
         /// </summary>
         public void ScoreChanged(int Count)
         {
+            (this.Season ??= new()).Refresh(this, DateTimeOffset.UtcNow);
             this.Score = Math.Max(this.Score + Count, 0);
+            this.Season.HighestScore = System.Math.Max(this.Season.HighestScore, this.Score);
 
             if (this.Score > this.MaxScore)
             {
@@ -611,7 +614,7 @@ namespace ClashRoyale.Logic.Player
         public void SetMaxScore(int Count)
         {
             CsvData CsvData = CsvFiles.Get(Gamefile.Resources).GetData("MaxScore");
-            this.CommoditySlots.SetCommodityCount(CommodityType.ProfileResource, CsvData, CsvData.GlobalId);
+            this.CommoditySlots.SetCommodityCount(CommodityType.Resource, CsvData, Math.Max(0, Count));
         }
 
         /// <summary>
@@ -712,19 +715,9 @@ namespace ClashRoyale.Logic.Player
                 Stream.WriteVInt(0);
             }
 
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-
-            Stream.WriteVInt(0); // 0x26
-
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
-            Stream.WriteVInt(0);
+            (this.Season ??= new()).EncodePrevious(Stream);
+            Stream.WriteVInt(0); // Legacy field +0x34, separate from best-season record.
+            this.Season.EncodeBest(Stream);
 
             // Send temporary event cosmetics in the battle snapshot without changing saved selections.
             System.Collections.Generic.Dictionary<CsvData, int> skinOverrides = null;

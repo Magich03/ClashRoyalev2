@@ -41,6 +41,8 @@ namespace ClashRoyale.Logic.Collections
         /// <summary>
         /// Gets or sets the highest seed.
         /// </summary>
+        public static int OnlineCount => Entities?.Values.Count(p => p.GameMode?.IsConnected == true) ?? 0;
+
         private static int HighSeed;
 
         /// <summary>

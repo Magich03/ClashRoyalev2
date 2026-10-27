@@ -1,7 +1,10 @@
+using ClashRoyale.Logic.Cheats.Commands;
 namespace ClashRoyale.Messages
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using ClashRoyale.Logic.Cheats;
 
     using ClashRoyale.Extensions;
     using ClashRoyale.Messages.Client.Account;
@@ -38,6 +41,24 @@ namespace ClashRoyale.Messages
         /// The delimiter used to detect if x string is a call-command.
         /// </summary>
         public const char Delimiter = '/';
+
+        // Clan-chat cheats are separate from numbered client gameplay commands.
+        // Add a name and its own Cheat class here; /help reads this registry.
+        public static readonly IReadOnlyDictionary<string, Func<Cheat>> Cheats =
+            new ReadOnlyDictionary<string, Func<Cheat>>(new Dictionary<string, Func<Cheat>>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["max"] = () => new MaxCheat(),
+                ["min"] = () => new MinCheat(),
+                ["gold"] = () => new GoldCheat(),
+                ["arena"] = () => new ArenaCheat(),
+                ["gems"] = () => new GemsCheat(),
+                ["status"] = () => new StatusCheat(),
+                ["info"] = () => new InfoCheat(),
+                ["help"] = () => new HelpCheat()
+            });
+
+        public static Cheat CreateCheat(string name) => Cheats.TryGetValue(name, out var create) ? create() : null;
+
 
         /// <summary>
         /// The dictionnary of messages, used to route packet ids and decode them.

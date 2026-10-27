@@ -129,6 +129,7 @@
             CsvFiles.Paths.Add(85, @"Gamefiles/csv_logic/event_targeting_definitions.csv");
             CsvFiles.Paths.Add(86, @"Gamefiles/csv_logic/shop_cycle.csv");
             CsvFiles.Paths.Add(87, @"Gamefiles/csv_logic/skin_sets.csv");
+            CsvFiles.Paths.Add(91, @"Gamefiles/csv_logic/quest_main_rewards.csv");
             CsvFiles.Paths.Add(90, @"Gamefiles/csv_logic/shop_chests.csv");
 
             foreach (KeyValuePair<int, string> Pair in CsvFiles.Paths)

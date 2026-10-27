@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Messages.Server.Account
+namespace ClashRoyale.Messages.Server.Account
 {
     using ClashRoyale.Enums;
     using ClashRoyale.Extensions;
@@ -140,7 +140,7 @@
             {
                 if (this.Reason == Reason.Default)
                 {
-                    return "GobelinLand";
+                    return this.ErrorMessage ?? "GobelinLand";
                 }
 
                 return null;
@@ -162,6 +162,7 @@
         }
 
         public Reason Reason;
+        public string ErrorMessage;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoginFailedMessage"/> class.
@@ -222,8 +223,8 @@
 
             this.Stream.WriteString(this.ContentUpdate);
             this.Stream.WriteString(this.UpdateUrl);
+            this.Stream.WriteString(this.RedirectDomain);
             this.Stream.WriteString(this.Message);
-            this.Stream.WriteString(this.ContentUrl);
 
             this.Stream.WriteVInt(this.TimeLeft);
             this.Stream.WriteBoolean(false);

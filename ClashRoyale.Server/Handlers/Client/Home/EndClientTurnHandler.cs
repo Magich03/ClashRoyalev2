@@ -58,7 +58,7 @@ namespace ClashRoyale.Handlers.Client.Home
 
             Player Player = Device.GameMode.Player;
             // Persist the consumed chest and its rewards together after the server command is acknowledged.
-            if (hasRewardClaim || EndClientTurnMessage.Commands?.Any(c => c is ChallengeCommand) == true)
+            if (hasRewardClaim || EndClientTurnMessage.Commands?.Any(c => c is ChallengeCommand || c is SetHomeFlagCommand || c is ClaimSeasonRewardCommand || c is DraftChestChooseCommand || c is ClaimQuestRewardCommand || c is ClaimMainQuestRewardCommand || c is RequestNewQuestCommand || c is QuestsSeenCommand) == true)
                 await ClashRoyale.Logic.Collections.Players.Save(Player);
 
             if (EndClientTurnMessage.Commands?.OfType<ChallengeCommand>().Any(c => c.Result != 0 && (c.Type == 541 || c.Type == 504)) == true)

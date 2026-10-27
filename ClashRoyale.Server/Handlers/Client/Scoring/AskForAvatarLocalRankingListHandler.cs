@@ -28,14 +28,15 @@
                 throw new LogicException(typeof(AskForAvatarLocalRankingListHandler), nameof(AskForAvatarLocalRankingListMessage) + " == null at Handle(Device, Message, CancellationToken).");
             }
 
+            var ranks = await SeasonService.Rankings(Device.Defines.Region);
             LeaderboardPlayers Leaderboard = Leaderboards.GetRegionalPlayers(Device.Defines.Region);
 
             if (Leaderboard != null)
             {
                 Device.NetworkManager.SendMessage(new AvatarLocalRankingListMessage()
                 {
-                    Entries = Leaderboard.Players.ToArray(),
-                    LastSeasonEntries = Leaderboard.LastSeason.ToArray()
+                    Entries = ranks.Current,
+                    LastSeasonEntries = ranks.Previous
                 });
             }
             else

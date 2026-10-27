@@ -83,7 +83,7 @@ namespace ClashRoyale.Messages.Server.Home
             
             this.Stream.WriteVInt(-1956785812); // SEED
             this.Stream.WriteVInt(this.Timestamp);
-            this.Stream.WriteVInt(626930);
+            this.Stream.WriteVInt(ClashRoyale.Logic.Seasons.LeagueSeason.SecondsLeft(this.Timestamp));
         }
     }
 }

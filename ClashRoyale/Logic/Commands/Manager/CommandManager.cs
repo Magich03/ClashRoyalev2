@@ -162,6 +162,7 @@ namespace ClashRoyale.Logic.Commands.Manager
                             return new AddChestCommand();
                         case 215:
                             return new TransactionsRevokedCommand(); */
+                        case 300: return new UpdateQuestsCommand();
                         case 349:
                             return new AddChestCommand();
                         case 276:
@@ -201,12 +202,18 @@ namespace ClashRoyale.Logic.Commands.Manager
                 case 541:
                 case 561:
                     return new ChallengeCommand(Type);
+                case 573:
+                    return new SetHomeFlagCommand();
                 case 501:
                     return new UnknownCommand();
                 case 505:
                     return new SwapSpellsCommand();
                 case 506:
                     return new ChestUseRerollCommand();
+                case 559:
+                    return new ClaimSeasonRewardCommand();
+                case 510: return new ClaimQuestRewardCommand();
+                case 540: return new ClaimMainQuestRewardCommand();
                 case 520:
                     return new DraftChestChooseCommand();
                 case 511:

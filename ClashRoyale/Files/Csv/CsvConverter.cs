@@ -21,13 +21,15 @@
 
         public override object ReadJson(JsonReader Reader, Type ObjectType, object ExistingValue, JsonSerializer Serializer)
         {
-            int Id = (int) (long) Reader.Value;
+            if (Reader.TokenType == JsonToken.Null) return null;
+            int Id = Convert.ToInt32(Reader.Value);
 
             if (Id != 0)
             {
                 CsvData CsvData = CsvFiles.GetWithGlobalId(Id);
 
-                if (ObjectType == typeof(CsvData) || CsvData.GetType() == ObjectType)
+                if (CsvData == null) return null;
+                if (ObjectType == typeof(CsvData) || ObjectType.IsInstanceOfType(CsvData))
                 {
                     return CsvData;
                 }

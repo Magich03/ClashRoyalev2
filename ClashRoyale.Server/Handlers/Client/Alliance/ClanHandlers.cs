@@ -187,6 +187,8 @@ namespace ClashRoyale.Handlers.Client.Alliance
                 return;
             }
 
+            if (await PrivateClanCommands.TryHandle(Device, Text, Cancellation)) return;
+
             if (Text.Length > 256)
             {
                 Text = Text.Substring(0, 256);

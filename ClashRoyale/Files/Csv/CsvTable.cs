@@ -340,6 +340,7 @@
                     return new SkinSetData(CsvRow, this);
                 }
 
+                case 91: return new QuestMainRewardData(CsvRow, this);
                 case 90:
                 {
                     return new ShopChestData(CsvRow, this);
