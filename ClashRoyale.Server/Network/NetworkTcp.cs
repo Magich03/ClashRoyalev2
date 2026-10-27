@@ -1,4 +1,4 @@
-﻿namespace ClashRoyale.Network
+namespace ClashRoyale.Network
 {
     using System;
     using System.Net;
@@ -37,7 +37,8 @@
 
             NetworkTcp.FillPools();
 
-            NetworkTcp.Listener     = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            bool supportsIPv6 = Socket.OSSupportsIPv6;
+            NetworkTcp.Listener     = new Socket(supportsIPv6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             {
                 NoDelay             = true,
                 Blocking            = false,
@@ -45,10 +46,11 @@
                 SendBufferSize      = Config.BufferSize
             };
 
-            NetworkTcp.Initialized  = true;
+            if (supportsIPv6) NetworkTcp.Listener.DualMode = true;
 
-            NetworkTcp.Listener.Bind(new IPEndPoint(IPAddress.Any, 9339));
+            NetworkTcp.Listener.Bind(new IPEndPoint(supportsIPv6 ? IPAddress.IPv6Any : IPAddress.Any, 9339));
             NetworkTcp.Listener.Listen(150);
+            NetworkTcp.Initialized = true;
 
             Logging.Info(typeof(NetworkTcp), "Listener has been bound to " + NetworkTcp.Listener.LocalEndPoint + ".");
 
@@ -128,54 +130,27 @@
         {
             if (AsyncEvent.AcceptSocket.Connected)
             {
-                IPAddress RemoteAddress = ((IPEndPoint) AsyncEvent.AcceptSocket.RemoteEndPoint).Address;
+                SocketAsyncEventArgs ReadEvent = NetworkTcp.ReadPool.Dequeue();
 
-                if (!NetworkTcp.IsLocalNetwork(RemoteAddress))
+                if (ReadEvent != null)
                 {
-                    Logging.Warning(typeof(NetworkTcp), "Rejected connection from " + RemoteAddress + ".");
-                    AsyncEvent.AcceptSocket.Close();
+                    NetworkToken Token = new NetworkToken(ReadEvent, AsyncEvent.AcceptSocket);
+                    Device Device = new Device(Token);
+                    Devices.Add(Device);
+
+                    if (!Token.Socket.ReceiveAsync(ReadEvent))
+                    {
+                        NetworkTcp.ProcessReceive(ReadEvent);
+                    }
                 }
                 else
                 {
-                    SocketAsyncEventArgs ReadEvent = NetworkTcp.ReadPool.Dequeue();
-
-                    if (ReadEvent != null)
-                    {
-                        NetworkToken Token  = new NetworkToken(ReadEvent, AsyncEvent.AcceptSocket);
-                        Device Device       = new Device(Token);
-
-                        Devices.Add(Device);
-
-                        if (!Token.Socket.ReceiveAsync(ReadEvent))
-                        {
-                            NetworkTcp.ProcessReceive(ReadEvent);
-                        }
-                    }
-                    else
-                    {
-                        Logging.Warning(typeof(NetworkTcp), "Server is full, new connections cannot be accepted.");
-                    }
+                    Logging.Warning(typeof(NetworkTcp), "Server is full, new connections cannot be accepted.");
+                    AsyncEvent.AcceptSocket.Close();
                 }
             }
 
             NetworkTcp.StartAccept(AsyncEvent);
-        }
-
-        private static bool IsLocalNetwork(IPAddress Address)
-        {
-            if (IPAddress.IsLoopback(Address))
-            {
-                return true;
-            }
-
-            if (Address.IsIPv4MappedToIPv6)
-            {
-                Address = Address.MapToIPv4();
-            }
-
-            byte[] B = Address.GetAddressBytes();
-
-            return B.Length == 4 && (B[0] == 10 || (B[0] == 172 && B[1] >= 16 && B[1] <= 31) || (B[0] == 192 && B[1] == 168));
         }
 
         /// <summary>
